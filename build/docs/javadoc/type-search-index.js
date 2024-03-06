@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.example.examplemod","l":"ExampleMod.ClientModEvents"},{"p":"com.example.examplemod","l":"Config"},{"p":"com.example.examplemod","l":"ExampleMod"}];updateSearchResults();
