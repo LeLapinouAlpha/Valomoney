@@ -8,7 +8,7 @@
  * <ul>
  *     <li>{@link fr.valorantage.valomoney.backend.economy.Wallet}: Represents
  *     a virtual wallet for a player, storing their balance and providing methods
- *     for adding and withdrawing money.</li>
+ *     for adding and withdrawing money, saving and restoring them in binary files.</li>
  *     <li>{@link fr.valorantage.valomoney.backend.economy.EconomyManager}: Serves
  *     as an interface for managing player wallets, facilitating transactions,
  *     and interacting with the economy system.</li>

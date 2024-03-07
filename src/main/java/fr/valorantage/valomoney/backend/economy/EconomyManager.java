@@ -4,6 +4,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class EconomyManager {
     private ArrayList<Wallet> wallets;
@@ -13,14 +14,31 @@ public final class EconomyManager {
     }
 
     public Wallet findWalletByPlayerId(UUID playerId) {
-        throw new NotImplementedException();
+        var wallet = new AtomicReference<Wallet>();
+        wallets.forEach(w -> {
+            if (w.getPlayerId().equals(playerId))
+                wallet.set(w);
+        });
+        return wallet.get();
     }
 
-    public void performTransaction(UUID senderId, UUID receiverId, float amount) {
-        throw new NotImplementedException();
+    public void performTransaction(UUID senderId, UUID receiverId, float amount) throws IllegalArgumentException {
+        var sender = findWalletByPlayerId(senderId);
+        var receiver = findWalletByPlayerId(receiverId);
+
+        try {
+            sender.withdraw(amount);
+            receiver.addMoney(amount);
+        } catch (NullPointerException npex) {
+            throw new IllegalArgumentException("The sender or the receiver does not exist");
+        }
     }
 
     public ArrayList<Wallet> getWallets() {
         return wallets;
+    }
+
+    public void setWallets(ArrayList<Wallet> wallets) {
+        this.wallets = wallets;
     }
 }
