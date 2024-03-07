@@ -32,4 +32,12 @@ public final class Wallet {
     public void addMoney(float amount) {
         throw new NotImplementedException();
     }
+
+    public void save(String filePath) {
+        throw new NotImplementedException();
+    }
+
+    public void restore(String filePath) {
+        throw new NotImplementedException();
+    }
 }
