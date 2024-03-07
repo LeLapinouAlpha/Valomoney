@@ -4,5 +4,9 @@
 -notimestamp 
 -quiet 
 -windowtitle 'Valomoney 1.0.0 API'
+'/home/lla/IdeaProjects/Valomoney/src/main/java/fr/valorantage/valomoney/backend/economy/Wallet.java'
+'/home/lla/IdeaProjects/Valomoney/src/main/java/fr/valorantage/valomoney/backend/economy/EconomyFileManager.java'
+'/home/lla/IdeaProjects/Valomoney/src/main/java/fr/valorantage/valomoney/backend/economy/EconomyManager.java'
+'/home/lla/IdeaProjects/Valomoney/src/main/java/fr/valorantage/valomoney/backend/economy/package-info.java'
 '/home/lla/IdeaProjects/Valomoney/src/main/java/com/example/examplemod/Config.java'
 '/home/lla/IdeaProjects/Valomoney/src/main/java/com/example/examplemod/ExampleMod.java'
