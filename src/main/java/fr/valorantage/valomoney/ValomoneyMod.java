@@ -2,6 +2,7 @@ package fr.valorantage.valomoney;
 
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.items.ItemsRegister;
+import fr.valorantage.valomoney.tabs.CreativeModeTabsRegister;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -30,19 +31,6 @@ public class ValomoneyMod
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
-    public static final RegistryObject<CreativeModeTab> VALOMONEY_TAB = CREATIVE_MODE_TABS.register("valomoney_tab", () -> CreativeModeTab.builder()
-            .title(Component.literal("Valomoney"))
-            .icon(() -> ItemsRegister.BILL_FIVE.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(ItemsRegister.BILL_FIVE.get());
-                output.accept(ItemsRegister.BILL_TEN.get());
-                output.accept(ItemsRegister.BILL_TWENTY.get());
-                output.accept(ItemsRegister.BILL_FIFTY.get());
-                output.accept(ItemsRegister.BILL_HUNDRED.get());
-            }).build());
-
     public ValomoneyMod()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -53,7 +41,7 @@ public class ValomoneyMod
         // Register the Deferred Register to the mod event bus so items get registered
         ItemsRegister.ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
-        CREATIVE_MODE_TABS.register(modEventBus);
+        CreativeModeTabsRegister.CREATIVE_MODE_TABS.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
