@@ -3,6 +3,7 @@ package fr.valorantage.valomoney.backend.economy;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 public final class EconomyManager {
     private ArrayList<Wallet> wallets;
@@ -41,13 +42,5 @@ public final class EconomyManager {
             wallets.add(wallet);
         }
         throw new IllegalArgumentException("This wallet is already associated with a player");
-    }
-
-    public ArrayList<Wallet> getWallets() {
-        return wallets;
-    }
-
-    public void setWallets(ArrayList<Wallet> wallets) {
-        this.wallets = wallets;
     }
 }
