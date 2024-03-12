@@ -29,6 +29,15 @@ public final class EconomyManager {
         receiver.addMoney(amount);
     }
 
+    public void createNewWallet(UUID playerId) {
+        try {
+            getWallet(playerId);
+            throw new IllegalArgumentException("Cannot create a new wallet for this player");
+        } catch (IllegalArgumentException iaex) {
+            wallets.add(new Wallet(playerId));
+        }
+    }
+
     public ArrayList<Wallet> getWallets() {
         return wallets;
     }
