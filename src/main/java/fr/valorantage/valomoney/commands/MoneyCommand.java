@@ -25,6 +25,7 @@ public final class MoneyCommand {
 
     private static int displayPlayerMoney(CommandSourceStack source) {
         if (source.getPlayer() != null) {
+            // TODO: Get the balance of the source player using the running instance of EconomyManager
             source.sendSuccess(() -> Component.literal("/money command executed!"), true);
             return 1;
         } else {
@@ -34,6 +35,9 @@ public final class MoneyCommand {
     }
 
     private static int credit(CommandSourceStack source, float amount) {
+        /* TODO: Get the wallet of the source player using the running instance of EconomyManager, check in all player's
+            inventory if it haves enough coins and bills, and exchange them into virtual money calling addMoney method of
+            player's wallet */
         if (source.getPlayer() != null) {
             source.sendSuccess(() -> Component.literal("The /money credit <amount> has been executed"), true);
             return 1;
@@ -43,6 +47,9 @@ public final class MoneyCommand {
     }
 
     private static int debit(CommandSourceStack source, float amount) {
+        /* TODO: Get the Get the wallet of the source player using the running instance of EconomyManager, check if it
+            haves enough funds and give its bills and coins to the rounded asked amount.
+         */
         if (source.getPlayer() != null) {
             source.sendSuccess(() -> Component.literal("The /money debit <amount> has been executed"), true);
             return 1;
