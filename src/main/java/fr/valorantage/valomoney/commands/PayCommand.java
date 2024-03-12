@@ -29,13 +29,24 @@ public final class PayCommand extends ModCommand {
     }
 
     private static int pay(CommandSourceStack source, ServerPlayer target, float amount) {
-        try {
-            ValomoneyMod.ECONOMY_MANAGER.performTransaction(Objects.requireNonNull(source.getPlayer()).getUUID(), target.getUUID(), amount);
-            source.sendSuccess(() -> Component.literal(String.format("You have send %.2f$ to %s.", amount, target.getDisplayName())), true);
-            return 1;
-        } catch (Exception ex) {
-            source.sendFailure(Component.literal(ex.getMessage()));
-            return -1;
+        var sourcePlayer = source.getPlayer();
+        if (sourcePlayer != null) {
+            try {
+                ValomoneyMod.ECONOMY_MANAGER.performTransaction(sourcePlayer.getUUID(), target.getUUID(), amount);
+                source.sendSuccess(() -> Component.literal(String.format("You have send %.2f$ to %s.", amount, target.getDisplayName().getString())), true);
+            } catch (Exception ex) {
+                source.sendFailure(Component.literal(ex.getMessage()));
+                return -1;
+            }
+        } else {
+            try {
+                ValomoneyMod.ECONOMY_MANAGER.getWallet(target.getUUID()).addMoney(amount);
+            } catch (Exception ex) {
+                source.sendFailure(Component.literal(ex.getMessage()));
+                return -1;
+            }
         }
+        target.sendSystemMessage(Component.literal(String.format("You received %.2f$ from %s.", amount, target.getDisplayName().getString())), true);
+        return 1;
     }
 }
