@@ -39,8 +39,9 @@ public final class MoneyCommand {
         }
     }
 
-    private static int display(CommandSourceStack source, ServerPlayer player) {
-        source.sendSuccess(() -> Component.literal(player.getDisplayName().getString() + "'s money: ..."), true);
+    private static int display(CommandSourceStack source, ServerPlayer target) {
+        // TODO: Get the balance of the targeted player (This method should be called only if the target is online
+        source.sendSuccess(() -> Component.literal(target.getDisplayName().getString() + "'s money: ..."), true);
         return 1;
     }
 
