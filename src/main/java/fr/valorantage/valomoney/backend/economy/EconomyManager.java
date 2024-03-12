@@ -38,6 +38,15 @@ public final class EconomyManager {
         }
     }
 
+    public void addWallet(Wallet wallet) {
+        try {
+            getWallet(wallet.getPlayerId());
+            throw new IllegalArgumentException("This wallet is already associated with a player");
+        } catch (IllegalArgumentException iaex) {
+            wallets.add(wallet);
+        }
+    }
+
     public ArrayList<Wallet> getWallets() {
         return wallets;
     }
