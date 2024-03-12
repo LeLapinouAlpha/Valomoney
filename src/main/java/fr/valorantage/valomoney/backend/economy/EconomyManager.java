@@ -29,7 +29,7 @@ public final class EconomyManager {
         receiver.addMoney(amount);
     }
 
-    public void createNewWallet(UUID playerId) {
+    public void createWallet(UUID playerId) {
         try {
             getWallet(playerId);
         } catch (IllegalArgumentException iaex) {
