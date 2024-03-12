@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 
 public final class MoneyCommand {
@@ -20,6 +22,9 @@ public final class MoneyCommand {
                                 .then(Commands.argument("amount", FloatArgumentType.floatArg())
                                         .executes((command -> debit(command.getSource(), FloatArgumentType.getFloat(command, "amount")))))
                         )
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .requires((source) -> source.hasPermission(2)))
+                                .executes((command) -> displayPlayerMoney(command.getSource(), EntityArgument.getPlayer(command, "player")))
         );
     }
 
@@ -32,6 +37,11 @@ public final class MoneyCommand {
             source.sendFailure(Component.literal("The /money command must be executed by a player!"));
             return -1;
         }
+    }
+
+    private static int displayPlayerMoney(CommandSourceStack source, ServerPlayer player) {
+        source.sendSuccess(() -> Component.literal(player.getDisplayName().getString() + "'s money: ..."), true);
+        return 1;
     }
 
     private static int credit(CommandSourceStack source, float amount) {
