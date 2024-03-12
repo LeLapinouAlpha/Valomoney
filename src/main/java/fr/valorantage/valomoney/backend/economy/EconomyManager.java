@@ -32,19 +32,19 @@ public final class EconomyManager {
     public void createNewWallet(UUID playerId) {
         try {
             getWallet(playerId);
-            throw new IllegalArgumentException("Cannot create a new wallet for this player");
         } catch (IllegalArgumentException iaex) {
             wallets.add(new Wallet(playerId));
         }
+        throw new IllegalArgumentException("Cannot create a new wallet for this player");
     }
 
     public void addWallet(Wallet wallet) {
         try {
             getWallet(wallet.getPlayerId());
-            throw new IllegalArgumentException("This wallet is already associated with a player");
         } catch (IllegalArgumentException iaex) {
             wallets.add(wallet);
         }
+        throw new IllegalArgumentException("This wallet is already associated with a player");
     }
 
     public ArrayList<Wallet> getWallets() {
