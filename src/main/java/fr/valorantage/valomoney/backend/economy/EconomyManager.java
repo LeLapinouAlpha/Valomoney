@@ -1,7 +1,5 @@
 package fr.valorantage.valomoney.backend.economy;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -13,7 +11,7 @@ public final class EconomyManager {
         wallets = new ArrayList<>();
     }
 
-    public Wallet findWalletByPlayerId(UUID playerId) {
+    public Wallet getWallet(UUID playerId) {
         var wallet = new AtomicReference<Wallet>();
         wallets.forEach(w -> {
             if (w.getPlayerId().equals(playerId))
@@ -23,8 +21,8 @@ public final class EconomyManager {
     }
 
     public void performTransaction(UUID senderId, UUID receiverId, float amount) throws IllegalArgumentException {
-        var sender = findWalletByPlayerId(senderId);
-        var receiver = findWalletByPlayerId(receiverId);
+        var sender = getWallet(senderId);
+        var receiver = getWallet(receiverId);
 
         try {
             sender.withdraw(amount);
