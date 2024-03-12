@@ -2,6 +2,7 @@ package fr.valorantage.valomoney.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import fr.valorantage.valomoney.ValomoneyMod;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -35,9 +36,14 @@ public final class MoneyCommand extends ModCommand {
 
     private static int display(CommandSourceStack source) {
         if (source.getPlayer() != null) {
-            // TODO: Get the balance of the source player using the running instance of EconomyManager
-            source.sendSuccess(() -> Component.literal("/money command executed!"), true);
-            return 1;
+            try {
+                var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
+                source.sendSuccess(() -> Component.literal(String.format("Balance: %.2f$", sourceWallet.getBalance())), true);
+                return 1;
+            } catch (IllegalArgumentException walletNotFoundEx) {
+                source.sendFailure(Component.literal(walletNotFoundEx.getMessage()));
+                return -1;
+            }
         } else {
             source.sendFailure(Component.literal("The /money command must be executed by a player!"));
             return -1;
@@ -45,9 +51,14 @@ public final class MoneyCommand extends ModCommand {
     }
 
     private static int display(CommandSourceStack source, ServerPlayer target) {
-        // TODO: Get the balance of the targeted player (This method should be called only if the target is online
-        source.sendSuccess(() -> Component.literal(target.getDisplayName().getString() + "'s money: ..."), true);
-        return 1;
+        try {
+            var targetWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(target.getUUID());
+            source.sendSuccess(() -> Component.literal(String.format("%s's balance: %.2f$", target.getDisplayName().getString(), targetWallet.getBalance())), true);
+            return 1;
+        } catch (IllegalArgumentException walletNotFoundEx) {
+            source.sendFailure(Component.literal(walletNotFoundEx.getMessage()));
+            return -1;
+        }
     }
 
     private static int credit(CommandSourceStack source, float amount) {
