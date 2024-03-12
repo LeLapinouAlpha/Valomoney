@@ -6,8 +6,13 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
-public final class ShopCommand {
+public final class ShopCommand extends ModCommand {
     public ShopCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+        super(dispatcher);
+    }
+
+    @Override
+    protected void register() {
         dispatcher.register(Commands.literal("shop")
                 .executes((command) -> show(command.getSource()))
                 .then(Commands.literal("sell")

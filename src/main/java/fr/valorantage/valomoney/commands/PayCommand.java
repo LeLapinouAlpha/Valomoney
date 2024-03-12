@@ -8,9 +8,14 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public final class PayCommand {
+public final class PayCommand extends ModCommand {
 
     public PayCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+        super(dispatcher);
+    }
+
+    @Override
+    protected void register() {
         dispatcher.register(
                 Commands.literal("pay")
                         .then(

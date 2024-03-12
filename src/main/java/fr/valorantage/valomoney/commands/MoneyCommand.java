@@ -9,8 +9,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 
-public final class MoneyCommand {
+public final class MoneyCommand extends ModCommand {
     public MoneyCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+        super(dispatcher);
+    }
+
+    @Override
+    protected void register() {
         dispatcher.register(
                 Commands.literal("money")
                         .executes((command -> display(command.getSource())))
