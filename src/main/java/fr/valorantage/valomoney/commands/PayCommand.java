@@ -26,6 +26,7 @@ public final class PayCommand {
             source.sendFailure(Component.literal("The amount to pay must be strictly positive."));
             return -1;
         }
+        // TODO: Calls EconomyManager instance's methods to transfer money from source to target with all checks
         source.sendSuccess(() -> Component.literal("/pay <player> <amount> has been executed!"), true);
         return 1;
     }
