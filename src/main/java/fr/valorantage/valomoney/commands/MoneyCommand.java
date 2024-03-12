@@ -23,8 +23,8 @@ public final class MoneyCommand {
                                         .executes((command -> debit(command.getSource(), FloatArgumentType.getFloat(command, "amount")))))
                         )
                         .then(Commands.argument("player", EntityArgument.player())
-                                .requires((source) -> source.hasPermission(2)))
-                                .executes((command) -> display(command.getSource(), EntityArgument.getPlayer(command, "player")))
+                                .requires((source) -> source.hasPermission(2))
+                                .executes((command) -> display(command.getSource(), EntityArgument.getPlayer(command, "player"))))
         );
     }
 
