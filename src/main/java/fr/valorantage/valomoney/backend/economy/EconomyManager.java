@@ -12,14 +12,10 @@ public final class EconomyManager {
     }
 
     public Wallet getWallet(UUID playerId) {
-        var wallet = new AtomicReference<Wallet>();
-        wallets.forEach(w -> {
-            if (w.getPlayerId().equals(playerId))
-                wallet.set(w);
-        });
-        if (wallet.get() == null)
+        var optionalWallet = wallets.stream().filter(w -> w.getPlayerId().equals(playerId)).findAny();
+        if (optionalWallet.isEmpty())
             throw new IllegalArgumentException("This player does not have a wallet");
-        return wallet.get();
+        return optionalWallet.get();
     }
 
     public void performTransaction(UUID senderId, UUID receiverId, float amount) throws IllegalArgumentException {
