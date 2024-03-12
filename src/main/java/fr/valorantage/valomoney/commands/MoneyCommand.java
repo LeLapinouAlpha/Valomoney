@@ -13,7 +13,7 @@ public final class MoneyCommand {
     public MoneyCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("money")
-                        .executes((command -> displayPlayerMoney(command.getSource())))
+                        .executes((command -> display(command.getSource())))
                         .then(Commands.literal("credit")
                                 .then(Commands.argument("amount", FloatArgumentType.floatArg())
                                         .executes((command -> credit(command.getSource(), FloatArgumentType.getFloat(command, "amount")))))
@@ -24,11 +24,11 @@ public final class MoneyCommand {
                         )
                         .then(Commands.argument("player", EntityArgument.player())
                                 .requires((source) -> source.hasPermission(2)))
-                                .executes((command) -> displayPlayerMoney(command.getSource(), EntityArgument.getPlayer(command, "player")))
+                                .executes((command) -> display(command.getSource(), EntityArgument.getPlayer(command, "player")))
         );
     }
 
-    private static int displayPlayerMoney(CommandSourceStack source) {
+    private static int display(CommandSourceStack source) {
         if (source.getPlayer() != null) {
             // TODO: Get the balance of the source player using the running instance of EconomyManager
             source.sendSuccess(() -> Component.literal("/money command executed!"), true);
@@ -39,7 +39,7 @@ public final class MoneyCommand {
         }
     }
 
-    private static int displayPlayerMoney(CommandSourceStack source, ServerPlayer player) {
+    private static int display(CommandSourceStack source, ServerPlayer player) {
         source.sendSuccess(() -> Component.literal(player.getDisplayName().getString() + "'s money: ..."), true);
         return 1;
     }
