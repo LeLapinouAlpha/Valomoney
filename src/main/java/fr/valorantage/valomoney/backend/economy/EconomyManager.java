@@ -1,5 +1,6 @@
 package fr.valorantage.valomoney.backend.economy;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,5 +43,21 @@ public final class EconomyManager {
             wallets.add(wallet);
         }
         throw new IllegalArgumentException("This wallet is already associated with a player");
+    }
+
+    public void saveState(EconomyFileManager economyFileManager) throws IOException {
+        for (final var wallet : wallets) {
+            economyFileManager.saveWallet(wallet);
+        }
+    }
+
+    public void restoreState(EconomyFileManager economyFileManager) throws IOException, ClassNotFoundException {
+        wallets.clear();
+        Wallet wallet = economyFileManager.restoreWallet();
+        while (wallet != null)
+        {
+            wallets.add(wallet);
+            wallet = economyFileManager.restoreWallet();
+        }
     }
 }
