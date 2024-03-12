@@ -1,6 +1,7 @@
 package fr.valorantage.valomoney.backend.economy;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.Paths;
 
 public final class EconomyFileManager {
     private File directory;
@@ -14,5 +15,19 @@ public final class EconomyFileManager {
             throw new IllegalArgumentException(String.format("%s is not a directory", directoryPath));
 
         this.directory = directory;
+    }
+
+    public void saveWallet(final Wallet wallet) throws IOException {
+        try (var fos = new FileOutputStream(String.format("%s.wallet", wallet.getPlayerId()))) {
+            var oos = new ObjectOutputStream(fos);
+            oos.writeObject(wallet);
+        }
+    }
+
+    public Wallet restoreWallet(final String filePath) throws IOException, ClassNotFoundException {
+        try (var fis = new FileInputStream(String.valueOf(Paths.get(directory.getPath(), filePath)))) {
+            var ois = new ObjectInputStream(fis);
+            return (Wallet) ois.readObject();
+        }
     }
 }
