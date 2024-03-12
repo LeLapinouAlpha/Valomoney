@@ -32,7 +32,7 @@ public final class Wallet implements Serializable {
         if (amount <= 0)
             throw new IllegalArgumentException("The amount of money you want to withdraw must be strictly positive");
         else if (balance < amount)
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("You don't have enough funds");
         balance -= amount;
     }
 
