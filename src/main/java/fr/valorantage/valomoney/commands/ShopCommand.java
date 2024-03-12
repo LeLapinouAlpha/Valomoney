@@ -19,6 +19,7 @@ public final class ShopCommand {
     }
 
     public static int show(CommandSourceStack source) {
+        // TODO: Display the shop GUI
         source.sendSuccess(() -> Component.literal("This command must display the shop!"), true);
         return 1;
     }
@@ -28,6 +29,8 @@ public final class ShopCommand {
             source.sendFailure(Component.literal("The amout of items to sell must be positive"));
             return -1;
         }
+
+        // TODO: Sell 'amount' items that are of the same types as the item in the hand of the source player
         source.sendSuccess(() -> Component.literal("/shop sell <amount> command executed!"), true);
         return 1;
     }
