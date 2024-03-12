@@ -17,19 +17,16 @@ public final class EconomyManager {
             if (w.getPlayerId().equals(playerId))
                 wallet.set(w);
         });
+        if (wallet.get() == null)
+            throw new IllegalArgumentException("This player does not have a wallet");
         return wallet.get();
     }
 
     public void performTransaction(UUID senderId, UUID receiverId, float amount) throws IllegalArgumentException {
         var sender = getWallet(senderId);
         var receiver = getWallet(receiverId);
-
-        try {
-            sender.withdraw(amount);
-            receiver.addMoney(amount);
-        } catch (NullPointerException npex) {
-            throw new IllegalArgumentException("The sender or the receiver does not exist");
-        }
+        sender.withdraw(amount);
+        receiver.addMoney(amount);
     }
 
     public ArrayList<Wallet> getWallets() {
