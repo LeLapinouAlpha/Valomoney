@@ -1,8 +1,6 @@
 package fr.valorantage.valomoney.backend.economy;
 
-import org.apache.commons.lang3.NotImplementedException;
-
-import java.io.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 public final class Wallet implements Serializable {

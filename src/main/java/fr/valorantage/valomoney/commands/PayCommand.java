@@ -8,9 +8,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.checkerframework.checker.units.qual.C;
-
-import java.util.Objects;
 
 public final class PayCommand extends ModCommand {
 

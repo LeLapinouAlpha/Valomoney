@@ -1,6 +1,7 @@
 package fr.valorantage.valomoney;
 
 import com.mojang.logging.LogUtils;
+import fr.valorantage.valomoney.backend.economy.EconomyFileManager;
 import fr.valorantage.valomoney.backend.economy.EconomyManager;
 import fr.valorantage.valomoney.items.ItemsRegister;
 import fr.valorantage.valomoney.tabs.CreativeModeTabsRegister;
@@ -9,13 +10,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.io.IOException;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ValomoneyMod.MODID)
@@ -27,6 +30,9 @@ public class ValomoneyMod {
 
     // Create an EconomyManager instance
     public final static EconomyManager ECONOMY_MANAGER = new EconomyManager();
+
+    // Create an EconomyFileManager instance
+    public final static EconomyFileManager ECONOMY_FILE_MANAGER = new EconomyFileManager("./valomoney");
 
     public ValomoneyMod() {
         var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -51,8 +57,21 @@ public class ValomoneyMod {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
+        try {
+            ECONOMY_MANAGER.restoreState(ECONOMY_FILE_MANAGER);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage());
+        }
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {
+        try {
+            LOGGER.info("MESSAGE FROM STOPPING SERVER");
+            ECONOMY_MANAGER.saveState(ECONOMY_FILE_MANAGER);
+        } catch (IOException ioEx) {
+            LOGGER.error(ioEx.getMessage());
+        }
     }
 
     @SubscribeEvent

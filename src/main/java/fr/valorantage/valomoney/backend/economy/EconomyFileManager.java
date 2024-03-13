@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.file.Paths;
 
 public final class EconomyFileManager {
-    private File directory;
+    private final File directory;
 
     private String[] walletFiles;
 
@@ -24,7 +24,9 @@ public final class EconomyFileManager {
     }
 
     public void saveWallet(final Wallet wallet) throws IOException {
-        try (var fos = new FileOutputStream(String.format("%s.wallet", wallet.getPlayerId()))) {
+        var walletFilename = String.format("%s.wallet", wallet.getPlayerId());
+        var walletPath = String.valueOf(Paths.get(directory.getPath(), walletFilename));
+        try (var fos = new FileOutputStream(walletPath)) {
             var oos = new ObjectOutputStream(fos);
             oos.writeObject(wallet);
         }
