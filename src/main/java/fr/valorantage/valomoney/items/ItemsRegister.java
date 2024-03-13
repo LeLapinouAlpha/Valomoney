@@ -13,7 +13,7 @@ public final class ItemsRegister {
     public static final RegistryObject<Item> BILL_TWENTY = ITEMS.register("bill_twenty", BillTwentyItem::new);
     public static final RegistryObject<Item> BILL_FIFTY = ITEMS.register("bill_fifty", BillFiftyItem::new);
     public static final RegistryObject<Item> BILL_HUNDRED = ITEMS.register("bill_hundred", BillHundredItem::new);
-    public static final RegistryObject<Item> COIN_FIFTY = ITEMS.register("coin_fifty", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> COIN_ONE = ITEMS.register("coin_one", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> COIN_TWO = ITEMS.register("coin_two", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> COIN_FIFTY = ITEMS.register("coin_fifty", CoinFiftyItem::new);
+    public static final RegistryObject<Item> COIN_ONE = ITEMS.register("coin_one", CoinOneItem::new);
+    public static final RegistryObject<Item> COIN_TWO = ITEMS.register("coin_two", CoinTwoItem::new);
 }
