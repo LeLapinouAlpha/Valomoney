@@ -45,13 +45,22 @@ public final class Wallet implements Serializable {
         int[] unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
 
-        float remainingAmount = amount;
+        float remaining = amount;
         for (int i = 0; i < units.length; i++) {
-            if (remainingAmount >= units[i]) {
-                unitsCount[i] = (int) (remainingAmount / units[i]);
-                remainingAmount %= units[i];
+            if (remaining >= units[i]) {
+                unitsCount[i] = (int) (remaining / units[i]);
+                remaining %= units[i];
             }
         }
         return unitsCount;
+    }
+
+    public void credit(int[] unitCounts) {
+        float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        for (int i = 0; i < unitCounts.length; i++) {
+            var amount = units[i] * unitCounts[i];
+            if (amount != 0)
+                addMoney(amount);
+        }
     }
 }

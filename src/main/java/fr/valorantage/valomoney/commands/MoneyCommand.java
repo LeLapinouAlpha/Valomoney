@@ -64,13 +64,41 @@ public final class MoneyCommand extends ModCommand {
     }
 
     private static int credit(CommandSourceStack source, float amount) {
-        /* TODO: Get the wallet of the source player using the running instance of EconomyManager, check in all player's
-            inventory if it haves enough coins and bills, and exchange them into virtual money calling addMoney method of
-            player's wallet */
         if (source.getPlayer() != null) {
-            source.sendSuccess(() -> Component.literal("The /money credit <amount> has been executed"), true);
-            return 1;
+            try {
+                var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
+                var sourceInventory = source.getPlayer().getInventory();
+                int[] unitsCount = new int[8];
+                for (int i = 0; i < sourceInventory.getContainerSize(); i++) {
+                    var currentItemStack = sourceInventory.getItem(i);
+                    if (currentItemStack.getItem().equals(ItemsRegister.BILL_HUNDRED.get()))
+                        unitsCount[0] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIFTY.get()))
+                        unitsCount[1] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TWENTY.get()))
+                        unitsCount[2] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TEN.get()))
+                        unitsCount[3] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIVE.get()))
+                        unitsCount[4] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.COIN_TWO.get()))
+                        unitsCount[5] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.COIN_ONE.get()))
+                        unitsCount[6] += currentItemStack.getCount();
+                    else if (currentItemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
+                        unitsCount[7] += currentItemStack.getCount();
+                    else
+                        continue;
+                    sourceInventory.removeItem(currentItemStack);
+                }
+                sourceWallet.credit(unitsCount);
+                return 1;
+            } catch (IllegalArgumentException argEx) {
+                source.sendFailure(Component.literal(argEx.getMessage()));
+                return -1;
+            }
         } else {
+            source.sendFailure(Component.literal("The /money credit <amount> command must be executed by a player!"));
             return -1;
         }
     }
