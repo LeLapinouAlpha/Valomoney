@@ -1,8 +1,6 @@
 package fr.valorantage.valomoney.backend.economy;
 
-import org.apache.commons.lang3.NotImplementedException;
-
-import java.io.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 public final class Wallet implements Serializable {
@@ -32,7 +30,7 @@ public final class Wallet implements Serializable {
         if (amount <= 0)
             throw new IllegalArgumentException("The amount of money you want to withdraw must be strictly positive");
         else if (balance < amount)
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("You don't have enough funds");
         balance -= amount;
     }
 
@@ -40,19 +38,5 @@ public final class Wallet implements Serializable {
         if (amount <= 0)
             throw new IllegalArgumentException("The amount of money you want to add must be strictly positive");
         balance += amount;
-    }
-
-    public static void save(final Wallet wallet, String filePath) throws IOException {
-        try (var fos = new FileOutputStream(filePath)) {
-            var oos = new ObjectOutputStream(fos);
-            oos.writeObject(wallet);
-        }
-    }
-
-    public static Wallet restore(String filePath) throws IOException, ClassNotFoundException {
-        try (var fis = new FileInputStream(filePath)) {
-            var ois = new ObjectInputStream(fis);
-            return (Wallet) ois.readObject();
-        }
     }
 }
