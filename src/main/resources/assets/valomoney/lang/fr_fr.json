@@ -3,5 +3,8 @@
   "item.valomoney.bill_ten": "Billet",
   "item.valomoney.bill_twenty": "Billet",
   "item.valomoney.bill_fifty": "Billet",
-  "item.valomoney.bill_hundred": "Billet"
+  "item.valomoney.bill_hundred": "Billet",
+  "item.valomoney.coin_fifty": "Pièce",
+  "item.valomoney.coin_one": "Pièce",
+  "item.valomoney.coin_two": "Pièce"
 }

@@ -20,5 +20,8 @@ public final class CreativeModeTabsRegister {
                 output.accept(ItemsRegister.BILL_TWENTY.get());
                 output.accept(ItemsRegister.BILL_FIFTY.get());
                 output.accept(ItemsRegister.BILL_HUNDRED.get());
+                output.accept(ItemsRegister.COIN_FIFTY.get());
+                output.accept(ItemsRegister.COIN_ONE.get());
+                output.accept(ItemsRegister.COIN_TWO.get());
             }).build());
 }
