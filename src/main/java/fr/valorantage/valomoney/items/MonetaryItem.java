@@ -14,6 +14,9 @@ public abstract class MonetaryItem extends Item {
 
     public MonetaryItem(final float unitValue) {
         super(new Item.Properties());
+
+        if (unitValue <= 0)
+            throw new IllegalArgumentException("The unit value of the monetary item must be strictly positive");
         this.unitValue = unitValue;
     }
 
