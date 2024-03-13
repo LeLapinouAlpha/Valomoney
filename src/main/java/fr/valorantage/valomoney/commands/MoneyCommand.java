@@ -3,11 +3,13 @@ package fr.valorantage.valomoney.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.items.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 
 public final class MoneyCommand extends ModCommand {
@@ -74,14 +76,47 @@ public final class MoneyCommand extends ModCommand {
     }
 
     private static int debit(CommandSourceStack source, float amount) {
-        /* TODO: Get the Get the wallet of the source player using the running instance of EconomyManager, check if it
-            haves enough funds and give its bills and coins to the rounded asked amount.
-         */
         if (source.getPlayer() != null) {
-            source.sendSuccess(() -> Component.literal("The /money debit <amount> has been executed"), true);
-            return 1;
+            try {
+                var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
+                var units = sourceWallet.debit(amount);
+                for (int i = 0; i < units.length; i++) {
+                    var stack = getMonetaryItemStack(i, units[i]);
+                    source.getPlayer().getInventory().add(stack);
+                }
+                return 1;
+            } catch (IllegalArgumentException argEx) {
+                source.sendFailure(Component.literal(argEx.getMessage()));
+                return -1;
+            }
         } else {
+            source.sendFailure(Component.literal("The /money debit <amount> command must be executed by a player!"));
             return -1;
         }
+    }
+
+    private static ItemStack getMonetaryItemStack(int unitIndex, int count) {
+        var stack = switch (unitIndex) {
+            case 0:
+                yield new ItemStack(ItemsRegister.BILL_HUNDRED.get());
+            case 1:
+                yield new ItemStack(ItemsRegister.BILL_FIFTY.get());
+            case 2:
+                yield new ItemStack(ItemsRegister.BILL_TWENTY.get());
+            case 3:
+                yield new ItemStack(ItemsRegister.BILL_TEN.get());
+            case 4:
+                yield new ItemStack(ItemsRegister.BILL_FIVE.get());
+            case 5:
+                yield new ItemStack(ItemsRegister.COIN_TWO.get());
+            case 6:
+                yield new ItemStack(ItemsRegister.COIN_ONE.get());
+            case 7:
+                yield new ItemStack(ItemsRegister.COIN_FIFTY.get());
+            default:
+                throw new IllegalArgumentException("Invalid monetary unit index");
+        };
+        stack.setCount(count);
+        return stack;
     }
 }

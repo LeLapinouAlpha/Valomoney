@@ -39,4 +39,19 @@ public final class Wallet implements Serializable {
             throw new IllegalArgumentException("The amount of money you want to add must be strictly positive");
         balance += amount;
     }
+
+    public int[] debit(float amount) throws IllegalArgumentException {
+        withdraw(amount);
+        int[] unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+
+        float remainingAmount = amount;
+        for (int i = 0; i < units.length; i++) {
+            if (remainingAmount >= units[i]) {
+                unitsCount[i] = (int) (remainingAmount / units[i]);
+                remainingAmount %= units[i];
+            }
+        }
+        return unitsCount;
+    }
 }
