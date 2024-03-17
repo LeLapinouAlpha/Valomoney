@@ -72,7 +72,7 @@ public final class MoneyCommand extends ModCommand {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
                 var sourceInventory = source.getPlayer().getInventory();
                 var unitsCount = getUnitsCount(sourceInventory);
-                sourceWallet.credit(unitsCount);
+                sourceWallet.credit(unitsCount, amount);
                 return 1;
             } catch (IllegalArgumentException argEx) {
                 source.sendFailure(Component.literal(argEx.getMessage()));
@@ -150,7 +150,6 @@ public final class MoneyCommand extends ModCommand {
             else if (currentItemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
                 unitsCount[7] += currentItemStack.getCount();
         }
-        System.out.println(Arrays.toString(unitsCount));
         return unitsCount;
     }
 }

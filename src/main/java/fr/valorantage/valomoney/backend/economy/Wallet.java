@@ -55,14 +55,19 @@ public final class Wallet implements Serializable {
         return unitsCount;
     }
 
-    public void credit(int[] unitCounts) {
+    public void credit(int[] unitCounts, float amount) {
         var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
-        var total = 0.0f;
-        for (int i = 0; i < unitCounts.length; i++) {
-            var amount = units[i] * unitCounts[i];
-            if (amount != 0)
-                total += amount;
-        }
+        var total =  getTotalMoney(unitCounts);
+        if (total < amount)
+            throw new IllegalArgumentException("You don't have enough money in your inventory.");
         addMoney(total);
+    }
+
+    private static float getTotalMoney(final int[] unitsCount) {
+        final var units = new float[]{100.0f, 50.0f, 20.0f, 10.0f, 5.0f, 2.0f, 1.0f, 0.50f};
+        float total = 0.0f;
+        for (int i = 0; i < units.length; i++)
+            total += units[i] * unitsCount[i];
+        return total;
     }
 }
