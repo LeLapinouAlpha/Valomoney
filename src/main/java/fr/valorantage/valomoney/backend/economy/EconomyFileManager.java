@@ -14,9 +14,9 @@ public final class EconomyFileManager {
         var directory = new File(directoryPath);
         if (!directory.exists()) {
             if (!directory.mkdir())
-                throw new RuntimeException("Cannot create directory");
+                throw new RuntimeException("Cannot create directory.");
         } else if (!directory.isDirectory())
-            throw new IllegalArgumentException(String.format("%s is not a directory", directoryPath));
+            throw new IllegalArgumentException(String.format("%s is not a directory.", directoryPath));
 
         this.directory = directory;
         walletFiles = null;

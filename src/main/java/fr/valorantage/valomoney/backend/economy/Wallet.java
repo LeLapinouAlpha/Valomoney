@@ -22,30 +22,30 @@ public final class Wallet implements Serializable {
 
     public void setBalance(float balance) {
         if (balance < 0)
-            throw new IllegalArgumentException("The balance must be positive");
+            throw new IllegalArgumentException("The balance must be positive.");
         this.balance = balance;
     }
 
     public void withdraw(float amount) {
         if (amount <= 0)
-            throw new IllegalArgumentException("The amount of money you want to withdraw must be strictly positive");
+            throw new IllegalArgumentException("The amount of money you want to withdraw must be strictly positive.");
         else if (balance < amount)
-            throw new IllegalArgumentException("You don't have enough funds");
+            throw new IllegalArgumentException("You don't have enough funds.");
         balance -= amount;
     }
 
     public void addMoney(float amount) {
         if (amount <= 0)
-            throw new IllegalArgumentException("The amount of money you want to add must be strictly positive");
+            throw new IllegalArgumentException("The amount of money you want to add must be strictly positive.");
         balance += amount;
     }
 
     public int[] debit(float amount) throws IllegalArgumentException {
         withdraw(amount);
-        int[] unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        var unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
 
-        float remaining = amount;
+        var remaining = amount;
         for (int i = 0; i < units.length; i++) {
             if (remaining >= units[i]) {
                 unitsCount[i] = (int) (remaining / units[i]);
@@ -56,11 +56,13 @@ public final class Wallet implements Serializable {
     }
 
     public void credit(int[] unitCounts) {
-        float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        var total = 0.0f;
         for (int i = 0; i < unitCounts.length; i++) {
             var amount = units[i] * unitCounts[i];
             if (amount != 0)
-                addMoney(amount);
+                total += amount;
         }
+        addMoney(total);
     }
 }
