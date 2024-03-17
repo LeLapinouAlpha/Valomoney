@@ -9,7 +9,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Arrays;
 
 
 public final class MoneyCommand extends ModCommand {
@@ -68,29 +71,7 @@ public final class MoneyCommand extends ModCommand {
             try {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
                 var sourceInventory = source.getPlayer().getInventory();
-                int[] unitsCount = new int[8];
-                for (int i = 0; i < sourceInventory.getContainerSize(); i++) {
-                    var currentItemStack = sourceInventory.getItem(i);
-                    if (currentItemStack.getItem().equals(ItemsRegister.BILL_HUNDRED.get()))
-                        unitsCount[0] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIFTY.get()))
-                        unitsCount[1] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TWENTY.get()))
-                        unitsCount[2] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TEN.get()))
-                        unitsCount[3] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIVE.get()))
-                        unitsCount[4] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.COIN_TWO.get()))
-                        unitsCount[5] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.COIN_ONE.get()))
-                        unitsCount[6] += currentItemStack.getCount();
-                    else if (currentItemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
-                        unitsCount[7] += currentItemStack.getCount();
-                    else
-                        continue;
-                    sourceInventory.removeItem(currentItemStack);
-                }
+                var unitsCount = getUnitsCount(sourceInventory);
                 sourceWallet.credit(unitsCount);
                 return 1;
             } catch (IllegalArgumentException argEx) {
@@ -146,5 +127,30 @@ public final class MoneyCommand extends ModCommand {
         };
         stack.setCount(count);
         return stack;
+    }
+
+    private static int[] getUnitsCount(Inventory sourceInventory) {
+        var unitsCount = new int[8];
+        for (int i = 0; i < sourceInventory.getContainerSize(); i++) {
+            var currentItemStack = sourceInventory.getItem(i);
+            if (currentItemStack.getItem().equals(ItemsRegister.BILL_HUNDRED.get()))
+                unitsCount[0] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIFTY.get()))
+                unitsCount[1] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TWENTY.get()))
+                unitsCount[2] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TEN.get()))
+                unitsCount[3] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIVE.get()))
+                unitsCount[4] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.COIN_TWO.get()))
+                unitsCount[5] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.COIN_ONE.get()))
+                unitsCount[6] += currentItemStack.getCount();
+            else if (currentItemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
+                unitsCount[7] += currentItemStack.getCount();
+        }
+        System.out.println(Arrays.toString(unitsCount));
+        return unitsCount;
     }
 }
