@@ -30,7 +30,7 @@ public final class PayCommand extends ModCommand {
         if (sourcePlayer != null) {
             try {
                 ValomoneyMod.ECONOMY_MANAGER.performTransaction(sourcePlayer.getUUID(), target.getUUID(), amount);
-                source.sendSuccess(() -> Component.literal(String.format("You have send %.2f$ to %s.", amount, target.getDisplayName().getString())), true);
+                source.sendSuccess(() -> Component.literal(String.format("You sent %.2f$ to %s.", amount, target.getDisplayName().getString())), true);
             } catch (Exception ex) {
                 source.sendFailure(Component.literal(ex.getMessage()));
                 return -1;
@@ -43,7 +43,7 @@ public final class PayCommand extends ModCommand {
                 return -1;
             }
         }
-        target.sendSystemMessage(Component.literal(String.format("You received %.2f$ from %s.", amount, target.getDisplayName().getString())), true);
+        target.sendSystemMessage(Component.literal(String.format("You received %.2f$ from %s.", amount, sourcePlayer != null ? sourcePlayer.getDisplayName().getString() : "console")), true);
         return 1;
     }
 }
