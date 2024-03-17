@@ -14,7 +14,7 @@ public final class EconomyManager {
     public Wallet getWallet(UUID playerId) throws IllegalArgumentException {
         var optionalWallet = wallets.stream().filter(w -> w.getPlayerId().equals(playerId)).findAny();
         if (optionalWallet.isEmpty())
-            throw new IllegalArgumentException("This player does not have a wallet");
+            throw new IllegalArgumentException("This player does not have a wallet.");
         return optionalWallet.get();
     }
 
@@ -32,7 +32,7 @@ public final class EconomyManager {
             wallets.add(new Wallet(playerId));
             return;
         }
-        throw new IllegalArgumentException("Cannot create a new wallet for this player");
+        throw new IllegalArgumentException("Cannot create a new wallet for this player.");
     }
 
     public void addWallet(Wallet wallet) {
@@ -42,7 +42,7 @@ public final class EconomyManager {
             wallets.add(wallet);
             return;
         }
-        throw new IllegalArgumentException("This wallet is already associated with a player");
+        throw new IllegalArgumentException("This wallet is already associated with a player.");
     }
 
     public void saveState(EconomyFileManager economyFileManager) throws IOException {
