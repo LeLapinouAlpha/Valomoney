@@ -18,16 +18,22 @@ public final class PayCommand extends ModCommand {
     @Override
     protected void register() {
         dispatcher.register(Commands.literal("pay")
-                        .then(Commands.argument("player", EntityArgument.player())
-                                        .then(Commands.argument("amount", FloatArgumentType.floatArg())
-                                                .executes((command) -> pay(command.getSource(), EntityArgument.getPlayer(command, "player"), FloatArgumentType.getFloat(command, "amount"))))
-                        )
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("amount", FloatArgumentType.floatArg())
+                                .executes((command) -> pay(command.getSource(), EntityArgument.getPlayer(command, "player"), FloatArgumentType.getFloat(command, "amount"))))
+                )
         );
     }
 
     private static int pay(CommandSourceStack source, ServerPlayer target, float amount) {
         var sourcePlayer = source.getPlayer();
         if (sourcePlayer != null) {
+            if (sourcePlayer.getUUID().equals(target.getUUID()))
+            {
+                source.sendFailure(Component.literal("You cannot pay yourself."));
+                return -1;
+            }
+
             try {
                 ValomoneyMod.ECONOMY_MANAGER.performTransaction(sourcePlayer.getUUID(), target.getUUID(), amount);
                 source.sendSuccess(() -> Component.literal(String.format("You sent %.2f$ to %s.", amount, target.getDisplayName().getString())), true);
