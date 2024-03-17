@@ -42,10 +42,10 @@ public final class Wallet implements Serializable {
 
     public int[] debit(float amount) throws IllegalArgumentException {
         withdraw(amount);
-        int[] unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        var unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
 
-        float remaining = amount;
+        var remaining = amount;
         for (int i = 0; i < units.length; i++) {
             if (remaining >= units[i]) {
                 unitsCount[i] = (int) (remaining / units[i]);
@@ -56,11 +56,13 @@ public final class Wallet implements Serializable {
     }
 
     public void credit(int[] unitCounts) {
-        float[] units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+        var total = 0.0f;
         for (int i = 0; i < unitCounts.length; i++) {
             var amount = units[i] * unitCounts[i];
             if (amount != 0)
-                addMoney(amount);
+                total += amount;
         }
+        addMoney(total);
     }
 }
