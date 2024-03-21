@@ -9,10 +9,14 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.IntRange;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 
 public final class MoneyCommand extends ModCommand {
@@ -96,8 +100,9 @@ public final class MoneyCommand extends ModCommand {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
                 var sourcePlayer = source.getPlayer();
                 var sourceInventory = sourcePlayer.getInventory();
-                var unitsDistribution = sourceWallet.getDebitDistribution(amount);
-                for (int i = 0; i < unitsDistribution.length; i++) {
+                var debitDistribution = sourceWallet.getDebitDistribution(amount);
+                var oldDistribution = getMonetaryItemDistribution(sourceInventory);
+                for (int i = 0; i < debitDistribution.length; i++) {
                     float unitValue = switch (i) {
                         case 0 -> 100.0f;
                         case 1 -> 50.0f;
@@ -109,18 +114,25 @@ public final class MoneyCommand extends ModCommand {
                         case 7 -> 0.5f;
                         default -> 0.0f;
                     };
-                    int count = unitsDistribution[i];
+                    int count = debitDistribution[i];
                     if (count > 0) {
-                        var itemStack = new ItemStack(Objects.requireNonNull(getItemFromValue(unitValue)), count);
-                        var freeSlot = sourceInventory.getSlotWithRemainingSpace(itemStack);
-                        if (freeSlot == -1)
-                            sourceInventory.add(itemStack);
-                        else {
-                            source.sendFailure(Component.literal("Your inventory is full or there is not enough space for this debit."));
-                            return -1;
-                        }
+                        var item = Objects.requireNonNull(getItemFromValue(unitValue));
+                        sourcePlayer.addItem(new ItemStack(item, count));
                     }
                 }
+
+                var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
+                var newDistribution = getMonetaryItemDistribution(sourceInventory);
+                float toDebit = (float) IntStream.range(0, newDistribution.length)
+                        .mapToDouble(i -> (newDistribution[i] - oldDistribution[i]) * units[i])
+                        .sum();
+
+                if (toDebit < 0) {
+                    source.sendFailure(Component.literal("Your inventory is full. You don't have enough space to perform this debit."));
+                    return -1;
+                }
+                sourcePlayer.sendSystemMessage(Component.literal(String.format("You have been debited of %.2f$ from your wallet.", toDebit)));
+                sourceWallet.withdraw(toDebit);
                 return 1;
             } catch (IllegalArgumentException argEx) {
                 source.sendFailure(Component.literal(argEx.getMessage()));
@@ -175,5 +187,30 @@ public final class MoneyCommand extends ModCommand {
         else
             unitValue = 0.0f;
         return unitValue * itemStack.getCount();
+    }
+
+    private static int[] getMonetaryItemDistribution(Inventory sourceInventory) {
+        var distribution = new int[8];
+        for (var item : sourceInventory.items) {
+            if (item.getItem().equals(ItemsRegister.BILL_HUNDRED.get())) {
+                distribution[0] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.BILL_FIFTY.get())) {
+                distribution[1] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.BILL_TWENTY.get())) {
+                distribution[2] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.BILL_TEN.get())) {
+                distribution[3] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.BILL_FIVE.get())) {
+                distribution[4] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.COIN_TWO.get())) {
+                distribution[5] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.COIN_ONE.get())) {
+                distribution[6] += item.getCount();
+            } else if (item.getItem().equals(ItemsRegister.COIN_FIFTY.get())) {
+                distribution[7] += item.getCount();
+            }
+        }
+
+        return distribution;
     }
 }
