@@ -26,8 +26,7 @@ public final class MoneyCommand extends ModCommand {
                 Commands.literal("money")
                         .executes((command -> display(command.getSource())))
                         .then(Commands.literal("credit")
-                                .then(Commands.argument("amount", FloatArgumentType.floatArg())
-                                        .executes((command -> credit(command.getSource(), FloatArgumentType.getFloat(command, "amount")))))
+                                .executes((command -> credit(command.getSource())))
                         )
                         .then(Commands.literal("debit")
                                 .then(Commands.argument("amount", FloatArgumentType.floatArg())
@@ -66,13 +65,21 @@ public final class MoneyCommand extends ModCommand {
         }
     }
 
-    private static int credit(CommandSourceStack source, float amount) {
+    private static int credit(CommandSourceStack source) {
         if (source.getPlayer() != null) {
             try {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
                 var sourceInventory = source.getPlayer().getInventory();
-                var unitsCount = getUnitsCount(sourceInventory);
-                sourceWallet.credit(unitsCount, amount);
+                float totalMoney = 0.0f;
+                for (var itemStack : sourceInventory.items)
+                {
+                    if (itemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
+                    {
+                        totalMoney += itemStack.getCount() * 0.50f;
+                        sourceInventory.removeItem(itemStack);
+                    }
+                }
+                sourceWallet.addMoney(totalMoney);
                 return 1;
             } catch (IllegalArgumentException argEx) {
                 source.sendFailure(Component.literal(argEx.getMessage()));
@@ -127,29 +134,5 @@ public final class MoneyCommand extends ModCommand {
         };
         stack.setCount(count);
         return stack;
-    }
-
-    private static int[] getUnitsCount(Inventory sourceInventory) {
-        var unitsCount = new int[8];
-        for (int i = 0; i < sourceInventory.getContainerSize(); i++) {
-            var currentItemStack = sourceInventory.getItem(i);
-            if (currentItemStack.getItem().equals(ItemsRegister.BILL_HUNDRED.get()))
-                unitsCount[0] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIFTY.get()))
-                unitsCount[1] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TWENTY.get()))
-                unitsCount[2] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_TEN.get()))
-                unitsCount[3] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.BILL_FIVE.get()))
-                unitsCount[4] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.COIN_TWO.get()))
-                unitsCount[5] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.COIN_ONE.get()))
-                unitsCount[6] += currentItemStack.getCount();
-            else if (currentItemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
-                unitsCount[7] += currentItemStack.getCount();
-        }
-        return unitsCount;
     }
 }
