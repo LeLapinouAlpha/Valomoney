@@ -6,6 +6,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
+import java.util.Objects;
+
 public final class ShopCommand extends ModCommand {
     public ShopCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         super(dispatcher);
@@ -25,7 +27,7 @@ public final class ShopCommand extends ModCommand {
 
     public static int show(CommandSourceStack source) {
         // TODO: Display the shop GUI
-        source.sendSuccess(() -> Component.literal("This command must display the shop!"), true);
+        Objects.requireNonNull(source.getPlayer()).sendSystemMessage(Component.literal("This command must display the shop!"));
         return 1;
     }
 
@@ -36,7 +38,7 @@ public final class ShopCommand extends ModCommand {
         }
 
         // TODO: Sell 'amount' items that are of the same types as the item in the hand of the source player
-        source.sendSuccess(() -> Component.literal("/shop sell <amount> command executed!"), true);
+        Objects.requireNonNull(source.getPlayer()).sendSystemMessage(Component.literal("/shop sell <amount> command executed!"));
         return 1;
     }
 }

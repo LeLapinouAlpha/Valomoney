@@ -46,7 +46,7 @@ public final class MoneyCommand extends ModCommand {
         if (source.getPlayer() != null) {
             try {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
-                source.sendSuccess(() -> Component.literal(String.format("Balance: %.2f$", sourceWallet.getBalance())), true);
+                source.getPlayer().sendSystemMessage(Component.literal(String.format("Balance: %.2f$", sourceWallet.getBalance())));
                 return 1;
             } catch (IllegalArgumentException walletNotFoundEx) {
                 source.sendFailure(Component.literal(walletNotFoundEx.getMessage()));
@@ -61,7 +61,7 @@ public final class MoneyCommand extends ModCommand {
     private static int display(CommandSourceStack source, ServerPlayer target) {
         try {
             var targetWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(target.getUUID());
-            source.sendSuccess(() -> Component.literal(String.format("%s's balance: %.2f$", target.getDisplayName().getString(), targetWallet.getBalance())), true);
+            Objects.requireNonNull(source.getPlayer()).sendSystemMessage(Component.literal(String.format("%s's balance: %.2f$", target.getDisplayName().getString(), targetWallet.getBalance())));
             return 1;
         } catch (IllegalArgumentException walletNotFoundEx) {
             source.sendFailure(Component.literal(walletNotFoundEx.getMessage()));
@@ -82,7 +82,7 @@ public final class MoneyCommand extends ModCommand {
                 }
                 sourceWallet.addMoney(totalMoney);
                 float finalTotalMoney = totalMoney;
-                source.sendSuccess(() -> Component.literal(String.format("You credited %.2f$ to your wallet.", finalTotalMoney)), true);
+                source.getPlayer().sendSystemMessage(Component.literal(String.format("You credited %.2f$ to your wallet.", finalTotalMoney)));
                 return 1;
             } catch (IllegalArgumentException argEx) {
                 source.sendFailure(Component.literal(argEx.getMessage()));

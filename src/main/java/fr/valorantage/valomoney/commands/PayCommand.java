@@ -36,7 +36,7 @@ public final class PayCommand extends ModCommand {
 
             try {
                 ValomoneyMod.ECONOMY_MANAGER.performTransaction(sourcePlayer.getUUID(), target.getUUID(), amount);
-                source.sendSuccess(() -> Component.literal(String.format("You sent %.2f$ to %s.", amount, target.getDisplayName().getString())), true);
+                source.getPlayer().sendSystemMessage(Component.literal(String.format("You sent %.2f$ to %s.", amount, target.getDisplayName().getString())));
             } catch (Exception ex) {
                 source.sendFailure(Component.literal(ex.getMessage()));
                 return -1;
