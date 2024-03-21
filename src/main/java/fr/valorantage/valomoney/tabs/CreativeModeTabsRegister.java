@@ -13,13 +13,13 @@ public final class CreativeModeTabsRegister {
 
     public static final RegistryObject<CreativeModeTab> VALOMONEY_TAB = CREATIVE_MODE_TABS.register("valomoney_tab", () -> CreativeModeTab.builder()
             .title(Component.literal("Valomoney"))
-            .icon(() -> ItemsRegister.BILL_FIVE.get().getDefaultInstance())
+            .icon(() -> ItemsRegister.BANKNOTE_FIVE.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                output.accept(ItemsRegister.BILL_FIVE.get());
-                output.accept(ItemsRegister.BILL_TEN.get());
-                output.accept(ItemsRegister.BILL_TWENTY.get());
-                output.accept(ItemsRegister.BILL_FIFTY.get());
-                output.accept(ItemsRegister.BILL_HUNDRED.get());
+                output.accept(ItemsRegister.BANKNOTE_FIVE.get());
+                output.accept(ItemsRegister.BANKNOTE_TEN.get());
+                output.accept(ItemsRegister.BANKNOTE_TWENTY.get());
+                output.accept(ItemsRegister.BANKNOTE_FIFTY.get());
+                output.accept(ItemsRegister.BANKNOTE_HUNDRED.get());
                 output.accept(ItemsRegister.COIN_FIFTY.get());
                 output.accept(ItemsRegister.COIN_ONE.get());
                 output.accept(ItemsRegister.COIN_TWO.get());

@@ -10,11 +10,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.IntRange;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -104,11 +101,11 @@ public final class MoneyCommand extends ModCommand {
                 var oldDistribution = getMonetaryItemDistribution(sourceInventory);
                 for (int i = 0; i < debitDistribution.length; i++) {
                     var item = switch (i) {
-                        case 0 -> ItemsRegister.BILL_HUNDRED.get();
-                        case 1 -> ItemsRegister.BILL_FIFTY.get();
-                        case 2 -> ItemsRegister.BILL_TWENTY.get();
-                        case 3 -> ItemsRegister.BILL_TEN.get();
-                        case 4 -> ItemsRegister.BILL_FIVE.get();
+                        case 0 -> ItemsRegister.BANKNOTE_HUNDRED.get();
+                        case 1 -> ItemsRegister.BANKNOTE_FIFTY.get();
+                        case 2 -> ItemsRegister.BANKNOTE_TWENTY.get();
+                        case 3 -> ItemsRegister.BANKNOTE_TEN.get();
+                        case 4 -> ItemsRegister.BANKNOTE_FIVE.get();
                         case 5 -> ItemsRegister.COIN_TWO.get();
                         case 6 -> ItemsRegister.COIN_ONE.get();
                         case 7 -> ItemsRegister.COIN_FIFTY.get();
@@ -150,15 +147,15 @@ public final class MoneyCommand extends ModCommand {
             unitValue = 1.0f;
         else if (itemStack.getItem().equals(ItemsRegister.COIN_TWO.get()))
             unitValue = 2.0f;
-        else if (itemStack.getItem().equals(ItemsRegister.BILL_FIVE.get()))
+        else if (itemStack.getItem().equals(ItemsRegister.BANKNOTE_FIVE.get()))
             unitValue = 5.0f;
-        else if (itemStack.getItem().equals(ItemsRegister.BILL_TEN.get()))
+        else if (itemStack.getItem().equals(ItemsRegister.BANKNOTE_TEN.get()))
             unitValue = 10.0f;
-        else if (itemStack.getItem().equals(ItemsRegister.BILL_TWENTY.get()))
+        else if (itemStack.getItem().equals(ItemsRegister.BANKNOTE_TWENTY.get()))
             unitValue = 20.0f;
-        else if (itemStack.getItem().equals(ItemsRegister.BILL_FIFTY.get()))
+        else if (itemStack.getItem().equals(ItemsRegister.BANKNOTE_FIFTY.get()))
             unitValue = 50.0f;
-        else if (itemStack.getItem().equals(ItemsRegister.BILL_HUNDRED.get()))
+        else if (itemStack.getItem().equals(ItemsRegister.BANKNOTE_HUNDRED.get()))
             unitValue = 100.0f;
         else
             unitValue = 0.0f;
@@ -168,15 +165,15 @@ public final class MoneyCommand extends ModCommand {
     private static int[] getMonetaryItemDistribution(Inventory sourceInventory) {
         var distribution = new int[8];
         for (var item : sourceInventory.items) {
-            if (item.getItem().equals(ItemsRegister.BILL_HUNDRED.get())) {
+            if (item.getItem().equals(ItemsRegister.BANKNOTE_HUNDRED.get())) {
                 distribution[0] += item.getCount();
-            } else if (item.getItem().equals(ItemsRegister.BILL_FIFTY.get())) {
+            } else if (item.getItem().equals(ItemsRegister.BANKNOTE_FIFTY.get())) {
                 distribution[1] += item.getCount();
-            } else if (item.getItem().equals(ItemsRegister.BILL_TWENTY.get())) {
+            } else if (item.getItem().equals(ItemsRegister.BANKNOTE_TWENTY.get())) {
                 distribution[2] += item.getCount();
-            } else if (item.getItem().equals(ItemsRegister.BILL_TEN.get())) {
+            } else if (item.getItem().equals(ItemsRegister.BANKNOTE_TEN.get())) {
                 distribution[3] += item.getCount();
-            } else if (item.getItem().equals(ItemsRegister.BILL_FIVE.get())) {
+            } else if (item.getItem().equals(ItemsRegister.BANKNOTE_FIVE.get())) {
                 distribution[4] += item.getCount();
             } else if (item.getItem().equals(ItemsRegister.COIN_TWO.get())) {
                 distribution[5] += item.getCount();
