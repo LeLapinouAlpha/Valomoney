@@ -9,10 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Arrays;
 
 
 public final class MoneyCommand extends ModCommand {
@@ -71,15 +68,14 @@ public final class MoneyCommand extends ModCommand {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
                 var sourceInventory = source.getPlayer().getInventory();
                 float totalMoney = 0.0f;
-                for (var itemStack : sourceInventory.items)
-                {
-                    if (itemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
-                    {
-                        totalMoney += itemStack.getCount() * 0.50f;
-                        sourceInventory.removeItem(itemStack);
-                    }
+                for (var itemStack : sourceInventory.items) {
+
+                    sourceInventory.removeItem(itemStack);
+                    totalMoney += getMonetaryItemStackValue(itemStack);
                 }
                 sourceWallet.addMoney(totalMoney);
+                float finalTotalMoney = totalMoney;
+                source.sendSuccess(() -> Component.literal(String.format("You credited %.2f$ to your wallet.", finalTotalMoney)), true);
                 return 1;
             } catch (IllegalArgumentException argEx) {
                 source.sendFailure(Component.literal(argEx.getMessage()));
@@ -134,5 +130,28 @@ public final class MoneyCommand extends ModCommand {
         };
         stack.setCount(count);
         return stack;
+    }
+
+    private static float getMonetaryItemStackValue(final ItemStack itemStack) {
+        float unitValue;
+        if (itemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
+            unitValue = 0.50f;
+        else if (itemStack.getItem().equals(ItemsRegister.COIN_ONE.get()))
+            unitValue = 1.0f;
+        else if (itemStack.getItem().equals(ItemsRegister.COIN_TWO.get()))
+            unitValue = 2.0f;
+        else if (itemStack.getItem().equals(ItemsRegister.BILL_FIVE.get()))
+            unitValue = 5.0f;
+        else if (itemStack.getItem().equals(ItemsRegister.BILL_TEN.get()))
+            unitValue = 10.0f;
+        else if (itemStack.getItem().equals(ItemsRegister.BILL_TWENTY.get()))
+            unitValue = 20.0f;
+        else if (itemStack.getItem().equals(ItemsRegister.BILL_FIFTY.get()))
+            unitValue = 50.0f;
+        else if (itemStack.getItem().equals(ItemsRegister.BILL_HUNDRED.get()))
+            unitValue = 100.0f;
+        else
+            unitValue = 0.0f;
+        return unitValue * itemStack.getCount();
     }
 }
