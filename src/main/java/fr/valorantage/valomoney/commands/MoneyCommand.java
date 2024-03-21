@@ -103,22 +103,20 @@ public final class MoneyCommand extends ModCommand {
                 var debitDistribution = sourceWallet.getDebitDistribution(amount);
                 var oldDistribution = getMonetaryItemDistribution(sourceInventory);
                 for (int i = 0; i < debitDistribution.length; i++) {
-                    float unitValue = switch (i) {
-                        case 0 -> 100.0f;
-                        case 1 -> 50.0f;
-                        case 2 -> 20.0f;
-                        case 3 -> 10.0f;
-                        case 4 -> 5.0f;
-                        case 5 -> 2.0f;
-                        case 6 -> 1.0f;
-                        case 7 -> 0.5f;
-                        default -> 0.0f;
+                    var item = switch (i) {
+                        case 0 -> ItemsRegister.BILL_HUNDRED.get();
+                        case 1 -> ItemsRegister.BILL_FIFTY.get();
+                        case 2 -> ItemsRegister.BILL_TWENTY.get();
+                        case 3 -> ItemsRegister.BILL_TEN.get();
+                        case 4 -> ItemsRegister.BILL_FIVE.get();
+                        case 5 -> ItemsRegister.COIN_TWO.get();
+                        case 6 -> ItemsRegister.COIN_ONE.get();
+                        case 7 -> ItemsRegister.COIN_FIFTY.get();
+                        default -> throw new IllegalStateException("Unexpected value: " + i);
                     };
-                    int count = debitDistribution[i];
-                    if (count > 0) {
-                        var item = Objects.requireNonNull(getItemFromValue(unitValue));
-                        sourcePlayer.addItem(new ItemStack(item, count));
-                    }
+
+                    if (debitDistribution[i] > 0)
+                        sourcePlayer.addItem(new ItemStack(item, debitDistribution[i]));
                 }
 
                 var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
@@ -142,28 +140,6 @@ public final class MoneyCommand extends ModCommand {
             source.sendFailure(Component.literal("The /money debit <amount> command must be executed by a player!"));
             return -1;
         }
-    }
-
-
-    private static Item getItemFromValue(float unitValue) {
-        if (unitValue == 100.0f)
-            return ItemsRegister.BILL_HUNDRED.get();
-        else if (unitValue == 50.0f)
-            return ItemsRegister.BILL_FIFTY.get();
-        else if (unitValue == 20.0f)
-            return ItemsRegister.BILL_TWENTY.get();
-        else if (unitValue == 10.0f)
-            return ItemsRegister.BILL_TEN.get();
-        else if (unitValue == 5.0f)
-            return ItemsRegister.BILL_FIVE.get();
-        else if (unitValue == 2.0f)
-            return ItemsRegister.COIN_TWO.get();
-        else if (unitValue == 1.0f)
-            return ItemsRegister.COIN_ONE.get();
-        else if (unitValue == 0.50f)
-            return ItemsRegister.COIN_FIFTY.get();
-        else
-            return null;
     }
 
     private static float getValueFromItemStack(final ItemStack itemStack) {
