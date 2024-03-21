@@ -3,13 +3,16 @@ package fr.valorantage.valomoney.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.items.*;
+import fr.valorantage.valomoney.items.ItemsRegister;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Objects;
 
 
 public final class MoneyCommand extends ModCommand {
@@ -71,7 +74,7 @@ public final class MoneyCommand extends ModCommand {
                 for (var itemStack : sourceInventory.items) {
 
                     sourceInventory.removeItem(itemStack);
-                    totalMoney += getMonetaryItemStackValue(itemStack);
+                    totalMoney += getValueFromItemStack(itemStack);
                 }
                 sourceWallet.addMoney(totalMoney);
                 float finalTotalMoney = totalMoney;
@@ -91,10 +94,32 @@ public final class MoneyCommand extends ModCommand {
         if (source.getPlayer() != null) {
             try {
                 var sourceWallet = ValomoneyMod.ECONOMY_MANAGER.getWallet(source.getPlayer().getUUID());
-                var units = sourceWallet.debit(amount);
-                for (int i = 0; i < units.length; i++) {
-                    var stack = getMonetaryItemStack(i, units[i]);
-                    source.getPlayer().getInventory().add(stack);
+                var sourcePlayer = source.getPlayer();
+                var sourceInventory = sourcePlayer.getInventory();
+                var unitsDistribution = sourceWallet.getDebitDistribution(amount);
+                for (int i = 0; i < unitsDistribution.length; i++) {
+                    float unitValue = switch (i) {
+                        case 0 -> 100.0f;
+                        case 1 -> 50.0f;
+                        case 2 -> 20.0f;
+                        case 3 -> 10.0f;
+                        case 4 -> 5.0f;
+                        case 5 -> 2.0f;
+                        case 6 -> 1.0f;
+                        case 7 -> 0.5f;
+                        default -> 0.0f;
+                    };
+                    int count = unitsDistribution[i];
+                    if (count > 0) {
+                        var itemStack = new ItemStack(Objects.requireNonNull(getItemFromValue(unitValue)), count);
+                        var freeSlot = sourceInventory.getSlotWithRemainingSpace(itemStack);
+                        if (freeSlot == -1)
+                            sourceInventory.add(itemStack);
+                        else {
+                            source.sendFailure(Component.literal("Your inventory is full or there is not enough space for this debit."));
+                            return -1;
+                        }
+                    }
                 }
                 return 1;
             } catch (IllegalArgumentException argEx) {
@@ -107,32 +132,29 @@ public final class MoneyCommand extends ModCommand {
         }
     }
 
-    private static ItemStack getMonetaryItemStack(int unitIndex, int count) {
-        var stack = switch (unitIndex) {
-            case 0:
-                yield new ItemStack(ItemsRegister.BILL_HUNDRED.get());
-            case 1:
-                yield new ItemStack(ItemsRegister.BILL_FIFTY.get());
-            case 2:
-                yield new ItemStack(ItemsRegister.BILL_TWENTY.get());
-            case 3:
-                yield new ItemStack(ItemsRegister.BILL_TEN.get());
-            case 4:
-                yield new ItemStack(ItemsRegister.BILL_FIVE.get());
-            case 5:
-                yield new ItemStack(ItemsRegister.COIN_TWO.get());
-            case 6:
-                yield new ItemStack(ItemsRegister.COIN_ONE.get());
-            case 7:
-                yield new ItemStack(ItemsRegister.COIN_FIFTY.get());
-            default:
-                throw new IllegalArgumentException("Invalid monetary unit index");
-        };
-        stack.setCount(count);
-        return stack;
+
+    private static Item getItemFromValue(float unitValue) {
+        if (unitValue == 100.0f)
+            return ItemsRegister.BILL_HUNDRED.get();
+        else if (unitValue == 50.0f)
+            return ItemsRegister.BILL_FIFTY.get();
+        else if (unitValue == 20.0f)
+            return ItemsRegister.BILL_TWENTY.get();
+        else if (unitValue == 10.0f)
+            return ItemsRegister.BILL_TEN.get();
+        else if (unitValue == 5.0f)
+            return ItemsRegister.BILL_FIVE.get();
+        else if (unitValue == 2.0f)
+            return ItemsRegister.COIN_TWO.get();
+        else if (unitValue == 1.0f)
+            return ItemsRegister.COIN_ONE.get();
+        else if (unitValue == 0.50f)
+            return ItemsRegister.COIN_FIFTY.get();
+        else
+            return null;
     }
 
-    private static float getMonetaryItemStackValue(final ItemStack itemStack) {
+    private static float getValueFromItemStack(final ItemStack itemStack) {
         float unitValue;
         if (itemStack.getItem().equals(ItemsRegister.COIN_FIFTY.get()))
             unitValue = 0.50f;

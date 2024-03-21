@@ -40,24 +40,26 @@ public final class Wallet implements Serializable {
         balance += amount;
     }
 
-    public int[] debit(float amount) throws IllegalArgumentException {
-        withdraw(amount);
+    public int[] getDebitDistribution(float amount) throws IllegalArgumentException {
         var unitsCount = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        // units must be sorted in the decreasing order
         var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
-
-        var remaining = amount;
-        for (int i = 0; i < units.length; i++) {
-            if (remaining >= units[i]) {
-                unitsCount[i] = (int) (remaining / units[i]);
-                remaining %= units[i];
+        while (amount > 0) {
+            for (int i = 0; i < units.length; i++) {
+                if (units[i] <= amount) {
+                    int h = (int) (amount / units[i]);
+                    unitsCount[i] += h;
+                    amount -= units[i] * h;
+                }
             }
         }
+
         return unitsCount;
     }
 
     public void credit(int[] unitCounts, float amount) {
         var units = new float[]{100, 50, 20, 10, 5, 2, 1, 0.5f};
-        var total =  getTotalMoney(unitCounts);
+        var total = getTotalMoney(unitCounts);
         if (total < amount)
             throw new IllegalArgumentException("You don't have enough money in your inventory.");
         addMoney(total);
