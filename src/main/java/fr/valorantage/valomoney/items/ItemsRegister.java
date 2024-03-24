@@ -1,6 +1,8 @@
 package fr.valorantage.valomoney.items;
 
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.blocks.custom.BlocksRegister;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -16,4 +18,5 @@ public final class ItemsRegister {
     public static final RegistryObject<Item> COIN_FIFTY = ITEMS.register("coin_fifty", CoinFiftyItem::new);
     public static final RegistryObject<Item> COIN_ONE = ITEMS.register("coin_one", CoinOneItem::new);
     public static final RegistryObject<Item> COIN_TWO = ITEMS.register("coin_two", CoinTwoItem::new);
+    public static final RegistryObject<BlockItem> SHOP_BLOCK_ITEM = ITEMS.register("shop", () -> new BlockItem(BlocksRegister.SHOP_BLOCK.get(), new Item.Properties()));
 }

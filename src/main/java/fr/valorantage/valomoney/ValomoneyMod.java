@@ -3,6 +3,7 @@ package fr.valorantage.valomoney;
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.backend.economy.EconomyFileManager;
 import fr.valorantage.valomoney.backend.economy.EconomyManager;
+import fr.valorantage.valomoney.blocks.custom.BlocksRegister;
 import fr.valorantage.valomoney.items.ItemsRegister;
 import fr.valorantage.valomoney.tabs.CreativeModeTabsRegister;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,8 @@ public class ValomoneyMod {
         ItemsRegister.ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CreativeModeTabsRegister.CREATIVE_MODE_TABS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so blocks get registered
+        BlocksRegister.BLOCKS.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

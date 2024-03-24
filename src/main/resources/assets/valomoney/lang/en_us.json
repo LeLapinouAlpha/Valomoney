@@ -1,10 +1,19 @@
 {
   "item.valomoney.banknote_five": "Banknote",
+
   "item.valomoney.banknote_ten": "Banknote",
+
   "item.valomoney.banknote_twenty": "Banknote",
+
   "item.valomoney.banknote_fifty": "Banknote",
+
   "item.valomoney.banknote_hundred": "Banknote",
+
   "item.valomoney.coin_fifty": "Coin",
+
   "item.valomoney.coin_one": "Coin",
-  "item.valomoney.coin_two": "Coin"
+
+  "item.valomoney.coin_two": "Coin",
+
+  "block.valomoney.shop": "Shop"
 }

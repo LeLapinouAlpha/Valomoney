@@ -1,6 +1,7 @@
 package fr.valorantage.valomoney.tabs;
 
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.blocks.custom.BlocksRegister;
 import fr.valorantage.valomoney.items.ItemsRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -23,5 +24,6 @@ public final class CreativeModeTabsRegister {
                 output.accept(ItemsRegister.COIN_FIFTY.get());
                 output.accept(ItemsRegister.COIN_ONE.get());
                 output.accept(ItemsRegister.COIN_TWO.get());
+                output.accept(ItemsRegister.SHOP_BLOCK_ITEM.get());
             }).build());
 }
