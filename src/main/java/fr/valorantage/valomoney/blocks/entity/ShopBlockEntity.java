@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ShopBlockEntity extends BlockEntity implements MenuProvider {
-    private final ItemStackHandler itemStackHandler = new ItemStackHandler(2);
+    private final ItemStackHandler itemStackHandler = new ItemStackHandler(54);
 
     public ShopBlockEntity(BlockPos pos, BlockState blockState) {
         super(BlockEntitiesRegister.SHOP_BLOCK_ENTITY.get(), pos, blockState);
