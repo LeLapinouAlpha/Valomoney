@@ -4,9 +4,13 @@ import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.backend.economy.EconomyFileManager;
 import fr.valorantage.valomoney.backend.economy.EconomyManager;
 import fr.valorantage.valomoney.blocks.custom.BlocksRegister;
+import fr.valorantage.valomoney.blocks.entity.BlockEntitiesRegister;
 import fr.valorantage.valomoney.items.ItemsRegister;
+import fr.valorantage.valomoney.menus.MenusRegister;
+import fr.valorantage.valomoney.screens.ShopScreen;
 import fr.valorantage.valomoney.tabs.CreativeModeTabsRegister;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -47,6 +51,11 @@ public class ValomoneyMod {
         CreativeModeTabsRegister.CREATIVE_MODE_TABS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so blocks get registered
         BlocksRegister.BLOCKS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so menus get registered
+        MenusRegister.MENUS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so block entities get registered
+        BlockEntitiesRegister.BLOCK_ENTITIES.register(modEventBus);
+
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -94,6 +103,8 @@ public class ValomoneyMod {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+
+            MenuScreens.register(MenusRegister.SHOP_MENU.get(), ShopScreen::new);
         }
     }
 }
