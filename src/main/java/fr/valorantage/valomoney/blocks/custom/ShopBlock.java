@@ -33,7 +33,7 @@ public class ShopBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
         if (!level.isClientSide()) {
             var blockEntity = level.getBlockEntity(blockPos);
             if (blockEntity instanceof ShopBlockEntity) {

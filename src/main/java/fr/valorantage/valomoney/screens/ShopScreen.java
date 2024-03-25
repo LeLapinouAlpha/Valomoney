@@ -11,11 +11,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
+import static javax.swing.plaf.basic.BasicGraphicsUtils.drawString;
+
 public class ShopScreen extends AbstractContainerScreen<ShopMenu> {
     private final static ResourceLocation TEXTURE = new ResourceLocation(ValomoneyMod.MODID, "textures/gui/shop.png");
 
     public ShopScreen(ShopMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+        imageWidth = 256;
+        imageHeight = 256;
     }
 
     @Override
@@ -23,10 +27,12 @@ public class ShopScreen extends AbstractContainerScreen<ShopMenu> {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
+        inventoryLabelY = topPos;
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
         guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        guiGraphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + 18, 0);
     }
 
     @Override
