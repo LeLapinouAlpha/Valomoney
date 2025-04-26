@@ -1,5 +1,6 @@
 {
   "itemGroup.valomoney": "Example Mod Tab",
   "block.valomoney.example_block": "Example Block",
-  "item.valomoney.example_item": "Example Item"
+  "item.valomoney.example_item": "Example Item",
+  "item.valomoney.coin": "Coin"
 }
