@@ -20,8 +20,9 @@ public class ModItems {
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    // Creates a coin item
+    // Creates monetary items
     public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new MonetaryItem(1.0f));
+    public static final DeferredItem<Item> BILL = ITEMS.register("bill", () -> new MonetaryItem(5.0f));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
