@@ -14,10 +14,10 @@ public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ValomoneyMod.MODID);
 
     // Creates a creative tab with the id "valomoney:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.valomoney")) //The language key for the title of your CreativeModeTab
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> VALOMONEY_TAB = CREATIVE_MODE_TABS.register("valomoney_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("creativetab.valomoney.items_tab")) //The language key for the title of your CreativeModeTab
             .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> ModItems.EXAMPLE_ITEM.get().getDefaultInstance())
+            .icon(() -> ModItems.COIN.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ModItems.COIN.get());
