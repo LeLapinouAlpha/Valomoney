@@ -2,6 +2,7 @@ package fr.valorantage.valomoney.item;
 
 import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
+import fr.valorantage.valomoney.item.custom.MonetaryItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -20,7 +21,7 @@ public class ModItems {
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
     // Creates a coin item
-    public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new MonetaryItem(1.0f));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
