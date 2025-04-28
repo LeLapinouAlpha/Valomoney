@@ -4,5 +4,6 @@
   "item.valomoney.example_item": "Example Item",
   "item.valomoney.coin": "Coin",
   "item.valomoney.bill": "Bill",
-  "item.valomoney.bank_card": "Bank Card"
+  "item.valomoney.bank_card": "Bank Card",
+  "block.valomoney.atm": "ATM"
 }
