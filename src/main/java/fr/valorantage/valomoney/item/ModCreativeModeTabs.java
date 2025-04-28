@@ -22,6 +22,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ModItems.COIN.get());
                 output.accept(ModItems.BILL.get());
+                output.accept(ModItems.BANK_CARD.get());
             }).build());
 
     public static void register(IEventBus eventBus) {

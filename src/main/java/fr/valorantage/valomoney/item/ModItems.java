@@ -24,6 +24,9 @@ public class ModItems {
     public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new MonetaryItem(1.0f));
     public static final DeferredItem<Item> BILL = ITEMS.register("bill", () -> new MonetaryItem(5.0f));
 
+    // Creates bank card item
+    public static final DeferredItem<Item> BANK_CARD = ITEMS.registerSimpleItem("bank_card");
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
