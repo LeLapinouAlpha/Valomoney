@@ -3,5 +3,6 @@
   "block.valomoney.example_block": "Example Block",
   "item.valomoney.example_item": "Example Item",
   "item.valomoney.coin": "Coin",
-  "item.valomoney.bill": "Bill"
+  "item.valomoney.bill": "Bill",
+  "item.valomoney.bank_card": "Bank Card"
 }
