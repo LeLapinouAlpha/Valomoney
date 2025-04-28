@@ -1,6 +1,7 @@
 package fr.valorantage.valomoney.block;
 
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.block.custom.ATMBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -14,6 +15,10 @@ public class ModBlocks {
 
     // Creates a new Block with the id "valomoney:example_block", combining the namespace and path
     public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
+
+    // Creates ATM block
+    public static final DeferredBlock<Block> ATM = BLOCKS.register("atm",
+            () -> new ATMBlock(BlockBehaviour.Properties.of().noOcclusion()));
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);

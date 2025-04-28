@@ -1,5 +1,6 @@
 package fr.valorantage.valomoney.item;
 
+import com.jcraft.jorbis.Block;
 import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.item.custom.MonetaryItem;
@@ -23,6 +24,9 @@ public class ModItems {
     // Creates monetary items
     public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new MonetaryItem(1.0f));
     public static final DeferredItem<Item> BILL = ITEMS.register("bill", () -> new MonetaryItem(5.0f));
+
+    // Creates ATM block item
+    public static final DeferredItem<BlockItem> ATM_ITEM = ITEMS.register("atm", () -> new BlockItem(ModBlocks.ATM.get(), new Item.Properties()));
 
     // Creates bank card item
     public static final DeferredItem<Item> BANK_CARD = ITEMS.registerSimpleItem("bank_card");
