@@ -1,8 +1,12 @@
 package fr.valorantage.valomoney;
 
 import fr.valorantage.valomoney.block.ModBlocks;
+import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.item.ModCreativeModeTabs;
 import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.screen.ModMenuTypes;
+import fr.valorantage.valomoney.screen.custom.ATMScreen;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -44,6 +48,10 @@ public class ValomoneyMod {
         ModItems.ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         ModCreativeModeTabs.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so block entities get registered
+        ModBlockEntities.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so GUI get registered
+        ModMenuTypes.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ValomoneyMod) to respond directly to events.
@@ -90,6 +98,11 @@ public class ValomoneyMod {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        }
+
+        @SubscribeEvent
+        public static void registerScreens(RegisterMenuScreensEvent event) {
+            event.register(ModMenuTypes.ATM_MENU.get(), ATMScreen::new);
         }
     }
 }
