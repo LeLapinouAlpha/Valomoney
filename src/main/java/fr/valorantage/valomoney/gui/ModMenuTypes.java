@@ -1,7 +1,7 @@
-package fr.valorantage.valomoney.screen;
+package fr.valorantage.valomoney.gui;
 
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.screen.custom.ATMMenu;
+import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;

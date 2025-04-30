@@ -1,4 +1,4 @@
-package fr.valorantage.valomoney.screen.custom;
+package fr.valorantage.valomoney.gui.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.valorantage.valomoney.ValomoneyMod;

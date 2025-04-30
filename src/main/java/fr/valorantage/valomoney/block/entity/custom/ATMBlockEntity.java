@@ -1,7 +1,7 @@
 package fr.valorantage.valomoney.block.entity.custom;
 
 import fr.valorantage.valomoney.block.entity.ModBlockEntities;
-import fr.valorantage.valomoney.screen.custom.ATMMenu;
+import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
