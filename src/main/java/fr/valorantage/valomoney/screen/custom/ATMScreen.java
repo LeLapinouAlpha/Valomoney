@@ -15,6 +15,10 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
 
     public ATMScreen(ATMMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+
+        // Set real size of GUI inside the texture (the non-transparent part)
+        this.imageWidth = 190;
+        this.imageHeight = 170;
     }
 
     @Override
@@ -26,7 +30,7 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
