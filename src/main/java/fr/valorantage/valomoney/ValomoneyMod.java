@@ -4,8 +4,8 @@ import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.item.ModCreativeModeTabs;
 import fr.valorantage.valomoney.item.ModItems;
-import fr.valorantage.valomoney.screen.ModMenuTypes;
-import fr.valorantage.valomoney.screen.custom.ATMScreen;
+import fr.valorantage.valomoney.gui.ModMenuTypes;
+import fr.valorantage.valomoney.gui.custom.ATMScreen;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 

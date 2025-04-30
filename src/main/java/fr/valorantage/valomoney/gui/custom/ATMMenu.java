@@ -1,8 +1,8 @@
-package fr.valorantage.valomoney.screen.custom;
+package fr.valorantage.valomoney.gui.custom;
 
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
-import fr.valorantage.valomoney.screen.ModMenuTypes;
+import fr.valorantage.valomoney.gui.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
