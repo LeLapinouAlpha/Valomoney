@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class ATMMenu extends AbstractContainerMenu {
     private final ATMBlockEntity blockEntity;
@@ -24,6 +25,8 @@ public class ATMMenu extends AbstractContainerMenu {
         super(ModMenuTypes.ATM_MENU.get(), containerId);
         this.blockEntity = (ATMBlockEntity) blockEntity;
         this.level = inventory.player.level();
+
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 29, 24));
     }
 
     @Override
