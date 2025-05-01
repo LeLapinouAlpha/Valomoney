@@ -1,8 +1,11 @@
 package fr.valorantage.valomoney.gui.custom;
 
+import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
+import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.item.custom.MonetaryItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,8 +16,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import org.slf4j.Logger;
 
 public class ATMMenu extends AbstractContainerMenu {
+    private final static Logger LOGGER = LogUtils.getLogger();
+
+    private final Inventory playerInventory;
     private final ATMBlockEntity blockEntity;
     private final Level level;
 
@@ -24,6 +31,7 @@ public class ATMMenu extends AbstractContainerMenu {
 
     public ATMMenu(int containerId, Inventory inventory, BlockEntity blockEntity) {
         super(ModMenuTypes.ATM_MENU.get(), containerId);
+        this.playerInventory = inventory;
         this.blockEntity = (ATMBlockEntity) blockEntity;
         this.level = inventory.player.level();
 
@@ -102,5 +110,35 @@ public class ATMMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 15 + i * 18, 144));
         }
+    }
+
+    // FIXME: move this method into ATMBlockEntity
+    // FIXME: must check if there is enough space in inventory
+    // FIXME: a bank card must be in the inventory slot
+    public void debit(float amount) {
+        var billItemStack = new ItemStack(ModItems.BILL.get(), 1);
+        var billItem = (MonetaryItem) billItemStack.getItem();
+        int billCount = (int) (amount / billItem.getValue());
+        billItemStack.setCount(billCount);
+        amount -= billCount * billItem.getValue();
+
+        var coinItemStack = new ItemStack(ModItems.COIN.get(), 1);
+        var coinItem = (MonetaryItem) coinItemStack.getItem();
+        int coinCount = (int) (amount / coinItem.getValue());
+        coinItemStack.setCount(coinCount);
+        amount -= coinCount * coinItem.getValue();
+
+        if (!this.playerInventory.add(billItemStack)) {
+            LOGGER.error("Couldn't add bills item to player's inventory");
+            return;
+        }
+
+        if (!this.playerInventory.add(coinItemStack)) {
+            LOGGER.error("Couldn't add coins item to player's inventory");
+            return;
+        }
+
+        LOGGER.debug("Debit will give: {} bills (5$), {} coins (1$)", billCount, coinCount);
+        LOGGER.debug(String.format("Money that will not be given: %.2f$", amount));
     }
 }
