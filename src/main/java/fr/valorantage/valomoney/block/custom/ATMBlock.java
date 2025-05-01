@@ -22,6 +22,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class ATMBlock extends BaseEntityBlock {
+    // FIXME: the voxel shape must be 16x16x16 and not 15x15x15
     public static final VoxelShape SHAPE = Block.box(0, 0, 0, 15, 15, 15);
     public static final MapCodec<ATMBlock> CODEC = simpleCodec(ATMBlock::new);
 
