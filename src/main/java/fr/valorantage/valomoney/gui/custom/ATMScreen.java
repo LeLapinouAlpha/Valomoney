@@ -3,6 +3,7 @@ package fr.valorantage.valomoney.gui.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
@@ -84,7 +86,11 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
 
         try {
             float amount = Float.parseFloat(this.amountEditBox.getValue());
-            this.menu.debit(amount);
+
+            var payload = new ATMDebitPayload(amount);
+            LOGGER.debug("Sending payload to server: {}", payload);
+            PacketDistributor.sendToServer(payload);
+
         } catch (NumberFormatException numberFormatException) {
             LOGGER.error("Could not parse amount: '{}'", this.amountEditBox.getValue());
         }
