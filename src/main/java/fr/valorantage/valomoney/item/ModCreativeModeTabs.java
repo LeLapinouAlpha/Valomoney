@@ -1,6 +1,7 @@
 package fr.valorantage.valomoney.item;
 
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.block.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -19,9 +20,10 @@ public class ModCreativeModeTabs {
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ModItems.COIN.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                output.accept(ModItems.EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ModItems.COIN.get());
                 output.accept(ModItems.BILL.get());
+                output.accept(ModItems.BANK_CARD.get());
+                output.accept(ModBlocks.ATM.get());
             }).build());
 
     public static void register(IEventBus eventBus) {

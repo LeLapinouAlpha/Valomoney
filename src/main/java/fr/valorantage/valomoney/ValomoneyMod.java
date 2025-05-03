@@ -1,8 +1,13 @@
 package fr.valorantage.valomoney;
 
+import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.block.ModBlocks;
+import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.item.ModCreativeModeTabs;
 import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.gui.ModMenuTypes;
+import fr.valorantage.valomoney.gui.custom.ATMScreen;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -44,6 +49,12 @@ public class ValomoneyMod {
         ModItems.ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         ModCreativeModeTabs.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so block entities get registered
+        ModBlockEntities.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so GUIs get registered
+        ModMenuTypes.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so attachments get registered
+        ModAttachmentTypes.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ValomoneyMod) to respond directly to events.
@@ -71,8 +82,7 @@ public class ValomoneyMod {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
-            event.accept(ModItems.EXAMPLE_BLOCK_ITEM);
+
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -90,6 +100,11 @@ public class ValomoneyMod {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        }
+
+        @SubscribeEvent
+        public static void registerScreens(RegisterMenuScreensEvent event) {
+            event.register(ModMenuTypes.ATM_MENU.get(), ATMScreen::new);
         }
     }
 }
