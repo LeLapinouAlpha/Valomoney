@@ -141,4 +141,18 @@ public class ATMMenu extends AbstractContainerMenu {
         LOGGER.debug("Debit will give: {} bills (5$), {} coins (1$)", billCount, coinCount);
         LOGGER.debug(String.format("Money that will not be given: %.2f$", amount));
     }
+
+    // FIXME: add the wanted amount in argument
+    public void credit() {
+        float playerAmount = 0;
+        for (int i = 0; i < this.playerInventory.getContainerSize(); i++) {
+            var item = this.playerInventory.getItem(i);
+            if (item.getItem() instanceof MonetaryItem monetaryItem) {
+                float itemStackAmount = monetaryItem.getValue() * item.getCount();
+                playerAmount += itemStackAmount;
+                this.playerInventory.removeItem(i, item.getCount());
+            }
+        }
+        LOGGER.debug("Credit {}$ to {}'s account", playerAmount, this.playerInventory.player.getName().getString());
+    }
 }

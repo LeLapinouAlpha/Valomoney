@@ -3,6 +3,7 @@ package fr.valorantage.valomoney.gui.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
+import fr.valorantage.valomoney.network.packet.ATMCreditPayload;
 import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -78,7 +79,18 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     }
 
     private void onCreditButtonClicked(Button button) {
-        LOGGER.debug("Launched credit action: {}", this.amountEditBox.getValue());
+        LOGGER.debug("Launched credit of {}$", this.amountEditBox.getValue());
+
+        try {
+            float amount = Float.parseFloat(this.amountEditBox.getValue());
+
+            var payload = new ATMCreditPayload(amount);
+            LOGGER.debug("Sending payload to server: {}", payload);
+            PacketDistributor.sendToServer(payload);
+
+        } catch (NumberFormatException numberFormatException) {
+            LOGGER.error("Could not parse amount: '{}'", this.amountEditBox.getValue());
+        }
     }
 
     private void onDebitButtonClicked(Button button) {

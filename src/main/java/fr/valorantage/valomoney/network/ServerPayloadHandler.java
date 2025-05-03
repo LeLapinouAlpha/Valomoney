@@ -2,6 +2,7 @@ package fr.valorantage.valomoney.network;
 
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
+import fr.valorantage.valomoney.network.packet.ATMCreditPayload;
 import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -17,5 +18,15 @@ public class ServerPayloadHandler {
         ServerPlayer player = (ServerPlayer) context.player();
         ATMMenu atmMenu = (ATMMenu) player.containerMenu;
         atmMenu.debit(data.amount());
+    }
+
+    public static void handleATMCreditPayloadOnNetwork(final ATMCreditPayload data, final IPayloadContext context) {
+        // Do something with the data, on the network thread
+        LOGGER.debug("Server received ATMCreditPayload: {}", data);
+
+        ServerPlayer player = (ServerPlayer) context.player();
+        ATMMenu atmMenu = (ATMMenu) player.containerMenu;
+        // FIXME: call this method with the received amount
+        atmMenu.credit();
     }
 }
