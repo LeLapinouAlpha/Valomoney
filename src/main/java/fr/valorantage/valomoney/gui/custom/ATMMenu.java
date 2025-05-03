@@ -112,7 +112,6 @@ public class ATMMenu extends AbstractContainerMenu {
         }
     }
 
-    // FIXME: move this method into ATMBlockEntity
     // FIXME: must check if there is enough space in inventory
     // FIXME: a bank card must be in the inventory slot
     public void debit(float amount) {
