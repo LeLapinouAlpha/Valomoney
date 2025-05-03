@@ -113,57 +113,63 @@ public class ATMMenu extends AbstractContainerMenu {
     }
 
     // FIXME: must check if there is enough space in inventory
-    // FIXME: a bank card must be in the inventory slot
     public void debit(float amount) {
-        var billItemStack = new ItemStack(ModItems.BILL.get(), 1);
-        var billItem = (MonetaryItem) billItemStack.getItem();
-        int billCount = (int) (amount / billItem.getValue());
-        billItemStack.setCount(billCount);
-        amount -= billCount * billItem.getValue();
+        if (this.blockEntity.inventory.getStackInSlot(0).getItem() == ModItems.BANK_CARD.get()) {
+            var billItemStack = new ItemStack(ModItems.BILL.get(), 1);
+            var billItem = (MonetaryItem) billItemStack.getItem();
+            int billCount = (int) (amount / billItem.getValue());
+            billItemStack.setCount(billCount);
+            amount -= billCount * billItem.getValue();
 
-        var coinItemStack = new ItemStack(ModItems.COIN.get(), 1);
-        var coinItem = (MonetaryItem) coinItemStack.getItem();
-        int coinCount = (int) (amount / coinItem.getValue());
-        coinItemStack.setCount(coinCount);
-        amount -= coinCount * coinItem.getValue();
+            var coinItemStack = new ItemStack(ModItems.COIN.get(), 1);
+            var coinItem = (MonetaryItem) coinItemStack.getItem();
+            int coinCount = (int) (amount / coinItem.getValue());
+            coinItemStack.setCount(coinCount);
+            amount -= coinCount * coinItem.getValue();
 
-        if (!this.playerInventory.add(billItemStack)) {
-            LOGGER.error("Couldn't add bills item to player's inventory");
-            return;
+            if (!this.playerInventory.add(billItemStack)) {
+                LOGGER.error("Couldn't add bills item to player's inventory");
+                return;
+            }
+
+            if (!this.playerInventory.add(coinItemStack)) {
+                LOGGER.error("Couldn't add coins item to player's inventory");
+                return;
+            }
+
+            LOGGER.debug("Debit will give: {} bills (5$), {} coins (1$)", billCount, coinCount);
+            LOGGER.debug(String.format("Money that will not be given: %.2f$", amount));
+        } else {
+            LOGGER.debug("Cannot debit without a bank card");
         }
-
-        if (!this.playerInventory.add(coinItemStack)) {
-            LOGGER.error("Couldn't add coins item to player's inventory");
-            return;
-        }
-
-        LOGGER.debug("Debit will give: {} bills (5$), {} coins (1$)", billCount, coinCount);
-        LOGGER.debug(String.format("Money that will not be given: %.2f$", amount));
     }
 
     public void credit(float amount) {
-        float playerInventoryAmount = 0;
-        for (int i = 0; i < this.playerInventory.getContainerSize(); i++) {
-            var item = this.playerInventory.getItem(i);
-            if (item.getItem() instanceof MonetaryItem monetaryItem) {
-                float itemStackAmount = monetaryItem.getValue() * item.getCount();
+        if (this.blockEntity.inventory.getStackInSlot(0).getItem() == ModItems.BANK_CARD.get()) {
+            float playerInventoryAmount = 0;
+            for (int i = 0; i < this.playerInventory.getContainerSize(); i++) {
+                var item = this.playerInventory.getItem(i);
+                if (item.getItem() instanceof MonetaryItem monetaryItem) {
+                    float itemStackAmount = monetaryItem.getValue() * item.getCount();
 
-                if (playerInventoryAmount + itemStackAmount > amount) {
-                    float remainingAmount = amount - playerInventoryAmount;
-                    int maxItemCount = (int) (remainingAmount / monetaryItem.getValue());
-                    if (maxItemCount > 0) {
-                        playerInventoryAmount += monetaryItem.getValue() * maxItemCount;
-                        item.setCount(item.getCount() - maxItemCount);
+                    if (playerInventoryAmount + itemStackAmount > amount) {
+                        float remainingAmount = amount - playerInventoryAmount;
+                        int maxItemCount = (int) (remainingAmount / monetaryItem.getValue());
+                        if (maxItemCount > 0) {
+                            playerInventoryAmount += monetaryItem.getValue() * maxItemCount;
+                            item.setCount(item.getCount() - maxItemCount);
+                        }
+                        break;
+                    } else {
+                        playerInventoryAmount += itemStackAmount;
+                        this.playerInventory.removeItem(i, item.getCount());
                     }
-                    break;
-                } else {
-                    playerInventoryAmount += itemStackAmount;
-                    this.playerInventory.removeItem(i, item.getCount());
                 }
             }
+
+            LOGGER.debug("Credit {}$ to {}'s account", playerInventoryAmount, this.playerInventory.player.getName().getString());
+        } else {
+            LOGGER.debug("Cannot credit without a bank card");
         }
-
-        LOGGER.debug("Credit {}$ to {}'s account", playerInventoryAmount, this.playerInventory.player.getName().getString());
     }
-
 }
