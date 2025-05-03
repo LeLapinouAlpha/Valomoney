@@ -2,6 +2,7 @@ package fr.valorantage.valomoney.block.entity.custom;
 
 import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
+import fr.valorantage.valomoney.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +22,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class ATMBlockEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return stack.getItem() == ModItems.BANK_CARD.get() && slot == 0;
+        }
+
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
             return 1;
