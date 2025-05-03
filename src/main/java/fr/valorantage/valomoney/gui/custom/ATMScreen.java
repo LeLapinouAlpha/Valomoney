@@ -3,8 +3,6 @@ package fr.valorantage.valomoney.gui.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.item.ModItems;
-import fr.valorantage.valomoney.item.custom.MonetaryItem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -13,8 +11,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 
 public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
