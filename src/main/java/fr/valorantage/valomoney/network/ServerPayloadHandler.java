@@ -26,7 +26,6 @@ public class ServerPayloadHandler {
 
         ServerPlayer player = (ServerPlayer) context.player();
         ATMMenu atmMenu = (ATMMenu) player.containerMenu;
-        // FIXME: call this method with the received amount
-        atmMenu.credit();
+        atmMenu.credit(data.amount());
     }
 }

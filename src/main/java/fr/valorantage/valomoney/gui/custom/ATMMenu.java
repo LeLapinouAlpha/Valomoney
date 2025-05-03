@@ -142,17 +142,29 @@ public class ATMMenu extends AbstractContainerMenu {
         LOGGER.debug(String.format("Money that will not be given: %.2f$", amount));
     }
 
-    // FIXME: add the wanted amount in argument
-    public void credit() {
-        float playerAmount = 0;
+    public void credit(float amount) {
+        float playerInventoryAmount = 0;
         for (int i = 0; i < this.playerInventory.getContainerSize(); i++) {
             var item = this.playerInventory.getItem(i);
             if (item.getItem() instanceof MonetaryItem monetaryItem) {
                 float itemStackAmount = monetaryItem.getValue() * item.getCount();
-                playerAmount += itemStackAmount;
-                this.playerInventory.removeItem(i, item.getCount());
+
+                if (playerInventoryAmount + itemStackAmount > amount) {
+                    float remainingAmount = amount - playerInventoryAmount;
+                    int maxItemCount = (int) (remainingAmount / monetaryItem.getValue());
+                    if (maxItemCount > 0) {
+                        playerInventoryAmount += monetaryItem.getValue() * maxItemCount;
+                        item.setCount(item.getCount() - maxItemCount);
+                    }
+                    break;
+                } else {
+                    playerInventoryAmount += itemStackAmount;
+                    this.playerInventory.removeItem(i, item.getCount());
+                }
             }
         }
-        LOGGER.debug("Credit {}$ to {}'s account", playerAmount, this.playerInventory.player.getName().getString());
+
+        LOGGER.debug("Credit {}$ to {}'s account", playerInventoryAmount, this.playerInventory.player.getName().getString());
     }
+
 }
