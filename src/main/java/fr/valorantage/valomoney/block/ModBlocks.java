@@ -12,9 +12,12 @@ public class ModBlocks {
     // Create a Deferred Register to hold Blocks which will all be registered under the "valomoney" namespace
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(ValomoneyMod.MODID);
 
-    // Creates ATM block
-    public static final DeferredBlock<Block> ATM = BLOCKS.register("atm",
-            () -> new ATMBlock(BlockBehaviour.Properties.of().noOcclusion()));
+    // Create ATM block
+    public static final DeferredBlock<Block> ATM = BLOCKS.register("atm", () -> new ATMBlock(BlockBehaviour.Properties.of()
+            .strength(4.f)
+            .requiresCorrectToolForDrops()
+            .noOcclusion()
+    ));
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
