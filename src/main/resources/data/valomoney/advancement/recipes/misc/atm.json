@@ -1,37 +1,38 @@
+
 {
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "valomoney:bank_card"
+      "valomoney:atm"
     ]
   },
   "criteria": {
-    "has_gold_nugget": {
+    "has_iron_ingot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:gold_nugget"
+            "item": "minecraft:iron_ingot"
           }
         ]
       }
     },
-    "has_lapis": {
+    "has_redstone": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:lapis_lazuli"
+            "item": "minecraft:redstone"
           }
         ]
       }
     },
-    "has_paper": {
+    "has_glass": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:paper"
+            "item": "minecraft:glass"
           }
         ]
       }
@@ -39,13 +40,13 @@
   },
   "requirements": [
     [
-      "has_gold_nugget"
+      "has_iron_ingot"
     ],
     [
-      "has_lapis"
+      "has_redstone"
     ],
     [
-      "has_paper"
+      "has_glass"
     ]
   ]
 }
