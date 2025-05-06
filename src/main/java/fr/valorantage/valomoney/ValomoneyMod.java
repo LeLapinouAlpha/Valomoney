@@ -3,6 +3,7 @@ package fr.valorantage.valomoney;
 import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.ModBlockEntities;
+import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.item.ModCreativeModeTabs;
 import fr.valorantage.valomoney.item.ModItems;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
@@ -55,6 +56,8 @@ public class ValomoneyMod {
         ModMenuTypes.register(modEventBus);
         // Register the Deferred Register to the mod event bus so attachments get registered
         ModAttachmentTypes.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so data components get registered
+        ModDataComponentTypes.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ValomoneyMod) to respond directly to events.
