@@ -2,6 +2,7 @@ package fr.valorantage.valomoney.item;
 
 import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
+import fr.valorantage.valomoney.item.custom.BankCardItem;
 import fr.valorantage.valomoney.item.custom.MonetaryItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -21,7 +22,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> ATM_ITEM = ITEMS.register("atm", () -> new BlockItem(ModBlocks.ATM.get(), new Item.Properties()));
 
     // Creates bank card item
-    public static final DeferredItem<Item> BANK_CARD = ITEMS.registerSimpleItem("bank_card");
+    public static final DeferredItem<Item> BANK_CARD = ITEMS.register("bank_card", BankCardItem::new);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
