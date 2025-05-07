@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 public record ATMCreditPayload(float amount) implements CustomPacketPayload {
+    // FIXME: Replace 'valomoney' by ValomoneyMod.MODID
     public static final CustomPacketPayload.Type<ATMCreditPayload> TYPE =
             new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("valomoney", "atm_credit_payload"));
 
