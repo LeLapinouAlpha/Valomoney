@@ -56,6 +56,7 @@ public class BankCardItem extends Item {
             var storedPlayer = context.level().getPlayerByUUID(UUID.fromString(storedPlayerUUID));
             if (storedPlayer != null) {
                 // TODO: Optimize the number of packets send to the server (one packet sent by frame rendered)
+                // FIXME: storedPlayer is not used, so any player will see it's balance, so the data component is useless
                 PacketDistributor.sendToServer(new PlayerMoneyPayload(0));
 
                 tooltipComponents.add(Component.literal(String.format("Money: %.2f$", PLAYER_MONEY)));
