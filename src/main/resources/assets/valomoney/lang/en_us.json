@@ -1,5 +1,9 @@
 {
-  "itemGroup.valomoney": "Example Mod Tab",
+  "creativetab.valomoney.items_tab": "Valomoney",
   "block.valomoney.example_block": "Example Block",
-  "item.valomoney.example_item": "Example Item"
+  "item.valomoney.example_item": "Example Item",
+  "item.valomoney.coin": "Coin",
+  "item.valomoney.bill": "Bill",
+  "item.valomoney.bank_card": "Bank Card",
+  "block.valomoney.atm": "ATM"
 }

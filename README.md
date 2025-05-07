@@ -1,25 +1,63 @@
+# 💸 Valomoney - v1.0.0 (NeoForge 21.1.159)
 
-Installation information
-=======
+**Valomoney** adds a basic money system to Minecraft through new items, villager trades, and an interactive ATM block.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+---
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+# Features
+## Items
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+### 🪙 Monetary Items
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+> 📦Those items are not craftable
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+- **Coin** — 1$
+- **Bill** — 5$
+
+These items can be obtained via new Wandering Trader deals:
+- 1 Gold Ingot → 1 Coin (limit: 64 trades)
+- 1 Emerald → 1 Bill (limit: 32 trades)
+
+---
+
+### 💳 Bank Card
+
+![image](https://github.com/user-attachments/assets/046c4699-568c-43a3-a35d-cda6c225223e)
+
+The **Bank Card** is a special item that can be bound to a player:
+- **Right-click** with it to bind it to your player.
+- Once bound, it shows your current account balance in the tooltip.
+
+> 🔒 The balance shown always reflects the *current player’s* money, not necessarily the owner of the card (known issue).
+
+---
+
+## Blocks
+
+### 🏦 ATM Block
+
+![image](https://github.com/user-attachments/assets/51d14950-2d43-4bbd-9d64-504f5d0c1877)
+
+- Place and right-click the **ATM** to open a GUI.
+- The ATM allows you to:
+    - **Credit** money (coins or bills)
+    - **Debit** money
+
+> 🔒 The ATM block model is not yet finised (known issue)
+
+---
+
+# ⚠️ Known Issues
+
+- The Bank Card's binding to a player is **not yet enforced**, meaning any player sees their own balance.
+- The tooltip updates every frame by requesting the balance from the server, which may cause performance or network issues.
+- The ATM block model is not yet finised
+
+---
+
+# 🔧 Requirements
+
+- Minecraft **1.21.1**
+- NeoForge **21.1.159**
+
+---
