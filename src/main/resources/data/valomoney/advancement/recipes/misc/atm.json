@@ -1,0 +1,52 @@
+
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "valomoney:atm"
+    ]
+  },
+  "criteria": {
+    "has_iron_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:iron_ingot"
+          }
+        ]
+      }
+    },
+    "has_redstone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:redstone"
+          }
+        ]
+      }
+    },
+    "has_glass": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:glass"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_ingot"
+    ],
+    [
+      "has_redstone"
+    ],
+    [
+      "has_glass"
+    ]
+  ]
+}

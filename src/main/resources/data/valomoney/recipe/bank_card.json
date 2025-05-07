@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "pattern": [
+    " G ",
+    "PLP",
+    " P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "valomoney:bank_card"
+  }
+}
