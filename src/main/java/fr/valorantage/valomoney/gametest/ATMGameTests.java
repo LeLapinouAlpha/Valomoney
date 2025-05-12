@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -40,10 +39,7 @@ public class ATMGameTests {
         GameTestUtils.assertBlock(helper, pos, state, ModBlocks.ATM.get());
 
         // Check block entity
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof ATMBlockEntity)) {
-            helper.fail("This block entity is not an ATM block entity", pos);
-        }
+        GameTestUtils.assertBlockEntity(helper, level, pos, ATMBlockEntity.class);
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
@@ -71,10 +67,7 @@ public class ATMGameTests {
         GameTestUtils.assertBlock(helper, pos, state, ModBlocks.ATM.get());
 
         // Check block entity
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof ATMBlockEntity)) {
-            helper.fail("This block entity is not an ATM block entity", pos);
-        }
+        GameTestUtils.assertBlockEntity(helper, level, pos, ATMBlockEntity.class);
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));

@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class GameTestUtils {
@@ -22,6 +23,14 @@ public class GameTestUtils {
     public static void assertBlock(GameTestHelper helper, BlockPos pos, BlockState state, Block expectedBlock) {
         if (!state.is(expectedBlock)) {
             helper.fail(String.format("Expected block: %s, Actual block: %s", expectedBlock, state.getBlock()), pos);
+        }
+    }
+
+    // FIXME: check for block entity to be non-null
+    public static <T extends BlockEntity> void assertBlockEntity(GameTestHelper helper, ServerLevel level, BlockPos pos, Class<T> expectedClass) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (!(expectedClass.isInstance(blockEntity))) {
+            helper.fail(String.format("Expected block entity: %s, Actual block entity: %s", expectedClass, blockEntity.getClass()), pos);
         }
     }
 
