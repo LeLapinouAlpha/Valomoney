@@ -33,8 +33,7 @@ public class ATMGameTests {
         ServerLevel level = helper.getLevel();
 
         // Place ATM block
-        BlockPos pos = helper.absolutePos(new BlockPos(0, 2, 0));
-        level.setBlock(pos, ModBlocks.ATM.get().defaultBlockState(), 3);
+        BlockPos pos = GameTestUtils.placeBlock(helper, level, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
 
         // Check block
         BlockState state = level.getBlockState(pos);
@@ -67,8 +66,7 @@ public class ATMGameTests {
         ServerLevel level = helper.getLevel();
 
         // Place ATM block
-        BlockPos pos = helper.absolutePos(new BlockPos(0, 2, 0));
-        level.setBlock(pos, ModBlocks.ATM.get().defaultBlockState(), 3);
+        BlockPos pos = GameTestUtils.placeBlock(helper, level, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
 
         // Check block
         BlockState state = level.getBlockState(pos);
@@ -83,9 +81,7 @@ public class ATMGameTests {
         }
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
-        Player fakePlayer = helper.makeMockPlayer(GameType.SURVIVAL);
-        BlockPos newFakePlayerOnPos = helper.absolutePos(new BlockPos(1, 2, 0));
-        fakePlayer.teleportTo(newFakePlayerOnPos.getX(), newFakePlayerOnPos.getY(), newFakePlayerOnPos.getZ());
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
         for (Direction direction : Direction.values()) {
             InteractionResult interactionResult = state.useWithoutItem(level, fakePlayer, new BlockHitResult(
                     Vec3.atCenterOf(pos), direction, pos, false));

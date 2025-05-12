@@ -2,10 +2,22 @@ package fr.valorantage.valomoney.gametest;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 
 public class GameTestUtils {
+    public static BlockPos placeBlock(GameTestHelper helper, ServerLevel level, BlockPos relativePos, Block block, int flags) {
+        BlockPos pos = helper.absolutePos(relativePos);
+        level.setBlock(pos, block.defaultBlockState(), flags);
+        return pos;
+    }
+
+    public static BlockPos placeBlock(GameTestHelper helper, ServerLevel level, BlockPos relativePos, Block block) {
+        return placeBlock(helper, level, relativePos, block, 3);
+    }
+
     public static Player makeMockPlayer(GameTestHelper helper, GameType gameMode, BlockPos relativePos) {
         Player fakePlayer = helper.makeMockPlayer(gameMode);
         BlockPos newFakePlayerOnPos = helper.absolutePos(relativePos);
