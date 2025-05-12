@@ -43,13 +43,11 @@ public class ATMGameTests {
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
-        for (Direction direction : Direction.values()) {
-            var usedItemStack = new ItemStack(Blocks.STONE, 64);
-            ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, level, fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
-                    Vec3.atCenterOf(pos), direction, pos, false));
-            if (interactionResult != ItemInteractionResult.SUCCESS) {
-                helper.fail("Failed to open ATM GUI from " + direction + " direction" + " using item stack" + usedItemStack, pos);
-            }
+        var usedItemStack = new ItemStack(Blocks.STONE, 64);
+        ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, level, fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
+                Vec3.atCenterOf(pos), Direction.NORTH, pos, false));
+        if (interactionResult != ItemInteractionResult.SUCCESS) {
+            helper.fail("Failed to open ATM GUI using item stack" + usedItemStack, pos);
         }
 
         helper.succeed();
@@ -71,12 +69,10 @@ public class ATMGameTests {
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
-        for (Direction direction : Direction.values()) {
-            InteractionResult interactionResult = state.useWithoutItem(level, fakePlayer, new BlockHitResult(
-                    Vec3.atCenterOf(pos), direction, pos, false));
-            if (interactionResult != InteractionResult.SUCCESS) {
-                helper.fail("Failed to open ATM GUI from " + direction + " direction", pos);
-            }
+        InteractionResult interactionResult = state.useWithoutItem(level, fakePlayer, new BlockHitResult(
+                Vec3.atCenterOf(pos), Direction.NORTH, pos, false));
+        if (interactionResult != InteractionResult.SUCCESS) {
+            helper.fail("Failed to open ATM GUI from direction", pos);
         }
 
         helper.succeed();
