@@ -14,6 +14,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -27,7 +28,7 @@ public class ATMGameTests {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     @GameTest
-    public static void basicInteraction(GameTestHelper helper) {
+    public static void basicInteractionWithItem(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
 
         // Place ATM block
@@ -51,7 +52,7 @@ public class ATMGameTests {
         BlockPos newFakePlayerOnPos = helper.absolutePos(new BlockPos(1, 2, 0));
         fakePlayer.teleportTo(newFakePlayerOnPos.getX(), newFakePlayerOnPos.getY(), newFakePlayerOnPos.getZ());
         for (Direction direction : Direction.values()) {
-            var usedItemStack = ItemStack.EMPTY;
+            var usedItemStack = new ItemStack(Blocks.STONE, 64);
             ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, level, fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
                     Vec3.atCenterOf(pos), direction, pos, false));
             if (interactionResult != ItemInteractionResult.SUCCESS) {
