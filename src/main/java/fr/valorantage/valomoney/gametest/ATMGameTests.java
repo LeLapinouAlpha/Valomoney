@@ -37,9 +37,7 @@ public class ATMGameTests {
 
         // Check block
         BlockState state = level.getBlockState(pos);
-        if (!state.is(ModBlocks.ATM.get())) {
-            helper.fail("This block is not an ATM", pos);
-        }
+        GameTestUtils.assertBlock(helper, pos, state, ModBlocks.ATM.get());
 
         // Check block entity
         BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -70,9 +68,7 @@ public class ATMGameTests {
 
         // Check block
         BlockState state = level.getBlockState(pos);
-        if (!state.is(ModBlocks.ATM.get())) {
-            helper.fail("This block is not an ATM", pos);
-        }
+        GameTestUtils.assertBlock(helper, pos, state, ModBlocks.ATM.get());
 
         // Check block entity
         BlockEntity blockEntity = level.getBlockEntity(pos);
