@@ -63,4 +63,6 @@ public class ATMBlock extends BaseEntityBlock {
         }
         return ItemInteractionResult.SUCCESS;
     }
+
+    // FIXME: Override useWithoutItem method
 }
