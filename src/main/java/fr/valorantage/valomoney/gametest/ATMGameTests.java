@@ -49,9 +49,7 @@ public class ATMGameTests {
         }
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
-        Player fakePlayer = helper.makeMockPlayer(GameType.SURVIVAL);
-        BlockPos newFakePlayerOnPos = helper.absolutePos(new BlockPos(1, 2, 0));
-        fakePlayer.teleportTo(newFakePlayerOnPos.getX(), newFakePlayerOnPos.getY(), newFakePlayerOnPos.getZ());
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
         for (Direction direction : Direction.values()) {
             var usedItemStack = new ItemStack(Blocks.STONE, 64);
             ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, level, fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
