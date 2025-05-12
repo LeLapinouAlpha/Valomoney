@@ -49,13 +49,16 @@ public class GameTests {
             helper.fail("This block entity is not an ATM block entity", pos);
         }
 
-        // Create a fake player and use ATM to open the GUI
+        // Create a fake player and use ATM to open the GUI in all directions
         Player fakePlayer = helper.makeMockPlayer(GameType.SURVIVAL);
-        InteractionResult topInteractionResult = state.useWithoutItem(level, fakePlayer, new BlockHitResult(
-                Vec3.atCenterOf(pos), Direction.UP, pos, false));
-        if (topInteractionResult != InteractionResult.SUCCESS) {
-            helper.fail("Failed to open ATM GUI from " + Direction.UP + " direction", pos);
+        for (Direction direction : Direction.values()) {
+            InteractionResult interactionResult = state.useWithoutItem(level, fakePlayer, new BlockHitResult(
+                    Vec3.atCenterOf(pos), direction, pos, false));
+            if (interactionResult != InteractionResult.PASS) {
+                helper.fail("Failed to open ATM GUI from " + direction + " direction", pos);
+            }
         }
+
 
         helper.succeed();
     }
