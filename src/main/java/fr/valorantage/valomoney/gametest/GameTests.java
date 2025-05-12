@@ -25,11 +25,6 @@ public class GameTests {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     @GameTest
-    public static void exampleTest(GameTestHelper helper) {
-        helper.succeed();
-    }
-
-    @GameTest
     public static void basicATMInteraction(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
 
