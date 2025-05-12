@@ -20,12 +20,12 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import org.slf4j.Logger;
 
 @GameTestHolder(ValomoneyMod.MODID)
-public class GameTests {
+public class ATMGameTests {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
     @GameTest
-    public static void basicATMInteraction(GameTestHelper helper) {
+    public static void basicInteraction(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
 
         // Place ATM block
@@ -53,7 +53,6 @@ public class GameTests {
                 helper.fail("Failed to open ATM GUI from " + direction + " direction", pos);
             }
         }
-
 
         helper.succeed();
     }
