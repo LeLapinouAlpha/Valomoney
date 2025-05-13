@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 public class ATMGameTests {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final String BASICS_TEMPLATE = "basics";
 
     private static BlockPos placeATMAndCheck(GameTestHelper helper, BlockPos relativePos) {
         BlockPos pos = GameTestUtils.placeBlock(helper, relativePos, ModBlocks.ATM.get());
@@ -50,7 +51,7 @@ public class ATMGameTests {
         }
     }
 
-    @GameTest
+    @GameTest(template = BASICS_TEMPLATE)
     public static void basicInteractionWithItem(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
@@ -68,7 +69,7 @@ public class ATMGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = BASICS_TEMPLATE)
     public static void basicInteractionWithoutItem(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
@@ -85,7 +86,7 @@ public class ATMGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = BASICS_TEMPLATE)
     public static void quickMoveBankCard(GameTestHelper helper) {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
 
@@ -112,7 +113,7 @@ public class ATMGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = BASICS_TEMPLATE)
     public static void basicTransaction(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
@@ -144,7 +145,7 @@ public class ATMGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = BASICS_TEMPLATE)
     public static void basicTransactionWithoutBankCard(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
