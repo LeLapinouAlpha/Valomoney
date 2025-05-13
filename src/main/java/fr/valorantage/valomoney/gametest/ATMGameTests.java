@@ -5,6 +5,7 @@ import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import fr.valorantage.valomoney.exception.GameTestException;
+import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -27,10 +28,8 @@ public class ATMGameTests {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    @GameTest
-    public static void basicInteractionWithItem(GameTestHelper helper) {
-        // Place ATM block
-        BlockPos pos = GameTestUtils.placeBlock(helper, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
+    private static BlockPos placeATMAndCheck(GameTestHelper helper, BlockPos relativePos) {
+        BlockPos pos = GameTestUtils.placeBlock(helper, relativePos, ModBlocks.ATM.get());
 
         // Check block & block entity
         try {
@@ -39,15 +38,22 @@ public class ATMGameTests {
         } catch (GameTestException gameTestException) {
             helper.fail(gameTestException.getMessage(), gameTestException.getPos());
         }
+        return pos;
+    }
 
-        // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
-        BlockState state = helper.getLevel().getBlockState(pos);
+    @GameTest
+    public static void basicInteractionWithItem(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Create a fake player, teleport it to structure and make it use ATM to open the GUI
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        BlockState state = helper.getLevel().getBlockState(atmPos);
         var usedItemStack = new ItemStack(Blocks.STONE, 64);
         ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, helper.getLevel(), fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
-                Vec3.atCenterOf(pos), Direction.NORTH, pos, false));
+                Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
         if (interactionResult != ItemInteractionResult.SUCCESS) {
-            helper.fail("Failed to open ATM GUI using item stack" + usedItemStack, pos);
+            helper.fail("Failed to open ATM GUI using item stack" + usedItemStack, atmPos);
         }
 
         helper.succeed();
@@ -55,24 +61,16 @@ public class ATMGameTests {
 
     @GameTest
     public static void basicInteractionWithoutItem(GameTestHelper helper) {
-        // Place ATM block
-        BlockPos pos = GameTestUtils.placeBlock(helper, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
 
-        // Check block & block entity
-        try {
-            GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
-            GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
-        } catch (GameTestException gameTestException) {
-            helper.fail(gameTestException.getMessage(), gameTestException.getPos());
-        }
-
-        // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
-        BlockState state = helper.getLevel().getBlockState(pos);
+        // Create a fake player, teleport it to structure and make it use ATM to open the GUI
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        BlockState state = helper.getLevel().getBlockState(atmPos);
         InteractionResult interactionResult = state.useWithoutItem(helper.getLevel(), fakePlayer, new BlockHitResult(
-                Vec3.atCenterOf(pos), Direction.NORTH, pos, false));
+                Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
         if (interactionResult != InteractionResult.SUCCESS) {
-            helper.fail("Failed to open ATM GUI", pos);
+            helper.fail("Failed to open ATM GUI", atmPos);
         }
 
         helper.succeed();
