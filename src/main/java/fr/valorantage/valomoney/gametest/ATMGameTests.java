@@ -107,15 +107,9 @@ public class ATMGameTests {
 
             // Credit then debit the same 'amount' of money
             atmMenu.credit(amount);
-            float fakePlayerBalance = fakePlayer.getData(ModAttachmentTypes.MONEY.get());
-            if (fakePlayerBalance != amount) {
-                helper.fail(String.format("Expected: %.2f$, Actual: %.2f$", amount, fakePlayerBalance), atmPos);
-            }
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
             atmMenu.debit(amount);
-            fakePlayerBalance = fakePlayer.getData(ModAttachmentTypes.MONEY.get());
-            if (fakePlayerBalance != 0.f) {
-                helper.fail(String.format("Expected: %.2f$, Actual: %.2f$", amount, fakePlayerBalance), atmPos);
-            }
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
         } else {
             helper.fail("Menu is not ATMMenu", atmPos);
         }
