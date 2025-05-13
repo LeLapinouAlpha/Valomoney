@@ -5,7 +5,6 @@ import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
-import fr.valorantage.valomoney.exception.GameTestException;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import fr.valorantage.valomoney.item.ModItems;
 import net.minecraft.core.BlockPos;
@@ -33,12 +32,9 @@ public class ATMGameTests {
         BlockPos pos = GameTestUtils.placeBlock(helper, relativePos, ModBlocks.ATM.get());
 
         // Check block & block entity
-        try {
-            helper.assertBlockPresent(ModBlocks.ATM.get(), relativePos);
-            GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
-        } catch (GameTestException gameTestException) {
-            helper.fail(gameTestException.getMessage(), gameTestException.getPos());
-        }
+        helper.assertBlockPresent(ModBlocks.ATM.get(), relativePos);
+        GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
+
         return pos;
     }
 
