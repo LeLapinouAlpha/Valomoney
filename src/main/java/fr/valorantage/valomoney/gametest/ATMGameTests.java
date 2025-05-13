@@ -34,7 +34,7 @@ public class ATMGameTests {
 
         // Check block & block entity
         try {
-            GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
+            helper.assertBlockPresent(ModBlocks.ATM.get(), relativePos);
             GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
         } catch (GameTestException gameTestException) {
             helper.fail(gameTestException.getMessage(), gameTestException.getPos());

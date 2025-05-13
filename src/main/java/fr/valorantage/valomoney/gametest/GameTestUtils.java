@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class GameTestUtils {
     public static BlockPos placeBlock(GameTestHelper helper, BlockPos relativePos, Block block, int flags) {
@@ -18,13 +17,6 @@ public class GameTestUtils {
 
     public static BlockPos placeBlock(GameTestHelper helper, BlockPos relativePos, Block block) {
         return placeBlock(helper, relativePos, block, 3);
-    }
-
-    public static void assertBlock(GameTestHelper helper, BlockPos pos, Block expectedBlock) {
-        BlockState state = helper.getLevel().getBlockState(pos);
-        if (!state.is(expectedBlock)) {
-            throw new GameTestException(expectedBlock, state.getBlock(), pos);
-        }
     }
 
     // FIXME: check for block entity to be non-null
