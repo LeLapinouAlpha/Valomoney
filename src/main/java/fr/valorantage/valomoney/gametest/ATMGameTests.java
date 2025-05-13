@@ -153,4 +153,37 @@ public class ATMGameTests {
 
         helper.succeed();
     }
+
+    @GameTest
+    public static void basicTransactionWithoutBankCard(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Create a fake player and teleport it to structure
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+
+        // Add cash items in fake player's inventory (10x1+5x5=35$)
+        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
+
+        // Reset fake player's balance and open ATM menu for it
+        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
+        MenuProvider provider = new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName());
+        AbstractContainerMenu menu = provider.createMenu(0, fakePlayer.getInventory(), fakePlayer);
+        if (menu instanceof ATMMenu atmMenu) {
+            // Set amount to credit and debit
+            final float amount = 35.f;
+
+            // Credit then debit the same 'amount' of money
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+        } else {
+            helper.fail("Menu is not ATMMenu", atmPos);
+        }
+
+        helper.succeed();
+    }
 }
