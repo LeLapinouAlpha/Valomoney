@@ -114,6 +114,33 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
+    public static void quickMoveOtherItem(GameTestHelper helper) {
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Create a fake player and teleport it to structure
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+
+        // Add bank card in fake player's inventory
+        fakePlayer.getInventory().add(new ItemStack(Blocks.STONE, 1));
+
+        // Reset fake player's balance and open ATM menu for it
+        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+        // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
+        int stoneSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), Blocks.STONE.asItem());
+
+        if (stoneSlot >= 0) {
+            atmMenu.quickMoveStack(fakePlayer, stoneSlot);
+            var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
+            helper.assertValueEqual(atmSlotItemStack.getItem(), ItemStack.EMPTY.getItem(), "atmFirstSlotItem");
+            helper.assertValueEqual(fakePlayer.getInventory().getItem(stoneSlot).getItem(), Blocks.STONE.asItem(), "stoneSlotItem");
+        } else {
+            helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
     public static void basicTransaction(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
