@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
+import fr.valorantage.valomoney.exception.GameTestException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -31,11 +32,13 @@ public class ATMGameTests {
         // Place ATM block
         BlockPos pos = GameTestUtils.placeBlock(helper, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
 
-        // Check block
-        GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
-
-        // Check block entity
-        GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
+        // Check block & block entity
+        try {
+            GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
+            GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
+        } catch (GameTestException gameTestException) {
+            helper.fail(gameTestException.getMessage(), gameTestException.getPos());
+        }
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
@@ -55,11 +58,13 @@ public class ATMGameTests {
         // Place ATM block
         BlockPos pos = GameTestUtils.placeBlock(helper, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
 
-        // Check block
-        GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
-
-        // Check block entity
-        GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
+        // Check block & block entity
+        try {
+            GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
+            GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
+        } catch (GameTestException gameTestException) {
+            helper.fail(gameTestException.getMessage(), gameTestException.getPos());
+        }
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));

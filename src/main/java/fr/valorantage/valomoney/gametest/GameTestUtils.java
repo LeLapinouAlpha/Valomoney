@@ -1,5 +1,6 @@
 package fr.valorantage.valomoney.gametest;
 
+import fr.valorantage.valomoney.exception.GameTestException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,7 @@ public class GameTestUtils {
     public static void assertBlock(GameTestHelper helper, BlockPos pos, Block expectedBlock) {
         BlockState state = helper.getLevel().getBlockState(pos);
         if (!state.is(expectedBlock)) {
-            helper.fail(String.format("Expected block: %s, Actual block: %s", expectedBlock, state.getBlock()), pos);
+            throw new GameTestException(expectedBlock, state.getBlock(), pos);
         }
     }
 
@@ -30,7 +31,7 @@ public class GameTestUtils {
     public static <T extends BlockEntity> void assertBlockEntity(GameTestHelper helper, BlockPos pos, Class<T> expectedClass) {
         BlockEntity blockEntity = helper.getLevel().getBlockEntity(pos);
         if (!(expectedClass.isInstance(blockEntity))) {
-            helper.fail(String.format("Expected block entity: %s, Actual block entity: %s", expectedClass, blockEntity.getClass()), pos);
+            throw new GameTestException(expectedClass, blockEntity.getClass(), pos);
         }
     }
 
