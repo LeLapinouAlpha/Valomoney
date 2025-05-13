@@ -81,13 +81,10 @@ public class ATMGameTests {
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
 
-        // Add cash items in fake player's inventory (5x5+10x1=35$) and a bank card
-        ItemStack bills = new ItemStack(ModItems.BILL.get(), 5);
-        ItemStack coins = new ItemStack(ModItems.COIN.get(), 10);
-        ItemStack bankCard = new ItemStack(ModItems.BANK_CARD.get(), 1);
-        fakePlayer.getInventory().add(bills);
-        fakePlayer.getInventory().add(coins);
-        fakePlayer.getInventory().add(bankCard);
+        // Add cash items in fake player's inventory (10x1+5x5=35$) and a bank card
+        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get(), 1));
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
@@ -95,8 +92,12 @@ public class ATMGameTests {
         MenuProvider provider = new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName());
         AbstractContainerMenu menu = provider.createMenu(0, fakePlayer.getInventory(), fakePlayer);
         if (menu instanceof ATMMenu atmMenu) {
-            // Add a bank card in ATM's inventory
-            atmBlockEntity.inventory.setStackInSlot(0, fakePlayer.getInventory().getItem(2));
+            // Move the bank card from fake player's inventory to the ATM inventory
+            ItemStack bankCard = fakePlayer.getInventory().items.stream()
+                    .filter(stack -> stack.is(ModItems.BANK_CARD.get()))
+                    .findFirst()
+                    .orElse(ItemStack.EMPTY);
+            atmBlockEntity.inventory.setStackInSlot(0, bankCard);
 
             // Set amount to credit and debit
             final float amount = 35.f;
