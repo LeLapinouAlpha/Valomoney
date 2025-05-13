@@ -99,19 +99,13 @@ public class ATMGameTests {
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
-        int bankCardSlot = -1;
-        for (int i = 0; i < fakePlayer.getInventory().items.size(); i++) {
-            ItemStack stack = fakePlayer.getInventory().items.get(i);
-            if (stack.is(ModItems.BANK_CARD.get())) {
-                bankCardSlot = i;
-                break;
-            }
-        }
+        int bankCardSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), ModItems.BANK_CARD.get());
 
         if (bankCardSlot >= 0) {
             atmMenu.quickMoveStack(fakePlayer, bankCardSlot);
             var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
             helper.assertValueEqual(atmSlotItemStack.getItem(), ModItems.BANK_CARD.get(), "atmFirstSlotItem");
+            helper.assertValueEqual(fakePlayer.getInventory().getItem(bankCardSlot), ItemStack.EMPTY, "bankCardSlotItem");
         } else {
             helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
         }
@@ -129,18 +123,14 @@ public class ATMGameTests {
         // Add cash items in fake player's inventory (10x1+5x5=35$) and a bank card
         fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
         fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get(), 1));
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
-        // Move the bank card from fake player's inventory to the ATM inventory
-        ItemStack bankCard = fakePlayer.getInventory().items.stream()
-                .filter(stack -> stack.is(ModItems.BANK_CARD.get()))
-                .findFirst()
-                .orElse(ItemStack.EMPTY);
+
+        // Add bank card to the ATM inventory
         ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
-        atmBlockEntity.inventory.setStackInSlot(0, bankCard);
+        atmBlockEntity.inventory.setStackInSlot(0, new ItemStack(ModItems.BANK_CARD.get(), 1));
 
         // Set amount to credit and debit
         final float amount = 35.f;

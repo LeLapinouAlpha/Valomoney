@@ -2,7 +2,9 @@ package fr.valorantage.valomoney.gametest;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,5 +41,14 @@ public class GameTestUtils {
         BlockPos newFakePlayerOnPos = helper.absolutePos(relativePos);
         fakePlayer.teleportTo(newFakePlayerOnPos.getX(), newFakePlayerOnPos.getY(), newFakePlayerOnPos.getZ());
         return fakePlayer;
+    }
+
+    public static int findItemSlotInInventory(Inventory inventory, Item item) {
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            if (inventory.getItem(i).is(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
