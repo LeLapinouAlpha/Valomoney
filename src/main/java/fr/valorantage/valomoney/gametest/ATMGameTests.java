@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -29,22 +28,20 @@ public class ATMGameTests {
 
     @GameTest
     public static void basicInteractionWithItem(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
-
         // Place ATM block
-        BlockPos pos = GameTestUtils.placeBlock(helper, level, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
+        BlockPos pos = GameTestUtils.placeBlock(helper, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
 
         // Check block
-        BlockState state = level.getBlockState(pos);
-        GameTestUtils.assertBlock(helper, pos, state, ModBlocks.ATM.get());
+        GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
 
         // Check block entity
-        GameTestUtils.assertBlockEntity(helper, level, pos, ATMBlockEntity.class);
+        GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
+        BlockState state = helper.getLevel().getBlockState(pos);
         var usedItemStack = new ItemStack(Blocks.STONE, 64);
-        ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, level, fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
+        ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, helper.getLevel(), fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
                 Vec3.atCenterOf(pos), Direction.NORTH, pos, false));
         if (interactionResult != ItemInteractionResult.SUCCESS) {
             helper.fail("Failed to open ATM GUI using item stack" + usedItemStack, pos);
@@ -55,24 +52,22 @@ public class ATMGameTests {
 
     @GameTest
     public static void basicInteractionWithoutItem(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
-
         // Place ATM block
-        BlockPos pos = GameTestUtils.placeBlock(helper, level, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
+        BlockPos pos = GameTestUtils.placeBlock(helper, new BlockPos(0, 2, 0), ModBlocks.ATM.get());
 
         // Check block
-        BlockState state = level.getBlockState(pos);
-        GameTestUtils.assertBlock(helper, pos, state, ModBlocks.ATM.get());
+        GameTestUtils.assertBlock(helper, pos, ModBlocks.ATM.get());
 
         // Check block entity
-        GameTestUtils.assertBlockEntity(helper, level, pos, ATMBlockEntity.class);
+        GameTestUtils.assertBlockEntity(helper, pos, ATMBlockEntity.class);
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI in all directions
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(0, 2, 0));
-        InteractionResult interactionResult = state.useWithoutItem(level, fakePlayer, new BlockHitResult(
+        BlockState state = helper.getLevel().getBlockState(pos);
+        InteractionResult interactionResult = state.useWithoutItem(helper.getLevel(), fakePlayer, new BlockHitResult(
                 Vec3.atCenterOf(pos), Direction.NORTH, pos, false));
         if (interactionResult != InteractionResult.SUCCESS) {
-            helper.fail("Failed to open ATM GUI from direction", pos);
+            helper.fail("Failed to open ATM GUI", pos);
         }
 
         helper.succeed();
