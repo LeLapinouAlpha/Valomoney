@@ -38,6 +38,18 @@ public class ATMGameTests {
         return pos;
     }
 
+    private static ATMMenu openATMMenu(GameTestHelper helper, BlockPos atmPos, Player player) {
+        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
+        MenuProvider provider = new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName());
+        AbstractContainerMenu menu = provider.createMenu(0, player.getInventory(), player);
+        if (menu instanceof ATMMenu atmMenu) {
+            return atmMenu;
+        } else {
+            helper.fail("Could not open ATM menu", atmPos);
+            return null;
+        }
+    }
+
     @GameTest
     public static void basicInteractionWithItem(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
@@ -85,31 +97,24 @@ public class ATMGameTests {
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
-        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
-        MenuProvider provider = new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName());
-        AbstractContainerMenu menu = provider.createMenu(0, fakePlayer.getInventory(), fakePlayer);
-        if (menu instanceof ATMMenu atmMenu) {
-            // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
-            int bankCardSlot = -1;
-            for (int i = 0; i < fakePlayer.getInventory().items.size(); i++) {
-                ItemStack stack = fakePlayer.getInventory().items.get(i);
-                if (stack.is(ModItems.BANK_CARD.get())) {
-                    bankCardSlot = i;
-                    break;
-                }
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+        // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
+        int bankCardSlot = -1;
+        for (int i = 0; i < fakePlayer.getInventory().items.size(); i++) {
+            ItemStack stack = fakePlayer.getInventory().items.get(i);
+            if (stack.is(ModItems.BANK_CARD.get())) {
+                bankCardSlot = i;
+                break;
             }
-
-            if (bankCardSlot >= 0) {
-                atmMenu.quickMoveStack(fakePlayer, bankCardSlot);
-                var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
-                helper.assertValueEqual(atmSlotItemStack.getItem(), ModItems.BANK_CARD.get(), "atmFirstSlotItem");
-            } else {
-                helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
-            }
-        } else {
-            helper.fail("Menu is not ATMMenu", atmPos);
         }
 
+        if (bankCardSlot >= 0) {
+            atmMenu.quickMoveStack(fakePlayer, bankCardSlot);
+            var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
+            helper.assertValueEqual(atmSlotItemStack.getItem(), ModItems.BANK_CARD.get(), "atmFirstSlotItem");
+        } else {
+            helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
+        }
         helper.succeed();
     }
 
@@ -128,28 +133,23 @@ public class ATMGameTests {
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+        // Move the bank card from fake player's inventory to the ATM inventory
+        ItemStack bankCard = fakePlayer.getInventory().items.stream()
+                .filter(stack -> stack.is(ModItems.BANK_CARD.get()))
+                .findFirst()
+                .orElse(ItemStack.EMPTY);
         ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
-        MenuProvider provider = new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName());
-        AbstractContainerMenu menu = provider.createMenu(0, fakePlayer.getInventory(), fakePlayer);
-        if (menu instanceof ATMMenu atmMenu) {
-            // Move the bank card from fake player's inventory to the ATM inventory
-            ItemStack bankCard = fakePlayer.getInventory().items.stream()
-                    .filter(stack -> stack.is(ModItems.BANK_CARD.get()))
-                    .findFirst()
-                    .orElse(ItemStack.EMPTY);
-            atmBlockEntity.inventory.setStackInSlot(0, bankCard);
+        atmBlockEntity.inventory.setStackInSlot(0, bankCard);
 
-            // Set amount to credit and debit
-            final float amount = 35.f;
+        // Set amount to credit and debit
+        final float amount = 35.f;
 
-            // Credit then debit the same 'amount' of money
-            atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
-        } else {
-            helper.fail("Menu is not ATMMenu", atmPos);
-        }
+        // Credit then debit the same 'amount' of money
+        atmMenu.credit(amount);
+        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
+        atmMenu.debit(amount);
+        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
 
         helper.succeed();
     }
@@ -168,21 +168,16 @@ public class ATMGameTests {
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
-        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
-        MenuProvider provider = new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName());
-        AbstractContainerMenu menu = provider.createMenu(0, fakePlayer.getInventory(), fakePlayer);
-        if (menu instanceof ATMMenu atmMenu) {
-            // Set amount to credit and debit
-            final float amount = 35.f;
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
-            // Credit then debit the same 'amount' of money
-            atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
-        } else {
-            helper.fail("Menu is not ATMMenu", atmPos);
-        }
+        // Set amount to credit and debit
+        final float amount = 35.f;
+
+        // Credit then debit the same 'amount' of money
+        atmMenu.credit(amount);
+        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+        atmMenu.debit(amount);
+        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
 
         helper.succeed();
     }
