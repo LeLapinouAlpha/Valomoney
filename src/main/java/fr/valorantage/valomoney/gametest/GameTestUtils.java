@@ -2,13 +2,19 @@ package fr.valorantage.valomoney.gametest;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.attachment.AttachmentType;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class GameTestUtils {
     public static BlockPos placeBlock(GameTestHelper helper, BlockPos relativePos, Block block, int flags) {
@@ -50,5 +56,18 @@ public class GameTestUtils {
             }
         }
         return -1;
+    }
+
+    public static void assertDrops(GameTestHelper helper, AABB aabb, List<ItemStack> expectedDrops) {
+        Comparator<ItemStack> itemStackComparator = Comparator
+                .comparing(ItemStack::toString);
+
+        var actualDrops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, aabb).stream()
+                .map(ItemEntity::getItem)
+                .sorted(itemStackComparator)
+                .toList();
+        var sortedExpectedDrops = expectedDrops.stream().sorted(itemStackComparator).toList();
+
+        helper.assertValueEqual(actualDrops.toString(), sortedExpectedDrops.toString(), "drops");
     }
 }

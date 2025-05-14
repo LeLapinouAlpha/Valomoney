@@ -18,10 +18,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import org.slf4j.Logger;
+
+import java.util.List;
 
 @GameTestHolder(ValomoneyMod.MODID)
 public class ATMGameTests {
@@ -94,7 +97,7 @@ public class ATMGameTests {
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
 
         // Add bank card in fake player's inventory
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get(), 1));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get()));
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
@@ -121,7 +124,7 @@ public class ATMGameTests {
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
 
         // Add bank card in fake player's inventory
-        fakePlayer.getInventory().add(new ItemStack(Blocks.STONE, 1));
+        fakePlayer.getInventory().add(new ItemStack(Blocks.STONE));
 
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
@@ -158,7 +161,7 @@ public class ATMGameTests {
 
         // Add bank card to the ATM inventory
         ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
-        atmBlockEntity.inventory.setStackInSlot(0, new ItemStack(ModItems.BANK_CARD.get(), 1));
+        atmBlockEntity.inventory.setStackInSlot(0, new ItemStack(ModItems.BANK_CARD.get()));
 
         // Set amount to credit and debit
         final float amount = 35.f;
@@ -198,5 +201,39 @@ public class ATMGameTests {
         GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
 
         helper.succeed();
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void dropsOnRemoveEmpty(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Break ATM block
+        helper.getLevel().destroyBlock(atmPos, true);
+
+        // Check for drops (Expected ATM block item and one bank card)
+        GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+                new ItemStack(ModBlocks.ATM.asItem()))
+        );
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void dropsOnRemove(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Add bank card to the ATM inventory
+        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
+        ItemStack bankCardItemStack = new ItemStack(ModItems.BANK_CARD.get());
+        atmBlockEntity.inventory.setStackInSlot(0, bankCardItemStack);
+
+        // Break ATM block
+        helper.getLevel().destroyBlock(atmPos, true);
+
+        // Check for drops (Expected ATM block item and one bank card)
+        GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+                new ItemStack(ModItems.BANK_CARD.get()),
+                new ItemStack(ModBlocks.ATM.asItem()))
+        );
     }
 }
