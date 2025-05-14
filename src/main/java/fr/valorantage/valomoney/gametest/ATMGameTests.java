@@ -65,11 +65,8 @@ public class ATMGameTests {
         var usedItemStack = new ItemStack(Blocks.STONE, 64);
         ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, helper.getLevel(), fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
                 Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
-        if (interactionResult != ItemInteractionResult.SUCCESS) {
-            helper.fail("Failed to open ATM GUI using item stack" + usedItemStack, atmPos);
-        }
 
-        helper.succeed();
+        helper.succeedIf(() -> helper.assertValueEqual(interactionResult, ItemInteractionResult.SUCCESS, "atmItemInteractionResult"));
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -82,11 +79,8 @@ public class ATMGameTests {
         BlockState state = helper.getLevel().getBlockState(atmPos);
         InteractionResult interactionResult = state.useWithoutItem(helper.getLevel(), fakePlayer, new BlockHitResult(
                 Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
-        if (interactionResult != InteractionResult.SUCCESS) {
-            helper.fail("Failed to open ATM GUI", atmPos);
-        }
 
-        helper.succeed();
+        helper.succeedIf(() -> helper.assertValueEqual(interactionResult, InteractionResult.SUCCESS, "atmInteractionResult"));
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -105,15 +99,13 @@ public class ATMGameTests {
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
         int bankCardSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), ModItems.BANK_CARD.get());
 
-        if (bankCardSlot >= 0) {
+        helper.succeedIf(() -> {
+            helper.assertTrue(bankCardSlot >= 0, "No bank card found in player's inventory");
             atmMenu.quickMoveStack(fakePlayer, bankCardSlot);
             var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
             helper.assertValueEqual(atmSlotItemStack.getItem(), ModItems.BANK_CARD.get(), "atmFirstSlotItem");
             helper.assertValueEqual(fakePlayer.getInventory().getItem(bankCardSlot), ItemStack.EMPTY, "bankCardSlotItem");
-        } else {
-            helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
-        }
-        helper.succeed();
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -132,15 +124,13 @@ public class ATMGameTests {
         // Move the bank card from fake player's inventory to the ATM's inventory using 'quickMoveStack' method
         int stoneSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), Blocks.STONE.asItem());
 
-        if (stoneSlot >= 0) {
+        helper.succeedIf(() -> {
+            helper.assertTrue(stoneSlot >= 0, "No bank card found in player's inventory");
             atmMenu.quickMoveStack(fakePlayer, stoneSlot);
             var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
             helper.assertValueEqual(atmSlotItemStack.getItem(), ItemStack.EMPTY.getItem(), "atmFirstSlotItem");
             helper.assertValueEqual(fakePlayer.getInventory().getItem(stoneSlot).getItem(), Blocks.STONE.asItem(), "stoneSlotItem");
-        } else {
-            helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
-        }
-        helper.succeed();
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -162,9 +152,10 @@ public class ATMGameTests {
         // Move the bank card from the ATM's inventory to fake player's inventory using 'quickMoveStack' method
         atmMenu.quickMoveStack(fakePlayer, 0); // pIndex = TE_INVENTORY_FIRST_SLOT_INDEX
         var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
-        helper.assertValueEqual(atmSlotItemStack, ItemStack.EMPTY, "atmFirstSlotItem");
-        helper.assertValueEqual(fakePlayer.getInventory().getItem(0), bankCardItemStack, "bankCardSlotItem");
-        helper.succeed();
+        helper.succeedIf(() -> {
+            helper.assertValueEqual(atmSlotItemStack, ItemStack.EMPTY, "atmFirstSlotItem");
+            helper.assertValueEqual(fakePlayer.getInventory().getItem(0), bankCardItemStack, "bankCardSlotItem");
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -191,12 +182,12 @@ public class ATMGameTests {
         final float amount = 35.f;
 
         // Credit then debit the same 'amount' of money
-        atmMenu.credit(amount);
-        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
-        atmMenu.debit(amount);
-        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
-
-        helper.succeed();
+        helper.succeedIf(() -> {
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -219,12 +210,12 @@ public class ATMGameTests {
         final float amount = 35.f;
 
         // Credit then debit the same 'amount' of money
-        atmMenu.credit(amount);
-        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
-        atmMenu.debit(amount);
-        GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
-
-        helper.succeed();
+        helper.succeedIf(() -> {
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -236,9 +227,10 @@ public class ATMGameTests {
         helper.getLevel().destroyBlock(atmPos, true);
 
         // Check for drops (Expected ATM block item and one bank card)
-        GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+        helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
                 new ItemStack(ModBlocks.ATM.asItem()))
-        );
+        ));
+
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -255,9 +247,9 @@ public class ATMGameTests {
         helper.getLevel().destroyBlock(atmPos, true);
 
         // Check for drops (Expected ATM block item and one bank card)
-        GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+        helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
                 new ItemStack(ModItems.BANK_CARD.get()),
                 new ItemStack(ModBlocks.ATM.asItem()))
-        );
+        ));
     }
 }
