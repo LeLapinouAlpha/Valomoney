@@ -129,7 +129,7 @@ public class ATMGameTests {
         // Reset fake player's balance and open ATM menu for it
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
-        // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
+        // Move the bank card from fake player's inventory to the ATM's inventory using 'quickMoveStack' method
         int stoneSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), Blocks.STONE.asItem());
 
         if (stoneSlot >= 0) {
@@ -140,6 +140,30 @@ public class ATMGameTests {
         } else {
             helper.fail("No bank card found in player's inventory", fakePlayer.getOnPos());
         }
+        helper.succeed();
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void quickMoveBankCardInInventory(GameTestHelper helper) {
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Create a fake player and teleport it to structure
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+
+        // Reset fake player's balance and open ATM menu for it
+        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        // Add bank card in ATM inventory
+        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
+        ItemStack bankCardItemStack = new ItemStack(ModItems.BANK_CARD.get());
+        atmBlockEntity.inventory.setStackInSlot(0, bankCardItemStack);
+
+        // Move the bank card from the ATM's inventory to fake player's inventory using 'quickMoveStack' method
+        atmMenu.quickMoveStack(fakePlayer, 0); // pIndex = TE_INVENTORY_FIRST_SLOT_INDEX
+        var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
+        helper.assertValueEqual(atmSlotItemStack, ItemStack.EMPTY, "atmFirstSlotItem");
+        helper.assertValueEqual(fakePlayer.getInventory().getItem(0), bankCardItemStack, "bankCardSlotItem");
         helper.succeed();
     }
 
