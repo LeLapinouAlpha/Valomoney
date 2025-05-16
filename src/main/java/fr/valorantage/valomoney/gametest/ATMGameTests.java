@@ -65,7 +65,7 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
         BlockState state = helper.getLevel().getBlockState(atmPos);
         var usedItemStack = new ItemStack(Blocks.STONE, 64);
         ItemInteractionResult interactionResult = state.useItemOn(usedItemStack, helper.getLevel(), fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(
@@ -80,7 +80,7 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
         // Create a fake player, teleport it to structure and make it use ATM to open the GUI
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
         BlockState state = helper.getLevel().getBlockState(atmPos);
         InteractionResult interactionResult = state.useWithoutItem(helper.getLevel(), fakePlayer, new BlockHitResult(
                 Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
@@ -92,15 +92,15 @@ public class ATMGameTests {
     public static void quickMoveBankCard(GameTestHelper helper) {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Add bank card in fake player's inventory
         fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get()));
 
         // Open ATM menu for fake player
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
         int bankCardSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), ModItems.BANK_CARD.get());
 
@@ -122,8 +122,8 @@ public class ATMGameTests {
     public static void quickMoveBankCardStack(GameTestHelper helper) {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Add bank cards stack in fake player's inventory
         fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get(), 64));
@@ -151,13 +151,13 @@ public class ATMGameTests {
     public static void quickMoveOtherItem(GameTestHelper helper) {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Add bank card in fake player's inventory
         fakePlayer.getInventory().add(new ItemStack(Blocks.STONE));
 
-        // Open ATM menu for it
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
         // Move the bank card from fake player's inventory to the ATM's inventory using 'quickMoveStack' method
         int stoneSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), Blocks.STONE.asItem());
@@ -180,10 +180,10 @@ public class ATMGameTests {
     public static void quickMoveBankCardInInventory(GameTestHelper helper) {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
-        // Open ATM menu for it
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         helper.succeedIf(() -> {
@@ -203,13 +203,13 @@ public class ATMGameTests {
     public static void quickMoveBankCardInInventoryExistingStack(GameTestHelper helper) {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Add bank cards stack in fake player's inventory
         fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get(), 63));
 
-        // Open ATM menu for it
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         helper.succeedIf(() -> {
@@ -230,15 +230,14 @@ public class ATMGameTests {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Add cash items in fake player's inventory (10x1+5x5=35$) and a bank card
         fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
         fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
 
-        // Reset fake player's balance and open ATM menu for it
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Credit then debit the same 'amount' of money
@@ -259,15 +258,14 @@ public class ATMGameTests {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Add cash items in fake player's inventory (10x1+5x5=35$)
         fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
         fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
 
-        // Reset fake player's balance and open ATM menu for it
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Credit then debit the same 'amount' of money
@@ -318,12 +316,11 @@ public class ATMGameTests {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
-        // Set fake player's balance and open ATM menu for it
-        float initialBalance = 0.f;
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), initialBalance);
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         helper.succeedIf(() -> {
@@ -342,8 +339,9 @@ public class ATMGameTests {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        final float initialBalance = 100.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 100.f);
 
         // Fill player's inventory with stone
         var playerInventory = fakePlayer.getInventory();
@@ -351,9 +349,7 @@ public class ATMGameTests {
             playerInventory.setItem(i, new ItemStack(Blocks.STONE.asItem(), 64));
         }
 
-        // Set fake player's balance and open ATM menu for it
-        float initialBalance = 100.f;
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), initialBalance);
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         helper.succeedIf(() -> {
@@ -372,12 +368,11 @@ public class ATMGameTests {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
-        // Create a fake player and teleport it to structure
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
-        // Set fake player's balance and open ATM menu for it
-        float initialBalance = 0.f;
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), initialBalance);
+        // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         helper.succeedIf(() -> {
@@ -388,6 +383,82 @@ public class ATMGameTests {
             atmMenu.debit(amount);
             GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void debitOnlyBills(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 10.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to debit
+            final float amount = 10.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance - amount);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
+                    new ItemStack(ModItems.BILL.get(), 2)
+            ));
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void debitOnlyCoins(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 10.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to debit
+            final float amount = 2.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance - amount);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
+                    new ItemStack(ModItems.COIN.get(), 2)
+            ));
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void debitBillsAndCoins(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 12.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to debit
+            final float amount = 12.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance - amount);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
+                    new ItemStack(ModItems.BILL.get(), 2),
+                    new ItemStack(ModItems.COIN.get(), 2)
+            ));
         });
     }
 }

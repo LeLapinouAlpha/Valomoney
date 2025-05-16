@@ -1,5 +1,6 @@
 package fr.valorantage.valomoney.gametest;
 
+import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,10 +43,11 @@ public class GameTestUtils {
         }
     }
 
-    public static Player makeMockPlayer(GameTestHelper helper, GameType gameMode, BlockPos relativePos) {
+    public static Player makeMockPlayer(GameTestHelper helper, GameType gameMode, BlockPos relativePos, float initialBalance) {
         Player fakePlayer = helper.makeMockPlayer(gameMode);
         BlockPos newFakePlayerOnPos = helper.absolutePos(relativePos);
         fakePlayer.teleportTo(newFakePlayerOnPos.getX(), newFakePlayerOnPos.getY(), newFakePlayerOnPos.getZ());
+        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), initialBalance);
         return fakePlayer;
     }
 
