@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -71,7 +70,7 @@ public class GameTestUtils {
         helper.assertValueEqual(actualDrops.toString(), sortedExpectedDrops.toString(), "drops");
     }
 
-    public static void assertInventoryContains(GameTestHelper helper, Inventory inventory, List<ItemStack> expectedItems) {
+    public static void assertInventoryEquals(GameTestHelper helper, Inventory inventory, List<ItemStack> expectedItems) {
         var actualItems = inventory.items.stream()
                 .filter(stack -> !stack.isEmpty())
                 .sorted(Comparator.comparing(ItemStack::toString))

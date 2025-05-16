@@ -280,7 +280,7 @@ public class ATMGameTests {
             GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
             atmMenu.debit(amount);
             GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
-            GameTestUtils.assertInventoryContains(helper, fakePlayer.getInventory(), List.of());
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
         });
     }
 
