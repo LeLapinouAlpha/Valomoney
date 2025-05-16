@@ -93,7 +93,7 @@ public class ATMGameTests {
         // Add bank card in fake player's inventory
         fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get()));
 
-        // Reset fake player's balance and open ATM menu for it
+        // Open ATM menu for fake player
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
@@ -102,9 +102,43 @@ public class ATMGameTests {
         helper.succeedIf(() -> {
             helper.assertTrue(bankCardSlot >= 0, "No bank card found in player's inventory");
             atmMenu.quickMoveStack(fakePlayer, bankCardSlot);
-            var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
-            helper.assertValueEqual(atmSlotItemStack.getItem(), ModItems.BANK_CARD.get(), "atmFirstSlotItem");
-            helper.assertValueEqual(fakePlayer.getInventory().getItem(bankCardSlot), ItemStack.EMPTY, "bankCardSlotItem");
+
+            var actualAtmSlotItemStack = atmMenu.slots.getFirst().getItem();
+            var expectedAtmSlotItemStack = new ItemStack(ModItems.BANK_CARD.get());
+            helper.assertValueEqual(actualAtmSlotItemStack, expectedAtmSlotItemStack, "atmSlotItemStack");
+
+            var actualBankCardSlotItemStack = fakePlayer.getInventory().getItem(bankCardSlot);
+            var expectedBankCardSlotItemStack = new ItemStack(ModItems.BANK_CARD.get(), 63);
+            helper.assertValueEqual(actualBankCardSlotItemStack, expectedBankCardSlotItemStack, "bankCardSlotItem");
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void quickMoveBankCardStack(GameTestHelper helper) {
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Create a fake player and teleport it to structure
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+
+        // Add bank card in fake player's inventory
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BANK_CARD.get(), 64));
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+        // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
+        int bankCardSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), ModItems.BANK_CARD.get());
+
+        helper.succeedIf(() -> {
+            helper.assertTrue(bankCardSlot >= 0, "No bank card found in player's inventory");
+            atmMenu.quickMoveStack(fakePlayer, bankCardSlot);
+
+            var actualAtmSlotItemStack = atmMenu.slots.getFirst().getItem();
+            var expectedAtmSlotItemStack = new ItemStack(ModItems.BANK_CARD.get());
+            helper.assertValueEqual(actualAtmSlotItemStack, expectedAtmSlotItemStack, "atmSlotItemStack");
+
+            var actualBankCardSlotItemStack = fakePlayer.getInventory().getItem(bankCardSlot);
+            var expectedBankCardSlotItemStack = new ItemStack(ModItems.BANK_CARD.get(), 63);
+            helper.assertValueEqual(actualBankCardSlotItemStack, expectedBankCardSlotItemStack, "bankCardSlotItem");
         });
     }
 
@@ -118,18 +152,22 @@ public class ATMGameTests {
         // Add bank card in fake player's inventory
         fakePlayer.getInventory().add(new ItemStack(Blocks.STONE));
 
-        // Reset fake player's balance and open ATM menu for it
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        // Open ATM menu for it
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
         // Move the bank card from fake player's inventory to the ATM's inventory using 'quickMoveStack' method
         int stoneSlot = GameTestUtils.findItemSlotInInventory(fakePlayer.getInventory(), Blocks.STONE.asItem());
 
         helper.succeedIf(() -> {
             helper.assertTrue(stoneSlot >= 0, "No bank card found in player's inventory");
+
             atmMenu.quickMoveStack(fakePlayer, stoneSlot);
-            var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
-            helper.assertValueEqual(atmSlotItemStack.getItem(), ItemStack.EMPTY.getItem(), "atmFirstSlotItem");
-            helper.assertValueEqual(fakePlayer.getInventory().getItem(stoneSlot).getItem(), Blocks.STONE.asItem(), "stoneSlotItem");
+            var actualAtmSlotItemStack = atmMenu.slots.getFirst().getItem();
+            var expectedAtmSlotItemStack = new ItemStack(Blocks.STONE);
+            helper.assertValueEqual(actualAtmSlotItemStack, expectedAtmSlotItemStack, "atmSlotItemStack");
+
+            var actualStoneSlotItemStack = fakePlayer.getInventory().getItem(stoneSlot);
+            var expectedStoneSlotItemStack = new ItemStack(ModItems.BANK_CARD.get(), 63);
+            helper.assertValueEqual(actualStoneSlotItemStack, expectedStoneSlotItemStack, "bankCardSlotItem");
         });
     }
 
@@ -140,21 +178,26 @@ public class ATMGameTests {
         // Create a fake player and teleport it to structure
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
 
-        // Reset fake player's balance and open ATM menu for it
-        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        // Open ATM menu for it
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in ATM inventory
         ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
-        ItemStack bankCardItemStack = new ItemStack(ModItems.BANK_CARD.get());
-        atmBlockEntity.inventory.setStackInSlot(0, bankCardItemStack);
+        atmBlockEntity.inventory.setStackInSlot(0,  new ItemStack(ModItems.BANK_CARD.get()));
 
         // Move the bank card from the ATM's inventory to fake player's inventory using 'quickMoveStack' method
         atmMenu.quickMoveStack(fakePlayer, 0); // pIndex = TE_INVENTORY_FIRST_SLOT_INDEX
         var atmSlotItemStack = atmMenu.slots.getFirst().getItem();
         helper.succeedIf(() -> {
-            helper.assertValueEqual(atmSlotItemStack, ItemStack.EMPTY, "atmFirstSlotItem");
-            helper.assertValueEqual(fakePlayer.getInventory().getItem(0), bankCardItemStack, "bankCardSlotItem");
+            atmMenu.quickMoveStack(fakePlayer, atmMenu.slots.getFirst().index);
+
+            var actualAtmSlotItemStack = atmMenu.slots.getFirst().getItem();
+            var expectedAtmSlotItemStack = ItemStack.EMPTY;
+            helper.assertValueEqual(actualAtmSlotItemStack, expectedAtmSlotItemStack, "atmSlotItemStack");
+
+            var actualInventoryFirstSlotItemStack = fakePlayer.getInventory().getItem(0);
+            var expectedInventoryFirstSlotItemStack = new ItemStack(ModItems.BANK_CARD.get());
+            helper.assertValueEqual(actualInventoryFirstSlotItemStack, expectedInventoryFirstSlotItemStack, "bankCardSlotItem");
         });
     }
 
