@@ -59,15 +59,27 @@ public class GameTestUtils {
     }
 
     public static void assertDrops(GameTestHelper helper, AABB aabb, List<ItemStack> expectedDrops) {
-        Comparator<ItemStack> itemStackComparator = Comparator
-                .comparing(ItemStack::toString);
-
         var actualDrops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, aabb).stream()
                 .map(ItemEntity::getItem)
-                .sorted(itemStackComparator)
+                .sorted(Comparator.comparing(ItemStack::toString))
                 .toList();
-        var sortedExpectedDrops = expectedDrops.stream().sorted(itemStackComparator).toList();
+        var sortedExpectedDrops = expectedDrops.stream()
+                .sorted(Comparator.comparing(ItemStack::toString))
+                .toList();
 
         helper.assertValueEqual(actualDrops.toString(), sortedExpectedDrops.toString(), "drops");
+    }
+
+    public static void assertPlayerInventoryContains(GameTestHelper helper, Player player, List<ItemStack> expectedItems) {
+        var actualItems = player.getInventory().items.stream()
+                .filter(stack -> !stack.isEmpty())
+                .sorted(Comparator.comparing(ItemStack::toString))
+                .toList();
+        var sortedExpectedItems = expectedItems.stream()
+                .filter(stack -> !stack.isEmpty())
+                .sorted(Comparator.comparing(ItemStack::toString))
+                .toList();
+
+        helper.assertValueEqual(actualItems.toString(), sortedExpectedItems.toString(), "playerInventoryItems");
     }
 }

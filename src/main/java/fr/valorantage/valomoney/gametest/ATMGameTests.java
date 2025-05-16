@@ -178,11 +178,12 @@ public class ATMGameTests {
         ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
         atmBlockEntity.inventory.setStackInSlot(0, new ItemStack(ModItems.BANK_CARD.get()));
 
-        // Set amount to credit and debit
-        final float amount = 35.f;
-
         // Credit then debit the same 'amount' of money
         helper.succeedIf(() -> {
+            // Set amount to credit and debit
+            final float amount = 35.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
             atmMenu.credit(amount);
             GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
             atmMenu.debit(amount);
@@ -206,11 +207,12 @@ public class ATMGameTests {
         fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
-        // Set amount to credit and debit
-        final float amount = 35.f;
-
         // Credit then debit the same 'amount' of money
         helper.succeedIf(() -> {
+            // Set amount to credit and debit
+            final float amount = 35.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
             atmMenu.credit(amount);
             GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
             atmMenu.debit(amount);
@@ -251,5 +253,33 @@ public class ATMGameTests {
                 new ItemStack(ModItems.BANK_CARD.get()),
                 new ItemStack(ModBlocks.ATM.asItem()))
         ));
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void debitInsufficientFunds(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0));
+
+        // Add bank card to the ATM inventory
+        ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(atmPos);
+        ItemStack bankCardItemStack = new ItemStack(ModItems.BANK_CARD.get());
+        atmBlockEntity.inventory.setStackInSlot(0, bankCardItemStack);
+
+        // Create a fake player and teleport it to structure
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0));
+
+        // Reset fake player's balance and open ATM menu for it
+        fakePlayer.setData(ModAttachmentTypes.MONEY.get(), 0.f);
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to credit and debit
+            final float amount = 100.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            GameTestUtils.assertPlayerInventoryContains(helper, fakePlayer, List.of());
+        });
     }
 }
