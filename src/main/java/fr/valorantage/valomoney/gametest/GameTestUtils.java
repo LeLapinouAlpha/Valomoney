@@ -36,11 +36,13 @@ public class GameTestUtils {
         }
     }
 
-    public static <T> void assertPlayerDataAttachment(GameTestHelper helper, Player player, AttachmentType<T> attachmentType, T expectedData) {
+    public static <T> void assertPlayerDataAttachment(GameTestHelper helper, Player player, AttachmentType<T> attachmentType, String attachmentName, T expectedData) {
         T actualData = player.getData(attachmentType);
-        if (!expectedData.equals(actualData)) {
-            helper.fail(String.format("Expected data attachment: %s, Actual: %s", expectedData, actualData), player.getOnPos());
-        }
+        helper.assertValueEqual(actualData, expectedData, attachmentName);
+    }
+
+    public static void assertPlayersMoney(GameTestHelper helper, Player player, float money) {
+        assertPlayerDataAttachment(helper, player, ModAttachmentTypes.MONEY.get(), "playersMoney", money);
     }
 
     public static Player makeMockPlayer(GameTestHelper helper, GameType gameMode, BlockPos relativePos, float initialBalance) {

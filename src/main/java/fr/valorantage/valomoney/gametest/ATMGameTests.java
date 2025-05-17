@@ -2,7 +2,6 @@ package fr.valorantage.valomoney.gametest;
 
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
@@ -245,11 +244,11 @@ public class ATMGameTests {
             // Set amount to credit and debit
             final float amount = 35.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, amount);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
         });
     }
 
@@ -273,11 +272,11 @@ public class ATMGameTests {
             // Set amount to credit and debit
             final float amount = 35.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
         });
     }
 
@@ -327,9 +326,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 100.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
         });
     }
@@ -356,9 +355,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 100.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             GameTestUtils.assertInventoryAllMatch(helper, fakePlayer.getInventory(), new ItemStack(Blocks.STONE.asItem(), 64));
         });
     }
@@ -379,9 +378,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = -100.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
         });
     }
@@ -402,9 +401,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 10.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance - amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
                     new ItemStack(ModItems.BILL.get(), 2)
             ));
@@ -427,9 +426,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 2.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance - amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
                     new ItemStack(ModItems.COIN.get(), 2)
             ));
@@ -452,9 +451,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 12.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance - amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
                     new ItemStack(ModItems.BILL.get(), 2),
                     new ItemStack(ModItems.COIN.get(), 2)
@@ -478,9 +477,9 @@ public class ATMGameTests {
             // Set amount to credit
             final float amount = 12.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
         });
     }
@@ -507,9 +506,9 @@ public class ATMGameTests {
             // Set amount to credit
             final float amount = 12.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             GameTestUtils.assertInventoryAllMatch(helper, fakePlayer.getInventory(), new ItemStack(Blocks.STONE.asItem(), 64));
         });
     }
@@ -532,9 +531,9 @@ public class ATMGameTests {
             // Set amount to credit
             final float amount = 12.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance + 7.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance + 7.f);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
         });
     }
@@ -556,9 +555,9 @@ public class ATMGameTests {
             // Set amount to credit
             final float amount = 45.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance + amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance + amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(new ItemStack(ModItems.BILL.get(), 1)));
         });
     }
@@ -580,9 +579,9 @@ public class ATMGameTests {
             // Set amount to credit
             final float amount = 50.f;
 
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance + amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance + amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
         });
     }
