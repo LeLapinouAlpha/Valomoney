@@ -40,7 +40,7 @@ public class ATMGameTests {
 
         if (withBankCard) {
             ATMBlockEntity atmBlockEntity = (ATMBlockEntity) helper.getLevel().getBlockEntity(pos);
-            atmBlockEntity.inventory.setStackInSlot(0, new ItemStack(ModItems.BANK_CARD.get()));
+            atmBlockEntity.inventory.insertItem(0, new ItemStack(ModItems.BANK_CARD.get()), false);
         }
 
         return pos;
