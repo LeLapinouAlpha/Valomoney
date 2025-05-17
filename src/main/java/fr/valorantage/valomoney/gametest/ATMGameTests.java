@@ -461,4 +461,129 @@ public class ATMGameTests {
             ));
         });
     }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void creditNoCash(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to credit
+            final float amount = 12.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void creditNoCashButOtherItems(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+
+        // Fill player's inventory with stone
+        var playerInventory = fakePlayer.getInventory();
+        for (int i = 0; i < playerInventory.getContainerSize(); i++) {
+            playerInventory.setItem(i, new ItemStack(Blocks.STONE.asItem(), 64));
+        }
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to credit
+            final float amount = 12.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            GameTestUtils.assertInventoryAllMatch(helper, fakePlayer.getInventory(), new ItemStack(Blocks.STONE.asItem(), 64));
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void creditNotEnoughCash(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 1));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 2));
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to credit
+            final float amount = 12.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance + 7.f);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void creditTooMuchCash(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 10));
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to credit
+            final float amount = 45.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance + amount);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(new ItemStack(ModItems.BILL.get(), 1)));
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
+    public static void creditCashEqualToAmount(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 10));
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to credit
+            final float amount = 50.f;
+
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance);
+            atmMenu.credit(amount);
+            GameTestUtils.assertPlayerDataAttachment(helper, fakePlayer, ModAttachmentTypes.MONEY.get(), initialBalance + amount);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
+        });
+    }
 }
