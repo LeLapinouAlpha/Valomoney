@@ -289,10 +289,11 @@ public class ATMGameTests {
         helper.getLevel().destroyBlock(atmPos, true);
 
         // Check for drops (Expected ATM block item and one bank card)
-        helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
-                new ItemStack(ModBlocks.ATM.asItem()))
-        ));
-
+        helper.runAfterDelay(2, () -> {
+            helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+                    new ItemStack(ModBlocks.ATM.asItem()))
+            ));
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -304,10 +305,12 @@ public class ATMGameTests {
         helper.getLevel().destroyBlock(atmPos, true);
 
         // Check for drops (Expected ATM block item and one bank card)
-        helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
-                new ItemStack(ModItems.BANK_CARD.get()),
-                new ItemStack(ModBlocks.ATM.asItem()))
-        ));
+        helper.runAfterDelay(2, () -> {
+            helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+                    new ItemStack(ModItems.BANK_CARD.get()),
+                    new ItemStack(ModBlocks.ATM.asItem()))
+            ));
+        });
     }
 
     @GameTest(template = BASICS_TEMPLATE)
