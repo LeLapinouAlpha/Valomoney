@@ -59,7 +59,7 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
-    public static void basicInteractionWithItem(GameTestHelper helper) {
+    public static void useWithItem(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
@@ -74,7 +74,7 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
-    public static void basicInteractionWithoutItem(GameTestHelper helper) {
+    public static void useWithoutItem(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
