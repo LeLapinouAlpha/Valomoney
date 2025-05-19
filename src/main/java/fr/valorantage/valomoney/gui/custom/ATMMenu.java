@@ -36,7 +36,9 @@ public class ATMMenu extends AbstractContainerMenu {
         this.blockEntity = (ATMBlockEntity) blockEntity;
         this.level = inventory.player.level();
 
+        // FIXME: change menu item's index to TE_INVENTORY_FIRST_SLOT_INDEX (must be declared before)
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 29, 24));
+
         this.addPlayerInventory(inventory);
         this.addPlayerHotbar(inventory);
     }
