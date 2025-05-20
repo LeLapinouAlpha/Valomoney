@@ -36,11 +36,9 @@ public class ATMMenu extends AbstractContainerMenu {
         this.blockEntity = (ATMBlockEntity) blockEntity;
         this.level = inventory.player.level();
 
-        // FIXME: change menu item's index to TE_INVENTORY_FIRST_SLOT_INDEX (must be declared before)
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 29, 24));
-
         this.addPlayerInventory(inventory);
         this.addPlayerHotbar(inventory);
+        this.addTileInventory();
     }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
@@ -57,12 +55,10 @@ public class ATMMenu extends AbstractContainerMenu {
     private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
-
     private static final int TE_INVENTORY_SLOT_COUNT = 1;
 
     @Override
     public ItemStack quickMoveStack(Player player, int pIndex) {
-        // FIXME: item stack is always moved first in the last slot of the player's hotbar
         Slot sourceSlot = slots.get(pIndex);
         if (!sourceSlot.hasItem()) {
             return ItemStack.EMPTY;
@@ -101,10 +97,14 @@ public class ATMMenu extends AbstractContainerMenu {
         return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player, ModBlocks.ATM.get());
     }
 
+    private void addTileInventory() {
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 29, 24));
+    }
+
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 15 + l * 18, 86 + i * 18));
+                this.addSlot(new Slot(playerInventory, VANILLA_FIRST_SLOT_INDEX + l + i * 9 + 9, 15 + l * 18, 86 + i * 18));
             }
         }
     }
