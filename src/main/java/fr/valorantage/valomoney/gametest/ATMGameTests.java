@@ -100,7 +100,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get()));
+        atmMenu.getSlot(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get()));
 
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
         final int bankCardSlot = GameTestUtils.findItemSlotInMenu(atmMenu, ModItems.BANK_CARD.get());
@@ -121,7 +121,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get()));
+        atmMenu.getSlot(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get()));
 
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
         final int bankCardSlot = GameTestUtils.findItemSlotInMenu(atmMenu, ModItems.BANK_CARD.get());
@@ -142,7 +142,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(Blocks.STONE));
+        atmMenu.getSlot(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(Blocks.STONE));
 
         // Move the bank card from fake player's inventory to the ATM's inventory using 'quickMoveStack' method
         final int stoneSlot = GameTestUtils.findItemSlotInMenu(atmMenu, Items.STONE);
@@ -180,7 +180,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get(), 63));
+        atmMenu.getSlot(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get(), 63));
 
         helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 ATMMenu.TE_INVENTORY_FIRST_SLOT_INDEX, ItemStack.EMPTY,

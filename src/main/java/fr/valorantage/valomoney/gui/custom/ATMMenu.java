@@ -97,6 +97,10 @@ public class ATMMenu extends AbstractContainerMenu {
         return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player, ModBlocks.ATM.get());
     }
 
+    public Slot getSlot(int index) {
+        return slots.get(index);
+    }
+
     private void addTileInventory() {
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 29, 24));
     }
