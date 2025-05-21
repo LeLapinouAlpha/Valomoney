@@ -13,7 +13,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,7 +23,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -60,24 +58,6 @@ public class ATMGameTests {
             helper.fail("Could not open ATM menu", atmPos);
             return null;
         }
-    }
-
-    private static int searchItemInMenu(ATMMenu atmMenu, Item item) {
-        return atmMenu.slots.stream()
-                .filter(slot -> slot.getItem().is(item))
-                .findFirst()
-                .map(slot -> slot.index)
-                .orElse(-1);
-    }
-
-    private static void assertQuickMoveStack(GameTestHelper helper, Player player, ATMMenu atmMenu, int srcIndex, ItemStack expectedSrcItemStack, int dstIndex, ItemStack expectedDstItemStack) {
-        atmMenu.quickMoveStack(player, srcIndex);
-
-        var actualSrcSlotItemStack = atmMenu.slots.get(srcIndex).getItem();
-        helper.assertValueEqual(actualSrcSlotItemStack.toString(), expectedSrcItemStack.toString(), "menuSrcSlotItemStack");
-
-        var actualDstSlotItemStack = atmMenu.slots.get(dstIndex).getItem();
-        helper.assertValueEqual(actualDstSlotItemStack.getItem(), expectedDstItemStack.getItem(), "menuDstSlotItemStack");
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -123,8 +103,8 @@ public class ATMGameTests {
         atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get()));
 
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
-        final int bankCardSlot = searchItemInMenu(atmMenu, ModItems.BANK_CARD.get());
-        helper.succeedIf(() -> assertQuickMoveStack(helper, fakePlayer, atmMenu,
+        final int bankCardSlot = GameTestUtils.findItemSlotInMenu(atmMenu, ModItems.BANK_CARD.get());
+        helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 bankCardSlot, ItemStack.EMPTY,
                 ATMMenu.TE_INVENTORY_FIRST_SLOT_INDEX, new ItemStack(ModItems.BANK_CARD.get())
         ));
@@ -144,8 +124,8 @@ public class ATMGameTests {
         atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get()));
 
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
-        final int bankCardSlot = searchItemInMenu(atmMenu, ModItems.BANK_CARD.get());
-        helper.succeedIf(() -> assertQuickMoveStack(helper, fakePlayer, atmMenu,
+        final int bankCardSlot = GameTestUtils.findItemSlotInMenu(atmMenu, ModItems.BANK_CARD.get());
+        helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 bankCardSlot, new ItemStack(ModItems.BANK_CARD.get(), 63),
                 ATMMenu.TE_INVENTORY_FIRST_SLOT_INDEX, new ItemStack(ModItems.BANK_CARD.get())
         ));
@@ -165,8 +145,8 @@ public class ATMGameTests {
         atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(Blocks.STONE));
 
         // Move the bank card from fake player's inventory to the ATM's inventory using 'quickMoveStack' method
-        final int stoneSlot = searchItemInMenu(atmMenu, Items.STONE);
-        helper.succeedIf(() -> assertQuickMoveStack(helper, fakePlayer, atmMenu,
+        final int stoneSlot = GameTestUtils.findItemSlotInMenu(atmMenu, Items.STONE);
+        helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 stoneSlot, new ItemStack(Blocks.STONE),
                 ATMMenu.TE_INVENTORY_FIRST_SLOT_INDEX, ItemStack.EMPTY
         ));
@@ -183,7 +163,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Move the bank card from ATM's inventory to the fake player's inventory using 'quickMoveStack' method
-        helper.succeedIf(() -> assertQuickMoveStack(helper, fakePlayer, atmMenu,
+        helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 ATMMenu.TE_INVENTORY_FIRST_SLOT_INDEX, ItemStack.EMPTY,
                 ATMMenu.VANILLA_FIRST_SLOT_INDEX, new ItemStack(ModItems.BANK_CARD.get())
         ));
@@ -202,7 +182,7 @@ public class ATMGameTests {
         // Add bank card in fake player's inventory
         atmMenu.slots.get(ATMMenu.VANILLA_FIRST_SLOT_INDEX).set(new ItemStack(ModItems.BANK_CARD.get(), 63));
 
-        helper.succeedIf(() -> assertQuickMoveStack(helper, fakePlayer, atmMenu,
+        helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 ATMMenu.TE_INVENTORY_FIRST_SLOT_INDEX, ItemStack.EMPTY,
                 ATMMenu.VANILLA_FIRST_SLOT_INDEX, new ItemStack(ModItems.BANK_CARD.get(), 64)
         ));
