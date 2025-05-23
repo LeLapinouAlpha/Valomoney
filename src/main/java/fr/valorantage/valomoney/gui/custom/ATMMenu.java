@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 public class ATMMenu extends AbstractContainerMenu {
@@ -58,7 +59,7 @@ public class ATMMenu extends AbstractContainerMenu {
     public static final int TE_INVENTORY_SLOT_COUNT = 1;
 
     @Override
-    public ItemStack quickMoveStack(Player player, int pIndex) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
         if (!sourceSlot.hasItem()) {
             return ItemStack.EMPTY;
@@ -90,11 +91,11 @@ public class ATMMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player, ModBlocks.ATM.get());
     }
 
-    public Slot getSlot(int index) {
+    public @NotNull Slot getSlot(int index) {
         return slots.get(index);
     }
 
