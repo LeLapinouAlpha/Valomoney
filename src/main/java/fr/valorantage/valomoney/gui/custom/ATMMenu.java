@@ -67,21 +67,18 @@ public class ATMMenu extends AbstractContainerMenu {
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
-        // Check if the slot clicked is one of the vanilla container slots
         if (isVanillaSlot(pIndex)) {
-            // This is a vanilla container slot so merge the stack into the tile inventory
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) {
+            if (!moveItemStackToTileInventory(sourceStack)) {
                 return ItemStack.EMPTY;
             }
         } else if (isTileInventorySlot(pIndex)) {
-            // This is a TE slot so merge the stack into the players inventory
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
+            if (!moveItemStackToVanillaInventory(sourceStack)) {
                 return ItemStack.EMPTY;
             }
         } else {
             return ItemStack.EMPTY;
         }
+
         // If stack size == 0 (the entire stack was moved) set slot contents to null
         if (sourceStack.getCount() == 0) {
             sourceSlot.set(ItemStack.EMPTY);
@@ -125,6 +122,14 @@ public class ATMMenu extends AbstractContainerMenu {
 
     private boolean isTileInventorySlot(int index) {
         return index >= TE_INVENTORY_FIRST_SLOT_INDEX && index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT;
+    }
+
+    private boolean moveItemStackToVanillaInventory(ItemStack stack) {
+        return moveItemStackTo(stack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false);
+    }
+
+    private boolean moveItemStackToTileInventory(ItemStack stack) {
+        return moveItemStackTo(stack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false);
     }
 
     // FIXME: must check if there is enough space in inventory
