@@ -29,7 +29,7 @@ public class ATMMenu extends AbstractContainerMenu {
     // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
     //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
     //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
-    //  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
+    //  36 - 36 = TileInventory slots, which map to our TileEntity slot numbers 0 - 0)
     private static final int HOTBAR_SLOT_COUNT = 9;
     private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
     private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
@@ -68,7 +68,7 @@ public class ATMMenu extends AbstractContainerMenu {
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
-        if (isVanillaSlot(pIndex)) {
+        if (isVanillaInventorySlot(pIndex)) {
             if (!moveItemStackToTileInventory(sourceStack)) {
                 return ItemStack.EMPTY;
             }
@@ -95,16 +95,16 @@ public class ATMMenu extends AbstractContainerMenu {
         return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player, ModBlocks.ATM.get());
     }
 
-    public int getVanillaFirstSlotIndex() {
+    public int getVanillaInventoryFirstSlotIndex() {
         return VANILLA_FIRST_SLOT_INDEX;
     }
 
-    public int getVanillaSlotCount() {
+    public int getVanillaInventorySlotCount() {
         return VANILLA_SLOT_COUNT;
     }
 
-    public int getVanillaLastSlotIndex() {
-        return getVanillaFirstSlotIndex() + getVanillaSlotCount();
+    public int getVanillaInventoryLastSlotIndex() {
+        return getVanillaInventoryFirstSlotIndex() + getVanillaInventorySlotCount();
     }
 
     public int getTileInventoryFirstSlotIndex() {
@@ -130,7 +130,7 @@ public class ATMMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, VANILLA_FIRST_SLOT_INDEX + l + i * 9 + 9, 15 + l * 18, 86 + i * 18));
+                this.addSlot(new Slot(playerInventory, getVanillaInventoryFirstSlotIndex() + l + i * 9 + 9, 15 + l * 18, 86 + i * 18));
             }
         }
     }
@@ -141,8 +141,8 @@ public class ATMMenu extends AbstractContainerMenu {
         }
     }
 
-    private boolean isVanillaSlot(int index) {
-        return index >= getVanillaFirstSlotIndex() && index < getVanillaLastSlotIndex();
+    private boolean isVanillaInventorySlot(int index) {
+        return index >= getVanillaInventoryFirstSlotIndex() && index < getVanillaInventoryLastSlotIndex();
     }
 
     private boolean isTileInventorySlot(int index) {
@@ -150,11 +150,11 @@ public class ATMMenu extends AbstractContainerMenu {
     }
 
     private boolean moveItemStackToVanillaInventory(ItemStack stack) {
-        return moveItemStackTo(stack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false);
+        return moveItemStackTo(stack, getVanillaInventoryFirstSlotIndex(), getVanillaInventoryLastSlotIndex(), false);
     }
 
     private boolean moveItemStackToTileInventory(ItemStack stack) {
-        return moveItemStackTo(stack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false);
+        return moveItemStackTo(stack, getTileInventoryFirstSlotIndex(), getTileInventoryLastSlotIndex(), false);
     }
 
     // FIXME: must check if there is enough space in inventory
