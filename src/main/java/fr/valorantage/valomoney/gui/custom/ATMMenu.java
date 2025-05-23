@@ -23,6 +23,22 @@ import org.slf4j.Logger;
 public class ATMMenu extends AbstractContainerMenu {
     private final static Logger LOGGER = LogUtils.getLogger();
 
+    // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
+    // must assign a slot number to each of the slots used by the GUI.
+    // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
+    // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
+    //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
+    //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
+    //  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
+    private static final int HOTBAR_SLOT_COUNT = 9;
+    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
+    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
+    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
+    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+    private static final int VANILLA_FIRST_SLOT_INDEX = 0;
+    private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+    private static final int TE_INVENTORY_SLOT_COUNT = 1;
+
     private final Inventory playerInventory;
     private final ATMBlockEntity blockEntity;
     private final Level level;
@@ -41,22 +57,6 @@ public class ATMMenu extends AbstractContainerMenu {
         this.addPlayerHotbar(inventory);
         this.addTileInventory();
     }
-
-    // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
-    // must assign a slot number to each of the slots used by the GUI.
-    // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
-    // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
-    //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
-    //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
-    //  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
-    public static final int HOTBAR_SLOT_COUNT = 9;
-    public static final int PLAYER_INVENTORY_ROW_COUNT = 3;
-    public static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-    public static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-    public static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
-    public static final int VANILLA_FIRST_SLOT_INDEX = 0;
-    public static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
-    public static final int TE_INVENTORY_SLOT_COUNT = 1;
 
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player player, int pIndex) {
@@ -95,6 +95,30 @@ public class ATMMenu extends AbstractContainerMenu {
         return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player, ModBlocks.ATM.get());
     }
 
+    public int getVanillaFirstSlotIndex() {
+        return VANILLA_FIRST_SLOT_INDEX;
+    }
+
+    public int getVanillaSlotCount() {
+        return VANILLA_SLOT_COUNT;
+    }
+
+    public int getVanillaLastSlotIndex() {
+        return getVanillaFirstSlotIndex() + getVanillaSlotCount();
+    }
+
+    public int getTileInventoryFirstSlotIndex() {
+        return TE_INVENTORY_FIRST_SLOT_INDEX;
+    }
+
+    public int getTileInventorySlotCount() {
+        return TE_INVENTORY_SLOT_COUNT;
+    }
+
+    public int getTileInventoryLastSlotIndex() {
+        return getTileInventoryFirstSlotIndex() + getTileInventorySlotCount();
+    }
+
     public @NotNull Slot getSlot(int index) {
         return slots.get(index);
     }
@@ -118,11 +142,11 @@ public class ATMMenu extends AbstractContainerMenu {
     }
 
     private boolean isVanillaSlot(int index) {
-        return index >= VANILLA_FIRST_SLOT_INDEX && index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+        return index >= getVanillaFirstSlotIndex() && index < getVanillaLastSlotIndex();
     }
 
     private boolean isTileInventorySlot(int index) {
-        return index >= TE_INVENTORY_FIRST_SLOT_INDEX && index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT;
+        return index >= getTileInventoryFirstSlotIndex() && index < getTileInventoryLastSlotIndex();
     }
 
     private boolean moveItemStackToVanillaInventory(ItemStack stack) {
