@@ -157,13 +157,17 @@ public class ATMMenu extends AbstractContainerMenu {
         return moveItemStackTo(stack, getTileInventoryFirstSlotIndex(), getTileInventoryLastSlotIndex(), false);
     }
 
+    public boolean hasBankCard() {
+        return this.getSlot(this.getTileInventoryFirstSlotIndex()).getItem().is(ModItems.BANK_CARD.get());
+    }
+
     // FIXME: must check if there is enough space in inventory
     public void debit(float amount) {
         var player = this.playerInventory.player;
         var currentPlayerMoney = player.getData(ModAttachmentTypes.MONEY);
         LOGGER.debug("{}'s actual balance is {}$", player.getDisplayName().getString(), currentPlayerMoney);
 
-        if (this.blockEntity.inventory.getStackInSlot(0).getItem() == ModItems.BANK_CARD.get()) {
+        if (hasBankCard()) {
             var billItemStack = new ItemStack(ModItems.BILL.get(), 1);
             var billItem = (MonetaryItem) billItemStack.getItem();
             int billCount = (int) (amount / billItem.getValue());
@@ -210,7 +214,7 @@ public class ATMMenu extends AbstractContainerMenu {
         var actualPlayerMoney = player.getData(ModAttachmentTypes.MONEY);
         LOGGER.debug("{}'s actual balance is {}$", player.getDisplayName().getString(), actualPlayerMoney);
 
-        if (this.blockEntity.inventory.getStackInSlot(0).getItem() == ModItems.BANK_CARD.get()) {
+        if (hasBankCard()) {
             float playerInventoryMoney = 0;
             for (int i = 0; i < this.playerInventory.getContainerSize(); i++) {
                 var item = this.playerInventory.getItem(i);
