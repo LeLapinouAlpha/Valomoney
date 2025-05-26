@@ -145,8 +145,24 @@ public class ATMMenu extends AbstractContainerMenu {
         return index >= getVanillaInventoryFirstSlotIndex() && index < getVanillaInventoryLastSlotIndex();
     }
 
+    public Slot getVanillaInventorySlot(int index) throws IndexOutOfBoundsException {
+        final int correctedIndex = getVanillaInventoryFirstSlotIndex() + index;
+        if (!isVanillaInventorySlot(correctedIndex)) {
+            throw new IndexOutOfBoundsException(index);
+        }
+        return this.getSlot(correctedIndex);
+    }
+
     private boolean isTileInventorySlot(int index) {
         return index >= getTileInventoryFirstSlotIndex() && index < getTileInventoryLastSlotIndex();
+    }
+
+    public Slot getTileInventorySlot(int index) throws IndexOutOfBoundsException {
+        final int correctedIndex = this.getTileInventoryFirstSlotIndex() + index;
+        if (!isTileInventorySlot(correctedIndex)) {
+            throw new IndexOutOfBoundsException(index);
+        }
+        return this.getSlot(correctedIndex);
     }
 
     private boolean moveItemStackToVanillaInventory(ItemStack stack) {
@@ -158,7 +174,7 @@ public class ATMMenu extends AbstractContainerMenu {
     }
 
     public boolean hasBankCard() {
-        return this.getSlot(this.getTileInventoryFirstSlotIndex()).getItem().is(ModItems.BANK_CARD.get());
+        return this.getTileInventorySlot(0).getItem().is(ModItems.BANK_CARD.get());
     }
 
     // FIXME: must check if there is enough space in inventory
