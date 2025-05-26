@@ -120,7 +120,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.getSlot(atmMenu.getVanillaInventoryFirstSlotIndex()).set(new ItemStack(ModItems.BANK_CARD.get()));
+        atmMenu.getSlot(atmMenu.getVanillaInventoryFirstSlotIndex()).set(new ItemStack(ModItems.BANK_CARD.get(), 64));
 
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
         final int bankCardSlot = GameTestUtils.findItemSlotInMenu(atmMenu, ModItems.BANK_CARD.get());

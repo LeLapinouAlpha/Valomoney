@@ -96,19 +96,22 @@ public class GameTestUtils {
         helper.assertValueEqual(actualItems.toString(), sortedExpectedItems.toString(), "playerInventoryItems");
     }
 
-    public static void assertInventoryAllMatch(GameTestHelper helper, Inventory inventory, ItemStack itemStack) {
-        inventory.items.stream().forEach(stack -> {
-            helper.assertValueEqual(stack.toString(), itemStack.toString(), "playerInventoryItem");
-        });
+    public static void assertItemStackEquals(GameTestHelper helper, ItemStack actual, ItemStack expected, String name) {
+        helper.assertValueEqual(actual.toString(), expected.toString(), name);
+    }
+
+    public static void assertInventoryAllMatch(GameTestHelper helper, Inventory inventory, ItemStack expectedItemStack) {
+        inventory.items.stream()
+                .forEach(actualItemStack -> assertItemStackEquals(helper, actualItemStack, expectedItemStack, "playerInventoryItem"));
     }
 
     public static void assertQuickMoveStack(GameTestHelper helper, Player player, AbstractContainerMenu menu, int srcIndex, ItemStack expectedSrcItemStack, int dstIndex, ItemStack expectedDstItemStack) {
         menu.quickMoveStack(player, srcIndex);
 
         var actualSrcSlotItemStack = menu.slots.get(srcIndex).getItem();
-        helper.assertValueEqual(actualSrcSlotItemStack.toString(), expectedSrcItemStack.toString(), "menuSrcSlotItemStack");
+        assertItemStackEquals(helper, actualSrcSlotItemStack, expectedSrcItemStack, "menuSrcSlotItemStack");
 
         var actualDstSlotItemStack = menu.slots.get(dstIndex).getItem();
-        helper.assertValueEqual(actualDstSlotItemStack.getItem().toString(), expectedDstItemStack.getItem().toString(), "menuDstSlotItemStack");
+        assertItemStackEquals(helper, actualDstSlotItemStack, expectedDstItemStack, "menuDstSlotItemStack");
     }
 }
