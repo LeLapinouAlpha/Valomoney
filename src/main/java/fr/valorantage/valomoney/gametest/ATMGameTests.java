@@ -377,6 +377,32 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
+    public static void debitOnlyBillsMultipleStacks(GameTestHelper helper) {
+        // Place ATM block and check for block type and block entity type
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
+
+        // Create a fake player
+        final float initialBalance = 640.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to debit
+            final float amount = 640.f;
+
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
+                    new ItemStack(ModItems.BILL.get(), 64),
+                    new ItemStack(ModItems.BILL.get(), 64)
+            ));
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
     public static void debitOnlyCoins(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
