@@ -230,7 +230,6 @@ public class ATMMenu extends AbstractContainerMenu {
     public void credit(float amount) {
         var player = this.playerInventory.player;
         var actualPlayerMoney = player.getData(ModAttachmentTypes.MONEY);
-        LOGGER.debug("{}'s actual balance is {}$", player.getDisplayName().getString(), actualPlayerMoney);
 
         if (hasBankCard()) {
             float playerInventoryMoney = 0;
@@ -254,12 +253,8 @@ public class ATMMenu extends AbstractContainerMenu {
                 }
             }
 
-            LOGGER.debug("Credit {}$ to {}'s account", playerInventoryMoney, player.getName().getString());
 
             player.setData(ModAttachmentTypes.MONEY, actualPlayerMoney + playerInventoryMoney);
-            LOGGER.debug("{}'s new balance is {}$", player.getDisplayName().getString(), player.getData(ModAttachmentTypes.MONEY));
-        } else {
-            LOGGER.debug("Cannot credit without a bank card");
         }
     }
 }
