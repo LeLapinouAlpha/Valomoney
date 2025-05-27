@@ -10,7 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -45,6 +47,14 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
         super(ModBlockEntities.ATM_BE.get(), pos, blockState);
     }
 
+    public void drops() {
+        SimpleContainer container = new SimpleContainer(this.inventory.getSlots());
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            container.setItem(i, this.inventory.getStackInSlot(i));
+        }
+        Containers.dropContents(this.level, this.worldPosition, container);
+    }
+
     @Override
     public Component getDisplayName() {
         return Component.literal("ATM");
@@ -76,5 +86,4 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
         super.loadAdditional(tag, registries);
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
     }
-
 }
