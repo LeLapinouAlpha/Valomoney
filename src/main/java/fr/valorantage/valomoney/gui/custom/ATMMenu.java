@@ -20,6 +20,9 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ATMMenu extends AbstractContainerMenu {
     private final static Logger LOGGER = LogUtils.getLogger();
 
@@ -177,51 +180,50 @@ public class ATMMenu extends AbstractContainerMenu {
         return this.getTileInventorySlot(0).getItem().is(ModItems.BANK_CARD.get());
     }
 
-    // FIXME: must check if there is enough space in inventory
+    private static <T extends MonetaryItem> List<ItemStack> withdrawCash(List<T> authorizedCashItems, final float maxValue) {
+        authorizedCashItems.sort((a, b) -> Float.compare(b.getValue(), a.getValue()));
+
+        List<ItemStack> cashItems = new ArrayList<>();
+        float currentValue = maxValue;
+        for (var cashItem : authorizedCashItems) {
+            final int count = (int) (currentValue / cashItem.getValue());
+            final int fullStackCount = count / 64;
+            final int remaining = count % 64;
+
+            for (int i = 0; i < fullStackCount; ++i) {
+                cashItems.add(new ItemStack(cashItem, 64));
+            }
+
+            if (remaining > 0) {
+                cashItems.add(new ItemStack(cashItem, remaining));
+            }
+
+            currentValue -= fullStackCount * 64 * cashItem.getValue() + remaining * cashItem.getValue();
+        }
+        return cashItems;
+    }
+
     public void debit(float amount) {
         var player = this.playerInventory.player;
-        var currentPlayerMoney = player.getData(ModAttachmentTypes.MONEY);
-        LOGGER.debug("{}'s actual balance is {}$", player.getDisplayName().getString(), currentPlayerMoney);
+        float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
         if (hasBankCard()) {
-            var billItemStack = new ItemStack(ModItems.BILL.get(), 1);
-            var billItem = (MonetaryItem) billItemStack.getItem();
-            int billCount = (int) (amount / billItem.getValue());
-            billItemStack.setCount(billCount);
-            float billMoney = billCount * billItem.getValue();
-            amount -= billMoney;
+            // Get cash items list to give to player
+            var cashItems = withdrawCash(new ArrayList<>(List.of(
+                    (MonetaryItem) ModItems.BILL.get(),
+                    (MonetaryItem) ModItems.COIN.get()
+            )), Math.min(amount, currentPlayerBalance));
 
-            var coinItemStack = new ItemStack(ModItems.COIN.get(), 1);
-            var coinItem = (MonetaryItem) coinItemStack.getItem();
-            int coinCount = (int) (amount / coinItem.getValue());
-            coinItemStack.setCount(coinCount);
-            float coinMoney = coinCount * coinItem.getValue();
-            amount -= coinMoney;
-
-            float actualDebit = billMoney + coinMoney;
-            if (currentPlayerMoney < actualDebit) {
-                LOGGER.debug("{}'s has insufficient funds", player.getDisplayName().getString());
-                return;
+            // Distribute cash items in player's inventory and updating dynamically player's balance
+            for (var cashItemStack : cashItems) {
+                if (this.playerInventory.add(cashItemStack.copy())) {
+                    // Withdraw cashItemStack's value from player's balance
+                    var item = cashItemStack.getItem();
+                    var monetaryItem = (MonetaryItem) item;
+                    currentPlayerBalance -= monetaryItem.getValue() * cashItemStack.getCount();
+                    player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance);
+                }
             }
-
-            if (!this.playerInventory.add(billItemStack)) {
-                LOGGER.error("Couldn't add bills item to player's inventory: {}", billItemStack);
-                return;
-            }
-
-            if (!this.playerInventory.add(coinItemStack)) {
-                LOGGER.error("Couldn't add coins item to player's inventory: {}", coinItemStack);
-                return;
-            }
-
-            LOGGER.debug("Debit will give: {} bills (5$), {} coins (1$)", billCount, coinCount);
-            LOGGER.debug(String.format("Money that will not be given: %.2f$", amount));
-
-            player.setData(ModAttachmentTypes.MONEY, currentPlayerMoney - actualDebit);
-            LOGGER.debug("{}'s new balance is {}$", player.getDisplayName().getString(), player.getData(ModAttachmentTypes.MONEY));
-
-        } else {
-            LOGGER.debug("Cannot debit without a bank card");
         }
     }
 
