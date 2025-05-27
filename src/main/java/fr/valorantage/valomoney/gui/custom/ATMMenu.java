@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 public class ATMMenu extends AbstractContainerMenu {
@@ -206,11 +206,32 @@ public class ATMMenu extends AbstractContainerMenu {
     }
 
     private static float depositCash(final float maxValue, Stream<ItemStack> cashItems) {
-        return Math.min(maxValue, cashItems
-                .map(stack -> ((MonetaryItem) stack.getItem()).getValue() * stack.getCount())
-                .reduce(0f, Float::sum)
-        );
+        AtomicReference<Float> total = new AtomicReference<>(0.f);
+        AtomicReference<Float> remaining = new AtomicReference<>(maxValue);
+
+        cashItems.forEach(stack -> {
+            if (remaining.get() <= 0.f) {
+                return;
+            }
+
+            var monetaryItem = (MonetaryItem) stack.getItem();
+            float valuePerUnit = monetaryItem.getValue();
+            int count = stack.getCount();
+
+            int canTake = Math.min(count, (int) (remaining.get() / valuePerUnit));
+
+            if (canTake > 0) {
+                float added = canTake * valuePerUnit;
+                total.updateAndGet(v -> v + added);
+                remaining.updateAndGet(v -> v - added);
+
+                stack.shrink(canTake);
+            }
+        });
+
+        return total.get();
     }
+
 
     public void debit(float amount) {
         var player = this.playerInventory.player;
