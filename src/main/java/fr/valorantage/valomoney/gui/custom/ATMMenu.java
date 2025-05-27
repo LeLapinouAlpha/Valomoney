@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ATMMenu extends AbstractContainerMenu {
     private final static Logger LOGGER = LogUtils.getLogger();
@@ -203,6 +205,13 @@ public class ATMMenu extends AbstractContainerMenu {
         return cashItems;
     }
 
+    private static float depositCash(final float maxValue, Stream<ItemStack> cashItems) {
+        return Math.min(maxValue, cashItems
+                .map(stack -> ((MonetaryItem) stack.getItem()).getValue() * stack.getCount())
+                .reduce(0f, Float::sum)
+        );
+    }
+
     public void debit(float amount) {
         var player = this.playerInventory.player;
         float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
@@ -229,32 +238,15 @@ public class ATMMenu extends AbstractContainerMenu {
 
     public void credit(float amount) {
         var player = this.playerInventory.player;
-        var actualPlayerMoney = player.getData(ModAttachmentTypes.MONEY);
+        float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
         if (hasBankCard()) {
-            float playerInventoryMoney = 0;
-            for (int i = 0; i < this.playerInventory.getContainerSize(); i++) {
-                var item = this.playerInventory.getItem(i);
-                if (item.getItem() instanceof MonetaryItem monetaryItem) {
-                    float itemStackAmount = monetaryItem.getValue() * item.getCount();
+            // Filter cash items of player's inventory
+            final float moneyToCredit = depositCash(amount, this.playerInventory.items.stream()
+                    .filter(stack -> stack.getItem() instanceof MonetaryItem)
+            );
 
-                    if (playerInventoryMoney + itemStackAmount > amount) {
-                        float remainingAmount = amount - playerInventoryMoney;
-                        int maxItemCount = (int) (remainingAmount / monetaryItem.getValue());
-                        if (maxItemCount > 0) {
-                            playerInventoryMoney += monetaryItem.getValue() * maxItemCount;
-                            item.setCount(item.getCount() - maxItemCount);
-                        }
-                        break;
-                    } else {
-                        playerInventoryMoney += itemStackAmount;
-                        this.playerInventory.removeItem(i, item.getCount());
-                    }
-                }
-            }
-
-
-            player.setData(ModAttachmentTypes.MONEY, actualPlayerMoney + playerInventoryMoney);
+            player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
         }
     }
 }
