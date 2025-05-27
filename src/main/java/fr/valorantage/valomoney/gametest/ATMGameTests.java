@@ -193,7 +193,8 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), true);
 
         // Create a fake player
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
         // Add cash items in fake player's inventory (10x1+5x5=35$) and a bank card
         fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
@@ -207,11 +208,11 @@ public class ATMGameTests {
             // Set amount to credit and debit
             final float amount = 35.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance + amount);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
         });
     }
 
@@ -221,7 +222,8 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
         // Create a fake player
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
+        final float initialBalance = 0.f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
         // Add cash items in fake player's inventory (10x1+5x5=35$)
         fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
@@ -235,11 +237,11 @@ public class ATMGameTests {
             // Set amount to credit and debit
             final float amount = 35.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.f);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
         });
     }
 
