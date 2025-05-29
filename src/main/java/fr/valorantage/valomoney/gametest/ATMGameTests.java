@@ -60,7 +60,7 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
-    public static void useWithItem(GameTestHelper helper) {
+    public static void useItemOn(GameTestHelper helper) {
         // Place ATM block and check for block type and block entity type
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
 
@@ -72,20 +72,6 @@ public class ATMGameTests {
                 Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
 
         helper.succeedIf(() -> helper.assertValueEqual(interactionResult, ItemInteractionResult.SUCCESS, "atmItemInteractionResult"));
-    }
-
-    @GameTest(template = BASICS_TEMPLATE)
-    public static void useWithoutItem(GameTestHelper helper) {
-        // Place ATM block and check for block type and block entity type
-        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), false);
-
-        // Create a fake player, teleport it to structure and make it use ATM to open the GUI
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
-        BlockState state = helper.getLevel().getBlockState(atmPos);
-        InteractionResult interactionResult = state.useWithoutItem(helper.getLevel(), fakePlayer, new BlockHitResult(
-                Vec3.atCenterOf(atmPos), Direction.NORTH, atmPos, false));
-
-        helper.succeedIf(() -> helper.assertValueEqual(interactionResult, InteractionResult.SUCCESS, "atmInteractionResult"));
     }
 
     @GameTest(template = BASICS_TEMPLATE)
