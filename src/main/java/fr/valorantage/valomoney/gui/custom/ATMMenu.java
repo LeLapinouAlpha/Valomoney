@@ -182,7 +182,7 @@ public class ATMMenu extends AbstractContainerMenu {
         return this.getTileInventorySlot(0).getItem().is(ModItems.BANK_CARD.get());
     }
 
-    private static <T extends MonetaryItem> List<ItemStack> withdrawCash(List<T> authorizedCashItems, final float maxValue) {
+    private static <T extends MonetaryItem> List<ItemStack> distributeCash(List<T> authorizedCashItems, final float maxValue) {
         authorizedCashItems.sort((a, b) -> Float.compare(b.getValue(), a.getValue()));
 
         List<ItemStack> cashItems = new ArrayList<>();
@@ -232,14 +232,13 @@ public class ATMMenu extends AbstractContainerMenu {
         return total.get();
     }
 
-
     public void debit(float amount) {
         var player = this.playerInventory.player;
         float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
         if (hasBankCard()) {
             // Get cash items list to give to player
-            var cashItems = withdrawCash(new ArrayList<>(List.of(
+            var cashItems = distributeCash(new ArrayList<>(List.of(
                     (MonetaryItem) ModItems.BILL.get(),
                     (MonetaryItem) ModItems.COIN.get()
             )), Math.min(amount, currentPlayerBalance));
