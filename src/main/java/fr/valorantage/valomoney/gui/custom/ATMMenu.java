@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
+import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.item.ModItems;
 import fr.valorantage.valomoney.item.custom.MonetaryItem;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
@@ -178,8 +180,21 @@ public class ATMMenu extends AbstractContainerMenu {
         return moveItemStackTo(stack, getTileInventoryFirstSlotIndex(), getTileInventoryLastSlotIndex(), false);
     }
 
-    public boolean hasBankCard() {
-        return this.getTileInventorySlot(0).getItem().is(ModItems.BANK_CARD.get());
+    public Player getBankCardBoundPlayer() {
+        var bankCard = this.getTileInventorySlot(0).getItem();
+        if (bankCard.is(ModItems.BANK_CARD.get())) {
+            var boundPlayerUUIDStr = bankCard.get(ModDataComponentTypes.PLAYER_UUID.get());
+            if (boundPlayerUUIDStr != null) {
+                var boundPlayerUUID = UUID.fromString(boundPlayerUUIDStr);
+                return this.level.getPlayerByUUID(boundPlayerUUID);
+            }
+        }
+        return null;
+    }
+
+    public boolean isPlayerBoundToBankCard() {
+        var boundPlayer = this.getBankCardBoundPlayer();
+        return boundPlayer != null && boundPlayer.getUUID().equals(this.playerInventory.player.getUUID());
     }
 
     private static <T extends MonetaryItem> List<ItemStack> distributeCash(List<T> authorizedCashItems, final float maxValue) {
@@ -236,7 +251,7 @@ public class ATMMenu extends AbstractContainerMenu {
         var player = this.playerInventory.player;
         float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
-        if (hasBankCard()) {
+        if (isPlayerBoundToBankCard()) {
             // Get cash items list to give to player
             var cashItems = distributeCash(new ArrayList<>(List.of(
                     (MonetaryItem) ModItems.BILL.get(),
@@ -260,7 +275,7 @@ public class ATMMenu extends AbstractContainerMenu {
         var player = this.playerInventory.player;
         float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
-        if (hasBankCard()) {
+        if (isPlayerBoundToBankCard()) {
             // Filter cash items of player's inventory
             final float moneyToCredit = depositCash(amount, this.playerInventory.items.stream()
                     .filter(stack -> stack.getItem() instanceof MonetaryItem)
