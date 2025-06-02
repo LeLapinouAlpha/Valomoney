@@ -121,13 +121,13 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.getVanillaInventorySlot(0).set(createBoundBankCard(fakePlayer));
+        atmMenu.getVanillaInventorySlot(0).set(createBoundBankCard(fakePlayer, 64));
 
         // Move the bank card from fake player's inventory to the ATM inventory using 'quickMoveStack' method
         final int bankCardSlot = GameTestUtils.findItemSlotInMenu(atmMenu, ModItems.BANK_CARD.get());
         helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
-                bankCardSlot, new ItemStack(ModItems.BANK_CARD.get(), 63),
-                atmMenu.getTileInventorySlot(0).index, new ItemStack(ModItems.BANK_CARD.get())
+                bankCardSlot, ItemStack.EMPTY,
+                atmMenu.getTileInventorySlot(0).index, new ItemStack(ModItems.BANK_CARD.get(), 64)
         ));
     }
 
@@ -183,7 +183,7 @@ public class ATMGameTests {
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
 
         // Add bank card in fake player's inventory
-        atmMenu.getVanillaInventorySlot(0).set(new ItemStack(ModItems.BANK_CARD.get(), 63));
+        atmMenu.getVanillaInventorySlot(0).set(createBoundBankCard(fakePlayer, 63));
 
         helper.succeedIf(() -> GameTestUtils.assertQuickMoveStack(helper, fakePlayer, atmMenu,
                 atmMenu.getTileInventorySlot(0).index, ItemStack.EMPTY,
@@ -261,11 +261,9 @@ public class ATMGameTests {
         helper.getLevel().destroyBlock(atmPos, true);
 
         // Check for drops (Expected ATM block item and one bank card)
-        helper.runAfterDelay(2, () -> {
-            helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
-                    new ItemStack(ModBlocks.ATM.asItem()))
-            ));
-        });
+        helper.runAfterDelay(2, () -> helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+                new ItemStack(ModBlocks.ATM.asItem()))
+        )));
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -274,18 +272,16 @@ public class ATMGameTests {
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
         // Place ATM block without a bank card
-        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, false);
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
 
         // Break ATM block
         helper.getLevel().destroyBlock(atmPos, true);
 
         // Check for drops (Expected ATM block item and one bank card)
-        helper.runAfterDelay(2, () -> {
-            helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
-                    new ItemStack(ModItems.BANK_CARD.get()),
-                    new ItemStack(ModBlocks.ATM.asItem()))
-            ));
-        });
+        helper.runAfterDelay(2, () -> helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+                new ItemStack(ModItems.BANK_CARD.get()),
+                new ItemStack(ModBlocks.ATM.asItem()))
+        )));
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -366,7 +362,7 @@ public class ATMGameTests {
     @GameTest(template = BASICS_TEMPLATE)
     public static void debitOnlyBills(GameTestHelper helper) {
         // Create a fake player and move it inside the gametest structure, and assign it an initial balance
-        final float initialBalance = 0.f;
+        final float initialBalance = 10.f;
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
         // Place ATM block with a bank card
@@ -391,7 +387,7 @@ public class ATMGameTests {
     @GameTest(template = BASICS_TEMPLATE)
     public static void debitOnlyBillsMultipleStacks(GameTestHelper helper) {
         // Create a fake player and move it inside the gametest structure, and assign it an initial balance
-        final float initialBalance = 0.f;
+        final float initialBalance = 640.f;
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
         // Place ATM block with a bank card
@@ -417,7 +413,7 @@ public class ATMGameTests {
     @GameTest(template = BASICS_TEMPLATE)
     public static void debitOnlyCoins(GameTestHelper helper) {
         // Create a fake player and move it inside the gametest structure, and assign it an initial balance
-        final float initialBalance = 0.f;
+        final float initialBalance = 2.f;
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
         // Place ATM block with a bank card
@@ -442,7 +438,7 @@ public class ATMGameTests {
     @GameTest(template = BASICS_TEMPLATE)
     public static void debitBillsAndCoins(GameTestHelper helper) {
         // Create a fake player and move it inside the gametest structure, and assign it an initial balance
-        final float initialBalance = 0.f;
+        final float initialBalance = 12.f;
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), initialBalance);
 
         // Place ATM block with a bank card
