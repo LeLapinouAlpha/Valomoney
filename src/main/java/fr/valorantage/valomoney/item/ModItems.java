@@ -3,7 +3,7 @@ package fr.valorantage.valomoney.item;
 import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.item.custom.BankCardItem;
-import fr.valorantage.valomoney.item.custom.MonetaryItem;
+import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -15,8 +15,8 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ValomoneyMod.MODID);
 
     // Creates monetary items
-    public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new MonetaryItem(1.0f));
-    public static final DeferredItem<Item> BILL = ITEMS.register("bill", () -> new MonetaryItem(5.0f));
+    public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new CashItem(1.0f));
+    public static final DeferredItem<Item> BILL = ITEMS.register("bill", () -> new CashItem(5.0f));
 
     // Creates ATM block item
     public static final DeferredItem<BlockItem> ATM_ITEM = ITEMS.register("atm", () -> new BlockItem(ModBlocks.ATM.get(), new Item.Properties()));

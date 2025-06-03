@@ -7,10 +7,10 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-public class MonetaryItem extends Item {
+public class CashItem extends Item {
     private final float value;
 
-    public MonetaryItem(float value) {
+    public CashItem(float value) {
         super(new Item.Properties());
 
         if (value <= 0.0f)
