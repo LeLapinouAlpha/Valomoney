@@ -7,7 +7,7 @@ import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.item.ModItems;
-import fr.valorantage.valomoney.item.custom.MonetaryItem;
+import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -189,7 +189,7 @@ public class ATMMenu extends AbstractContainerMenu {
         return false;
     }
 
-    private static <T extends MonetaryItem> List<ItemStack> distributeCash(List<T> authorizedCashItems, final float maxValue) {
+    private static <T extends CashItem> List<ItemStack> distributeCash(List<T> authorizedCashItems, final float maxValue) {
         authorizedCashItems.sort((a, b) -> Float.compare(b.getValue(), a.getValue()));
 
         List<ItemStack> cashItems = new ArrayList<>();
@@ -221,7 +221,7 @@ public class ATMMenu extends AbstractContainerMenu {
                 return;
             }
 
-            var monetaryItem = (MonetaryItem) stack.getItem();
+            var monetaryItem = (CashItem) stack.getItem();
             float valuePerUnit = monetaryItem.getValue();
             int count = stack.getCount();
 
@@ -247,8 +247,8 @@ public class ATMMenu extends AbstractContainerMenu {
 
             // Get cash items list to give to player
             var cashItems = distributeCash(new ArrayList<>(List.of(
-                    (MonetaryItem) ModItems.BILL.get(),
-                    (MonetaryItem) ModItems.COIN.get()
+                    (CashItem) ModItems.BILL.get(),
+                    (CashItem) ModItems.COIN.get()
             )), Math.min(amount, currentPlayerBalance));
 
             // Distribute cash items in player's inventory and updating dynamically player's balance
@@ -256,7 +256,7 @@ public class ATMMenu extends AbstractContainerMenu {
                 if (this.playerInventory.add(cashItemStack.copy())) {
                     // Withdraw cashItemStack's value from player's balance
                     var item = cashItemStack.getItem();
-                    var monetaryItem = (MonetaryItem) item;
+                    var monetaryItem = (CashItem) item;
                     currentPlayerBalance -= monetaryItem.getValue() * cashItemStack.getCount();
                     player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance);
                 }
@@ -272,7 +272,7 @@ public class ATMMenu extends AbstractContainerMenu {
 
             // Filter cash items of player's inventory
             final float moneyToCredit = depositCash(amount, this.playerInventory.items.stream()
-                    .filter(stack -> stack.getItem() instanceof MonetaryItem)
+                    .filter(stack -> stack.getItem() instanceof CashItem)
             );
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
