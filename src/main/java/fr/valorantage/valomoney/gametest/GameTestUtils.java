@@ -6,6 +6,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -62,6 +63,14 @@ public class GameTestUtils {
         return -1;
     }
 
+    public static int findItemSlotInMenu(AbstractContainerMenu menu, Item item) {
+        return menu.slots.stream()
+                .filter(slot -> slot.getItem().is(item))
+                .findFirst()
+                .map(slot -> slot.index)
+                .orElse(-1);
+    }
+
     public static void assertDrops(GameTestHelper helper, AABB aabb, List<ItemStack> expectedDrops) {
         var actualDrops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, aabb).stream()
                 .map(ItemEntity::getItem)
@@ -87,9 +96,22 @@ public class GameTestUtils {
         helper.assertValueEqual(actualItems.toString(), sortedExpectedItems.toString(), "playerInventoryItems");
     }
 
-    public static void assertInventoryAllMatch(GameTestHelper helper, Inventory inventory, ItemStack itemStack) {
-        inventory.items.stream().forEach(stack -> {
-           helper.assertValueEqual(stack.toString(), itemStack.toString(), "playerInventoryItem");
-        });
+    public static void assertItemStackEquals(GameTestHelper helper, ItemStack actual, ItemStack expected, String name) {
+        helper.assertValueEqual(actual.toString(), expected.toString(), name);
+    }
+
+    public static void assertInventoryAllMatch(GameTestHelper helper, Inventory inventory, ItemStack expectedItemStack) {
+        inventory.items.stream()
+                .forEach(actualItemStack -> assertItemStackEquals(helper, actualItemStack, expectedItemStack, "playerInventoryItem"));
+    }
+
+    public static void assertQuickMoveStack(GameTestHelper helper, Player player, AbstractContainerMenu menu, int srcIndex, ItemStack expectedSrcItemStack, int dstIndex, ItemStack expectedDstItemStack) {
+        menu.quickMoveStack(player, srcIndex);
+
+        var actualSrcSlotItemStack = menu.slots.get(srcIndex).getItem();
+        assertItemStackEquals(helper, actualSrcSlotItemStack, expectedSrcItemStack, "menuSrcSlotItemStack");
+
+        var actualDstSlotItemStack = menu.slots.get(dstIndex).getItem();
+        assertItemStackEquals(helper, actualDstSlotItemStack, expectedDstItemStack, "menuDstSlotItemStack");
     }
 }
