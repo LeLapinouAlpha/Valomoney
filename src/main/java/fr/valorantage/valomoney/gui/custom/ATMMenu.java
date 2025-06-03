@@ -9,6 +9,7 @@ import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.item.ModItems;
 import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -243,7 +244,7 @@ public class ATMMenu extends AbstractContainerMenu {
         var player = this.playerInventory.player;
 
         if (this.isPlayerBoundToBankCard(player)) {
-            float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
+            final float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
             // Get cash items list to give to player
             var cashItems = distributeCash(new ArrayList<>(List.of(
@@ -252,15 +253,19 @@ public class ATMMenu extends AbstractContainerMenu {
             )), Math.min(amount, currentPlayerBalance));
 
             // Distribute cash items in player's inventory and updating dynamically player's balance
+            float moneyToDebit = 0.f;
             for (var cashItemStack : cashItems) {
                 if (this.playerInventory.add(cashItemStack.copy())) {
                     // Withdraw cashItemStack's value from player's balance
                     var item = cashItemStack.getItem();
-                    var monetaryItem = (CashItem) item;
-                    currentPlayerBalance -= monetaryItem.getValue() * cashItemStack.getCount();
-                    player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance);
+                    var cashItem = (CashItem) item;
+                    final float cashItemValue = cashItem.getValue() * cashItemStack.getCount();
+                    moneyToDebit += cashItemValue;
                 }
             }
+
+            player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance - moneyToDebit);
+            player.sendSystemMessage(Component.literal(String.format("You have been debited of: %.2f$", moneyToDebit)));
         }
     }
 
@@ -276,6 +281,7 @@ public class ATMMenu extends AbstractContainerMenu {
             );
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
+            player.sendSystemMessage(Component.literal(String.format("You have been credited of: %.2f$", moneyToCredit)));
         }
     }
 }
