@@ -13,13 +13,21 @@ public class ServerPayloadHandler {
     private final static Logger LOGGER = LogUtils.getLogger();
 
     public static void handleTransactionPayloadOnNetwork(final TransactionPayload data, final IPayloadContext context) {
-        LOGGER.debug("Server received TransactionPayload: {}", data);
-        // TODO: implement this method
+        LOGGER.debug("Network received TransactionPayload: {}", data);
+
+        // FIXME: Suppose that the menu is an instance of ATMMenu
+        var player = (ServerPlayer) context.player();
+        var menu = (ATMMenu) player.containerMenu;
+
+        switch (data.kind()) {
+            case CREDIT -> menu.credit(data.value());
+            case DEBIT -> menu.debit(data.value());
+        }
     }
 
     public static void handlePlayerMoneyPayloadOnNetwork(final PlayerMoneyPayload data, final IPayloadContext context) {
         // Do something with the data, on the network thread
-        LOGGER.debug("Server received PlayerMoneyPayload: {}", data);
+        LOGGER.debug("Network received PlayerMoneyPayload: {}", data);
 
         ServerPlayer player = (ServerPlayer) context.player();
         float playerMoney = player.getData(ModAttachmentTypes.MONEY);

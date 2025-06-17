@@ -18,7 +18,6 @@ public class ModPayloads {
         final PayloadRegistrar registrar = event.registrar("1")
                 .executesOn(HandlerThread.NETWORK);
 
-        // TODO: Create a method to refactor those instructions
         // Register TransactionPayload (Client -> Server)
         registrar.playToServer(
                 TransactionPayload.TYPE,
