@@ -3,8 +3,6 @@ package fr.valorantage.valomoney.gui.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.network.packet.ATMCreditPayload;
-import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
 import fr.valorantage.valomoney.network.packet.TransactionKind;
 import fr.valorantage.valomoney.network.packet.TransactionPayload;
 import net.minecraft.client.gui.GuiGraphics;
