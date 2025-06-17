@@ -1,8 +1,6 @@
 package fr.valorantage.valomoney.network;
 
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.network.packet.ATMCreditPayload;
-import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
 import fr.valorantage.valomoney.network.packet.PlayerMoneyPayload;
 import fr.valorantage.valomoney.network.packet.TransactionPayload;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,20 +19,6 @@ public class ModPayloads {
                 .executesOn(HandlerThread.NETWORK);
 
         // TODO: Create a method to refactor those instructions
-        // Register ATMDebitPayload (Client -> Server)
-        registrar.playToServer(
-                ATMDebitPayload.TYPE,
-                ATMDebitPayload.STREAM_CODEC,
-                ServerPayloadHandler::handleATMDebitPayloadOnNetwork
-        );
-
-        // Register ATMCreditPayload (Client -> Server)
-        registrar.playToServer(
-                ATMCreditPayload.TYPE,
-                ATMCreditPayload.STREAM_CODEC,
-                ServerPayloadHandler::handleATMCreditPayloadOnNetwork
-        );
-
         // Register TransactionPayload (Client -> Server)
         registrar.playToServer(
                 TransactionPayload.TYPE,
