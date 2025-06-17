@@ -4,6 +4,7 @@ import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.network.packet.ATMCreditPayload;
 import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
 import fr.valorantage.valomoney.network.packet.PlayerMoneyPayload;
+import fr.valorantage.valomoney.network.packet.TransactionPayload;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -32,6 +33,13 @@ public class ModPayloads {
                 ATMCreditPayload.TYPE,
                 ATMCreditPayload.STREAM_CODEC,
                 ServerPayloadHandler::handleATMCreditPayloadOnNetwork
+        );
+
+        // Register TransactionPayload (Client -> Server)
+        registrar.playToServer(
+                TransactionPayload.TYPE,
+                TransactionPayload.STREAM_CODEC,
+                ServerPayloadHandler::handleTransactionPayloadOnNetwork
         );
 
         // Register PlayerMoneyPayload (Server <-> Client)
