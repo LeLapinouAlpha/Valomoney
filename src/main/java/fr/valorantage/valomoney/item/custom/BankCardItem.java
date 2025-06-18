@@ -12,9 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BankCardItem extends Item {
@@ -32,16 +34,13 @@ public class BankCardItem extends Item {
         if (!level.isClientSide()) {
             LOGGER.debug("{} used bank card", player.getDisplayName().getString());
 
-            // FIXME: Refactor the way to read/write player UUID from data component
             var stack = player.getItemInHand(usedHand);
-            String storedPlayerUUID = stack.get(ModDataComponentTypes.PLAYER_UUID);
+            var storedPlayerUUID = getBoundPlayerUUID(stack);
             if (storedPlayerUUID == null) {
-                player.getItemInHand(usedHand).set(ModDataComponentTypes.PLAYER_UUID, player.getStringUUID());
+                setBoundPlayerUUID(stack, player.getUUID());
                 LOGGER.debug("Bound bank card to player '{}'", player.getDisplayName().getString());
             } else {
-                // FIXME: Must check if storedPlayer is null
-                var storedPlayer = level.getPlayerByUUID(UUID.fromString(storedPlayerUUID));
-                LOGGER.debug("This bank card has already been bind to player '{}'", storedPlayer.getDisplayName().getString());
+                LOGGER.debug("This bank card has already been bind to player '{}'", player.getDisplayName().getString());
             }
         }
 
@@ -50,10 +49,9 @@ public class BankCardItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        // FIXME: Refactor the way to read/write player UUID from data component
-        String storedPlayerUUID = stack.get(ModDataComponentTypes.PLAYER_UUID);
+        UUID storedPlayerUUID = getBoundPlayerUUID(stack);
         if (storedPlayerUUID != null) {
-            var storedPlayer = context.level().getPlayerByUUID(UUID.fromString(storedPlayerUUID));
+            var storedPlayer = context.level().getPlayerByUUID(storedPlayerUUID);
             if (storedPlayer != null) {
                 // TODO: Optimize the number of packets send to the server (one packet sent by frame rendered)
                 // FIXME: storedPlayer is not used, so any player will see it's balance, so the data component is useless
@@ -64,5 +62,14 @@ public class BankCardItem extends Item {
         }
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    }
+
+    public UUID getBoundPlayerUUID(ItemStack stack) {
+        var storedPlayerUUIDString = stack.get(ModDataComponentTypes.PLAYER_UUID);
+        return storedPlayerUUIDString == null ? null : UUID.fromString(storedPlayerUUIDString);
+    }
+
+    public void setBoundPlayerUUID(ItemStack stack, @NotNull UUID playerUUID) {
+        stack.set(ModDataComponentTypes.PLAYER_UUID, playerUUID.toString());
     }
 }
