@@ -5,6 +5,7 @@ import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import fr.valorantage.valomoney.network.packet.PlayerMoneyPayload;
 import fr.valorantage.valomoney.network.packet.TransactionPayload;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
@@ -29,8 +30,11 @@ public class ServerPayloadHandler {
         // Do something with the data, on the network thread
         LOGGER.debug("Network received PlayerMoneyPayload: {}", data);
 
-        ServerPlayer player = (ServerPlayer) context.player();
-        float playerMoney = player.getData(ModAttachmentTypes.MONEY);
-        context.reply(new PlayerMoneyPayload(playerMoney));
+        var level = (ServerLevel) context.player().level();
+        var player = level.getPlayerByUUID(data.playerUUID());
+        if (player != null) {
+            float playerMoney = player.getData(ModAttachmentTypes.MONEY);
+            context.reply(new PlayerMoneyPayload(data.playerUUID(), playerMoney));
+        }
     }
 }
