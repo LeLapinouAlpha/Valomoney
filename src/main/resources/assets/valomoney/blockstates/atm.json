@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=north": {
       "model": "valomoney:block/atm"
+    },
+    "facing=south": {
+      "model": "valomoney:block/atm",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "valomoney:block/atm",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "valomoney:block/atm",
+      "y": 90
     }
   }
 }
