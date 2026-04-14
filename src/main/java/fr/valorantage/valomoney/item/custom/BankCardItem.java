@@ -11,7 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -20,11 +19,36 @@ import java.util.UUID;
 public class BankCardItem extends Item {
     private final static Logger LOGGER = LogUtils.getLogger();
 
-    public static float PLAYER_MONEY = 0.f;
-
     public BankCardItem() {
         super(new Item.Properties());
 
+    }
+
+    public UUID getBoundPlayerUUID(ItemStack stack) {
+        var storedPlayerUUIDString = stack.get(ModDataComponentTypes.PLAYER_UUID);
+        return storedPlayerUUIDString == null ? null : UUID.fromString(storedPlayerUUIDString);
+    }
+
+    public void BindToPlayer(ItemStack stack, Player player) {
+        var storedPlayerUUID = getBoundPlayerUUID(stack);
+        if (storedPlayerUUID == null) {
+            stack.set(ModDataComponentTypes.PLAYER_UUID, player.getUUID().toString());
+
+            LOGGER.debug("Bound bank card to player '{}'", player.getDisplayName().getString());
+        } else {
+            LOGGER.debug("This bank card has already been bind to player '{}'",
+                    player.getDisplayName().getString());
+        }
+    }
+
+    public Float getBoundPlayerMoney(ItemStack stack) {
+        var storedPlayerUUID = getBoundPlayerUUID(stack);
+        if (storedPlayerUUID == null) {
+            return null;
+        }
+
+        BankCardClientCache.maybeRequestMoney(storedPlayerUUID);
+        return BankCardClientCache.getCachedMoney(storedPlayerUUID);
     }
 
     @Override
@@ -33,14 +57,7 @@ public class BankCardItem extends Item {
             LOGGER.debug("{} used bank card", player.getDisplayName().getString());
 
             var stack = player.getItemInHand(usedHand);
-            var storedPlayerUUID = getBoundPlayerUUID(stack);
-            if (storedPlayerUUID == null) {
-                setBoundPlayerUUID(stack, player.getUUID());
-                LOGGER.debug("Bound bank card to player '{}'", player.getDisplayName().getString());
-            } else {
-                LOGGER.debug("This bank card has already been bind to player '{}'",
-                        player.getDisplayName().getString());
-            }
+            this.BindToPlayer(stack, player);
         }
 
         return super.use(level, player, usedHand);
@@ -49,27 +66,13 @@ public class BankCardItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
             TooltipFlag tooltipFlag) {
-        UUID storedPlayerUUID = getBoundPlayerUUID(stack);
-        if (storedPlayerUUID != null) {
-            BankCardClientCache.maybeRequestMoney(storedPlayerUUID);
-
-            var cached = BankCardClientCache.getCachedMoney(storedPlayerUUID);
-            if (cached != null) {
-                tooltipComponents.add(Component.literal(String.format("Money: %.2f$", cached)));
-            } else {
-                tooltipComponents.add(Component.literal("Money: Loading..."));
-            }
+        var money = this.getBoundPlayerMoney(stack);
+        if (money != null) {
+            tooltipComponents.add(Component.literal(String.format("Money: %.2f$", money)));
+        } else {
+            tooltipComponents.add(Component.literal("Money: Loading..."));
         }
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-    }
-
-    public UUID getBoundPlayerUUID(ItemStack stack) {
-        var storedPlayerUUIDString = stack.get(ModDataComponentTypes.PLAYER_UUID);
-        return storedPlayerUUIDString == null ? null : UUID.fromString(storedPlayerUUIDString);
-    }
-
-    public void setBoundPlayerUUID(ItemStack stack, @NotNull UUID playerUUID) {
-        stack.set(ModDataComponentTypes.PLAYER_UUID, playerUUID.toString());
     }
 }
