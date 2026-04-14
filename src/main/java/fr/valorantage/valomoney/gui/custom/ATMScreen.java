@@ -3,8 +3,8 @@ package fr.valorantage.valomoney.gui.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.network.packet.ATMCreditPayload;
-import fr.valorantage.valomoney.network.packet.ATMDebitPayload;
+import fr.valorantage.valomoney.network.packet.TransactionKind;
+import fr.valorantage.valomoney.network.packet.TransactionPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -79,12 +79,10 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     }
 
     private void onCreditButtonClicked(Button button) {
-        LOGGER.debug("Launched credit of {}$", this.amountEditBox.getValue());
-
         try {
             float amount = Float.parseFloat(this.amountEditBox.getValue());
 
-            var payload = new ATMCreditPayload(amount);
+            var payload = new TransactionPayload(TransactionKind.CREDIT, amount);
             LOGGER.debug("Sending payload to server: {}", payload);
             PacketDistributor.sendToServer(payload);
 
@@ -94,12 +92,10 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     }
 
     private void onDebitButtonClicked(Button button) {
-        LOGGER.debug("Launched debit of {}$", this.amountEditBox.getValue());
-
         try {
             float amount = Float.parseFloat(this.amountEditBox.getValue());
 
-            var payload = new ATMDebitPayload(amount);
+            var payload = new TransactionPayload(TransactionKind.DEBIT, amount);
             LOGGER.debug("Sending payload to server: {}", payload);
             PacketDistributor.sendToServer(payload);
 
