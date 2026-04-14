@@ -2,6 +2,7 @@ package fr.valorantage.valomoney.network;
 
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.item.custom.BankCardItem;
+import fr.valorantage.valomoney.network.cache.BankCardClientCache;
 import fr.valorantage.valomoney.network.packet.PlayerMoneyPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
@@ -13,6 +14,6 @@ public class ClientPayloadHandler {
         // Do something with the data, on the network thread
         LOGGER.debug("Client received PlayerMoneyPayload: {}", data);
 
-        BankCardItem.PLAYER_MONEY = data.amount();
+        BankCardClientCache.putCachedMoney(data.playerUUID(), data.amount());
     }
 }
