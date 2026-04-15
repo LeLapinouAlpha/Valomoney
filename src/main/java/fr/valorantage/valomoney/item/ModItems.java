@@ -15,7 +15,9 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ValomoneyMod.MODID);
 
     // Creates monetary items
-    public static final DeferredItem<Item> COIN = ITEMS.register("coin", () -> new CashItem(1.0f));
+    public static final DeferredItem<Item> COIN1 = ITEMS.register("coin1", () -> new CashItem(0.1f));
+    public static final DeferredItem<Item> COIN2 = ITEMS.register("coin2", () -> new CashItem(0.5f));
+    public static final DeferredItem<Item> COIN = ITEMS.register("coin3", () -> new CashItem(1.0f));
     public static final DeferredItem<Item> BILL = ITEMS.register("bill", () -> new CashItem(5.0f));
 
     // Creates ATM block item

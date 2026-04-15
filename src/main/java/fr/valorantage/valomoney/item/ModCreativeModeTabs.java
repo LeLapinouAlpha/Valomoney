@@ -20,6 +20,8 @@ public class ModCreativeModeTabs {
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ModItems.COIN.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
+                output.accept(ModItems.COIN1.get());
+                output.accept(ModItems.COIN2.get());
                 output.accept(ModItems.COIN.get());
                 output.accept(ModItems.BILL.get());
                 output.accept(ModItems.BANK_CARD.get());
