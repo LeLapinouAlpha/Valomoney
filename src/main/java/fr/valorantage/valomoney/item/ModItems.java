@@ -11,21 +11,23 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModItems {
-    // Create a Deferred Register to hold Items which will all be registered under the "valomoney" namespace
+    // Create a Deferred Register to hold Items which will all be registered under
+    // the "valomoney" namespace
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ValomoneyMod.MODID);
 
     // Creates cash items
-    public static final DeferredItem<Item> COIN1 = ITEMS.register("coin1", () -> new CashItem(0.1f));
-    public static final DeferredItem<Item> COIN2 = ITEMS.register("coin2", () -> new CashItem(0.5f));
-    public static final DeferredItem<Item> COIN3 = ITEMS.register("coin3", () -> new CashItem(1.0f));
-    public static final DeferredItem<Item> BILL1 = ITEMS.register("bill1", () -> new CashItem(5.0f));
-    public static final DeferredItem<Item> BILL2 = ITEMS.register("bill2", () -> new CashItem(10.0f));
-    public static final DeferredItem<Item> BILL3 = ITEMS.register("bill3", () -> new CashItem(20.0f));
-    public static final DeferredItem<Item> BILL4 = ITEMS.register("bill4", () -> new CashItem(50.0f));
-    public static final DeferredItem<Item> BILL5 = ITEMS.register("bill5", () -> new CashItem(100.0f));
+    public static final DeferredItem<Item> COIN1 = ITEMS.register("coin1", () -> new CashItem(0.1f, 0xd06f03));
+    public static final DeferredItem<Item> COIN2 = ITEMS.register("coin2", () -> new CashItem(0.5f, 0x7b8999));
+    public static final DeferredItem<Item> COIN3 = ITEMS.register("coin3", () -> new CashItem(1.0f, 0xf2e004));
+    public static final DeferredItem<Item> BILL1 = ITEMS.register("bill1", () -> new CashItem(5.0f, 0x4d8c9c));
+    public static final DeferredItem<Item> BILL2 = ITEMS.register("bill2", () -> new CashItem(10.0f, 0xa74c42));
+    public static final DeferredItem<Item> BILL3 = ITEMS.register("bill3", () -> new CashItem(20.0f, 0x4c959d));
+    public static final DeferredItem<Item> BILL4 = ITEMS.register("bill4", () -> new CashItem(50.0f, 0xad7a3c));
+    public static final DeferredItem<Item> BILL5 = ITEMS.register("bill5", () -> new CashItem(100.0f, 0x5da049));
 
     // Creates ATM block item
-    public static final DeferredItem<BlockItem> ATM_ITEM = ITEMS.register("atm", () -> new BlockItem(ModBlocks.ATM.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> ATM_ITEM = ITEMS.register("atm",
+            () -> new BlockItem(ModBlocks.ATM.get(), new Item.Properties()));
 
     // Creates bank card item
     public static final DeferredItem<Item> BANK_CARD = ITEMS.register("bank_card", BankCardItem::new);
