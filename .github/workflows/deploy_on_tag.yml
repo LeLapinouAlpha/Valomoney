@@ -3,7 +3,7 @@ name: Deploy on Tag (build jar)
 on:
   push:
     tags:
-      - '*.*.*+*-*' # Matches tags like 1.0.0+neoforge-21.1.159
+      - '*' # Matches tags like 1.0.0+neoforge-21.1.159
 
 jobs:
   build-jar:
