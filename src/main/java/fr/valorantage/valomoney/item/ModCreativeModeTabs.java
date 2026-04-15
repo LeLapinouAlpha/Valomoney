@@ -18,12 +18,16 @@ public class ModCreativeModeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> VALOMONEY_TAB = CREATIVE_MODE_TABS.register("valomoney_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("creativetab.valomoney.items_tab")) //The language key for the title of your CreativeModeTab
             .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> ModItems.COIN.get().getDefaultInstance())
+            .icon(() -> ModItems.COIN3.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.COIN1.get());
                 output.accept(ModItems.COIN2.get());
-                output.accept(ModItems.COIN.get());
-                output.accept(ModItems.BILL.get());
+                output.accept(ModItems.COIN3.get());
+                output.accept(ModItems.BILL1.get());
+                output.accept(ModItems.BILL2.get());
+                output.accept(ModItems.BILL3.get());
+                output.accept(ModItems.BILL4.get());
+                output.accept(ModItems.BILL5.get());
                 output.accept(ModItems.BANK_CARD.get());
                 output.accept(ModBlocks.ATM.get());
             }).build());

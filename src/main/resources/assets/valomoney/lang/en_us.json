@@ -1,11 +1,13 @@
 {
   "creativetab.valomoney.items_tab": "Valomoney",
-  "block.valomoney.example_block": "Example Block",
-  "item.valomoney.example_item": "Example Item",
   "item.valomoney.coin1": "Coin",
   "item.valomoney.coin2": "Coin",
   "item.valomoney.coin3": "Coin",
-  "item.valomoney.bill": "Bill",
+  "item.valomoney.bill1": "Bill",
+  "item.valomoney.bill2": "Bill",
+  "item.valomoney.bill3": "Bill",
+  "item.valomoney.bill4": "Bill",
+  "item.valomoney.bill5": "Bill",
   "item.valomoney.bank_card": "Bank Card",
   "block.valomoney.atm": "ATM"
 }
