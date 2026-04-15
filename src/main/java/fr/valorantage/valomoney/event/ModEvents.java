@@ -19,7 +19,7 @@ public class ModEvents {
 
         genericTrades.add((trader, random) -> new MerchantOffer(
                 new ItemCost(Items.GOLD_INGOT, 1),
-                new ItemStack(ModItems.COIN.get(), 1),
+                new ItemStack(ModItems.COIN3.get(), 1),
                 64,
                 9,
                 0.02f
@@ -27,7 +27,7 @@ public class ModEvents {
 
         rareTrades.add((trader, random) -> new MerchantOffer(
                 new ItemCost(Items.EMERALD, 1),
-                new ItemStack(ModItems.BILL.get(), 1),
+                new ItemStack(ModItems.BILL1.get(), 1),
                 32,
                 12,
                 0.02f
