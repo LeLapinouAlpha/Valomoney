@@ -1,14 +1,12 @@
-name: Build
+name: Build & Test
 
 on:
   push:
     branches:
       - main
-      - '*.x.x+*'
   pull_request:
     branches:
       - main
-      - '*.x.x+*'
 
 jobs:
   build:
@@ -31,3 +29,8 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Run GameTestServer (run gametests)
+        run: ./gradlew --no-daemon runGameTestServer
+        env:
+          JAVA_TOOL_OPTIONS: "-Xmx2G"

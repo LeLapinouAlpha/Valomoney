@@ -1,0 +1,31 @@
+name: Deploy on Tag (build jar)
+
+on:
+  push:
+    tags:
+      - '*' # Matches tags like 1.0.0+neoforge-21.1.159
+
+jobs:
+  build-jar:
+    name: Build JAR when tag targets master
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build jar
+        run: ./gradlew clean jar --no-daemon
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: valomoney-jar
+          path: build/libs/*.jar
