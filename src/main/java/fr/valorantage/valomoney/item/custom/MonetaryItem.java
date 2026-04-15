@@ -7,6 +7,7 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
+// FIXME: Remove this class ? (unused)
 public class MonetaryItem extends Item {
     private final float value;
 

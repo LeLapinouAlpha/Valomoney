@@ -2,7 +2,9 @@
   "creativetab.valomoney.items_tab": "Valomoney",
   "block.valomoney.example_block": "Example Block",
   "item.valomoney.example_item": "Example Item",
-  "item.valomoney.coin": "Coin",
+  "item.valomoney.coin1": "Coin",
+  "item.valomoney.coin2": "Coin",
+  "item.valomoney.coin3": "Coin",
   "item.valomoney.bill": "Bill",
   "item.valomoney.bank_card": "Bank Card",
   "block.valomoney.atm": "ATM"
