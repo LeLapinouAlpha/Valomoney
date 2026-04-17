@@ -3,7 +3,6 @@ package fr.valorantage.valomoney.block.custom;
 import com.mojang.serialization.MapCodec;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
