@@ -28,6 +28,10 @@ public class CashItem extends Item {
         this(value, ChatFormatting.YELLOW.getColor());
     }
 
+    public int getNameColor() {
+        return this.nameStyle.getColor().getValue();
+    }
+
     public void setNameColor(int color) {
         this.nameStyle = Style.EMPTY.withColor(TextColor.fromRgb(color)).withBold(true);
     }
