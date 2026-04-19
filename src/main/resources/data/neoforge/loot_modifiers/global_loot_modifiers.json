@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "entries": [
+    "valomoney:add_coins_to_zombies",
+    "valomoney:add_coins_to_nether_chests"
+  ]
+}

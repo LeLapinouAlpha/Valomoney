@@ -201,8 +201,8 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
 
         // Add cash items in fake player's inventory (10x1+5x5=35$) and a bank card
-        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN3.get(), 10));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL1.get(), 5));
 
         // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
@@ -230,8 +230,8 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, false);
 
         // Add cash items in fake player's inventory (10x1+5x5=35$)
-        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 10));
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 5));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN3.get(), 10));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL1.get(), 5));
 
         // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
@@ -379,7 +379,7 @@ public class ATMGameTests {
             atmMenu.debit(amount);
             GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
-                    new ItemStack(ModItems.BILL.get(), 2)
+                    new ItemStack(ModItems.BILL1.get(), 2)
             ));
         });
     }
@@ -404,8 +404,8 @@ public class ATMGameTests {
             atmMenu.debit(amount);
             GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
-                    new ItemStack(ModItems.BILL.get(), 64),
-                    new ItemStack(ModItems.BILL.get(), 64)
+                    new ItemStack(ModItems.BILL1.get(), 64),
+                    new ItemStack(ModItems.BILL1.get(), 64)
             ));
         });
     }
@@ -430,7 +430,7 @@ public class ATMGameTests {
             atmMenu.debit(amount);
             GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
-                    new ItemStack(ModItems.COIN.get(), 2)
+                    new ItemStack(ModItems.COIN3.get(), 2)
             ));
         });
     }
@@ -455,8 +455,8 @@ public class ATMGameTests {
             atmMenu.debit(amount);
             GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
             GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(
-                    new ItemStack(ModItems.BILL.get(), 2),
-                    new ItemStack(ModItems.COIN.get(), 2)
+                    new ItemStack(ModItems.BILL1.get(), 2),
+                    new ItemStack(ModItems.COIN3.get(), 2)
             ));
         });
     }
@@ -523,8 +523,8 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
 
         //
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 1));
-        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN.get(), 2));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL1.get(), 1));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.COIN3.get(), 2));
 
         // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
@@ -550,7 +550,7 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
 
         //
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 10));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL1.get(), 10));
 
         // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
@@ -562,7 +562,7 @@ public class ATMGameTests {
             GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
             atmMenu.credit(amount);
             GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance + amount);
-            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(new ItemStack(ModItems.BILL.get(), 1)));
+            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of(new ItemStack(ModItems.BILL1.get(), 1)));
         });
     }
 
@@ -576,7 +576,7 @@ public class ATMGameTests {
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
 
         //
-        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL.get(), 10));
+        fakePlayer.getInventory().add(new ItemStack(ModItems.BILL1.get(), 10));
 
         // Open ATM menu for fake player
         ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);

@@ -248,8 +248,8 @@ public class ATMMenu extends AbstractContainerMenu {
 
             // Get cash items list to give to player
             var cashItems = distributeCash(new ArrayList<>(List.of(
-                    (CashItem) ModItems.BILL.get(),
-                    (CashItem) ModItems.COIN.get()
+                    (CashItem) ModItems.BILL1.get(),
+                    (CashItem) ModItems.COIN3.get()
             )), Math.min(amount, currentPlayerBalance));
 
             // Distribute cash items in player's inventory and updating dynamically player's balance
