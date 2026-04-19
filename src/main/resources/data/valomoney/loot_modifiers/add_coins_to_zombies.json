@@ -12,5 +12,5 @@
       }
     }
   ],
-  "table": "valomoney:entities/zombie_coins"
+  "table": "valomoney:entities/zombie_loot"
 }
