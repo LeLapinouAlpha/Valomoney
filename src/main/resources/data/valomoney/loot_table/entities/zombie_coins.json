@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "valomoney:coin1",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "valomoney:coin2",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "valomoney:coin3",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 7
+        }
+      ],
+      "conditions": []
+    }
+  ]
+}

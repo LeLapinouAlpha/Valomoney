@@ -5,16 +5,24 @@
       "condition": "minecraft:any_of",
       "terms": [
         {
-          "condition": "minecraft:location_check",
-          "predicate": {
-            "structure": "minecraft:fortress"
-          }
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/nether_bridge"
         },
         {
-          "condition": "minecraft:location_check",
-          "predicate": {
-            "structure": "minecraft:bastion_remnant"
-          }
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/bastion_treasure"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/bastion_bridge"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/bastion_hoglin_stable"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/bastion_other"
         }
       ]
     }
