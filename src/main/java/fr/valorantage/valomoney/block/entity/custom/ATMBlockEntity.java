@@ -23,7 +23,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class ATMBlockEntity extends BlockEntity implements MenuProvider {
-    public final ItemStackHandler inventory = new ItemStackHandler(1) {
+    public final ItemStackHandler inventory = new ItemStackHandler(5) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return stack.getItem() == ModItems.BANK_CARD.get() && slot == 0;

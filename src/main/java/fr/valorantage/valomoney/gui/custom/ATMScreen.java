@@ -47,14 +47,14 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
 
         // Create the credit button
         this.creditButton = Button.builder(Component.literal("Credit"), this::onCreditButtonClicked)
-                .pos(this.leftPos + 50, this.topPos + 50)
+                .pos(this.leftPos + 25, this.topPos + 50)
                 .size(40, 20)
                 .build();
         this.addRenderableWidget(this.creditButton);
 
         // Create the debit button
         this.debitButton = Button.builder(Component.literal("Debit"), this::onDebitButtonClicked)
-                .pos(this.leftPos + 105, this.topPos + 50)
+                .pos(this.leftPos + 80, this.topPos + 50)
                 .size(40, 20)
                 .build();
         this.addRenderableWidget(this.debitButton);
