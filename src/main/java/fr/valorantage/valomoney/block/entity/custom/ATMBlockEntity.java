@@ -3,6 +3,7 @@ package fr.valorantage.valomoney.block.entity.custom;
 import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +27,11 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler inventory = new ItemStackHandler(5) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.getItem() == ModItems.BANK_CARD.get() && slot == 0;
+            final boolean isBankCardSlot = slot == 0;
+            final boolean isBankCardItem = stack.getItem() == ModItems.BANK_CARD.get();
+            final boolean isCashSlot = slot > 0;
+            final boolean isCashItem = stack.getItem() instanceof CashItem;
+            return (isBankCardItem && isBankCardSlot) || (isCashItem && isCashSlot);
         }
 
         @Override
