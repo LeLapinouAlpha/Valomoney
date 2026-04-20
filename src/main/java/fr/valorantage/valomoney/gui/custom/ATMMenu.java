@@ -109,6 +109,10 @@ public class ATMMenu extends AbstractContainerMenu {
                 ModBlocks.ATM.get());
     }
 
+    public ATMBlockEntity getBlockEntity() {
+        return this.blockEntity;
+    }
+
     public int getVanillaInventoryFirstSlotIndex() {
         return VANILLA_FIRST_SLOT_INDEX;
     }

@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     private final static Logger LOGGER = LogUtils.getLogger();
 
-    private static final ResourceLocation GUI_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(ValomoneyMod.MODID, "textures/gui/atm/atm_gui.png");
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(ValomoneyMod.MODID,
+            "textures/gui/atm/atm_gui.png");
 
     private EditBox amountEditBox;
     private Button creditButton;
@@ -36,13 +36,21 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
 
     @Override
     protected void init() {
+        String lastAmountStr = "0.00";
+        if (this.amountEditBox != null) {
+            lastAmountStr = this.amountEditBox.getValue();
+        } else {
+            lastAmountStr = String.valueOf(this.menu.getBlockEntity().getLastAmount());
+        }
+
         super.init();
 
         // Create the money amount edit box
-        this.amountEditBox = new EditBox(this.font, this.leftPos + 50, this.topPos + 22, 120, 20, Component.literal("Amount"));
+        this.amountEditBox = new EditBox(this.font, this.leftPos + 50, this.topPos + 22, 120, 20,
+                Component.literal("Amount"));
         this.amountEditBox.setMaxLength(10);
         this.amountEditBox.setVisible(true);
-        this.amountEditBox.insertText("0.00");
+        this.amountEditBox.setValue(lastAmountStr);
         this.addRenderableWidget(this.amountEditBox);
 
         // Create the credit button
@@ -58,6 +66,13 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
                 .size(40, 20)
                 .build();
         this.addRenderableWidget(this.debitButton);
+    }
+
+    @Override
+    public void removed() {
+        // Save current value back to the block entity so reopen preserves it
+        this.menu.getBlockEntity().setLastAmount(Float.parseFloat(this.amountEditBox.getValue()));
+        super.removed();
     }
 
     @Override
