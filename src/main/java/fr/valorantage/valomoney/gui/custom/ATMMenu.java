@@ -56,6 +56,16 @@ public class ATMMenu extends AbstractContainerMenu {
     private final ATMBlockEntity blockEntity;
     private final Level level;
 
+    private List<CashItem> authorizedCashItems = new ArrayList<>(List.of(
+                    (CashItem) ModItems.COIN1.get(),
+                    (CashItem) ModItems.COIN2.get(),
+                    (CashItem) ModItems.COIN3.get(),
+                    (CashItem) ModItems.BILL1.get(),
+                    (CashItem) ModItems.BILL2.get(),
+                    (CashItem) ModItems.BILL3.get(),
+                    (CashItem) ModItems.BILL4.get(),
+                    (CashItem) ModItems.BILL5.get()));
+
     public ATMMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
@@ -245,7 +255,7 @@ public class ATMMenu extends AbstractContainerMenu {
         AtomicReference<Float> remaining = new AtomicReference<>(maxValue);
 
         cashItems.forEach(stack -> {
-            if (remaining.get() <= 0.f) {
+            if (remaining.get() <= 0.f || stack.isEmpty()) {
                 return;
             }
 
@@ -274,9 +284,7 @@ public class ATMMenu extends AbstractContainerMenu {
             final float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
             // Get cash items list to give to player
-            var cashItems = distributeCash(new ArrayList<>(List.of(
-                    (CashItem) ModItems.BILL1.get(),
-                    (CashItem) ModItems.COIN3.get())), Math.min(amount, currentPlayerBalance));
+            var cashItems = distributeCash(this.authorizedCashItems, Math.min(amount, currentPlayerBalance));
 
             // Distribute cash items in player's inventory and updating dynamically player's
             // balance
@@ -302,9 +310,11 @@ public class ATMMenu extends AbstractContainerMenu {
         if (this.isPlayerBoundToBankCard(player)) {
             float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
-            // Filter cash items of player's inventory
-            final float moneyToCredit = depositCash(amount, this.playerInventory.items.stream()
-                    .filter(stack -> stack.getItem() instanceof CashItem));
+            final float moneyToCredit = depositCash(amount > 1e-3f ? amount : Float.MAX_VALUE, Stream.of(
+                    this.getTileInventorySlot(1).getItem(),
+                    this.getTileInventorySlot(2).getItem(),
+                    this.getTileInventorySlot(3).getItem(),
+                    this.getTileInventorySlot(4).getItem()));
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
             player.sendSystemMessage(

@@ -71,6 +71,7 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     @Override
     public void removed() {
         // Save current value back to the block entity so reopen preserves it
+        // FIXME: catch number format exception and don't save if the value is not a valid float
         this.menu.getBlockEntity().setLastAmount(Float.parseFloat(this.amountEditBox.getValue()));
         super.removed();
     }
