@@ -145,10 +145,10 @@ public class ATMMenu extends AbstractContainerMenu {
         final int xTopLeftCorner = 141;
         final int yTopLeftCorner = 46;
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, xTopLeftCorner, yTopLeftCorner));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, xTopLeftCorner + 18, yTopLeftCorner));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, xTopLeftCorner, yTopLeftCorner + 18));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, xTopLeftCorner + 18, yTopLeftCorner + 18));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, xTopLeftCorner, yTopLeftCorner));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, xTopLeftCorner + 18, yTopLeftCorner));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, xTopLeftCorner, yTopLeftCorner + 18));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, xTopLeftCorner + 18, yTopLeftCorner + 18));
     }
 
     private void addTileInventory() {
