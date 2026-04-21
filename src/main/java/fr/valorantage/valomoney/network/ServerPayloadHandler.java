@@ -16,13 +16,18 @@ public class ServerPayloadHandler {
     public static void handleTransactionPayloadOnNetwork(final TransactionPayload data, final IPayloadContext context) {
         LOGGER.debug("Network received TransactionPayload: {}", data);
 
-        // FIXME: Suppose that the menu is an instance of ATMMenu
         var player = (ServerPlayer) context.player();
-        var menu = (ATMMenu) player.containerMenu;
 
-        switch (data.kind()) {
-            case CREDIT -> menu.credit(data.value());
-            case DEBIT -> menu.debit(data.value());
+        try {
+            var menu = (ATMMenu) player.containerMenu;
+
+            switch (data.kind()) {
+                case CREDIT -> menu.credit(data.value());
+                case DEBIT -> menu.debit(data.value());
+            }
+        } catch (ClassCastException e) {
+            LOGGER.warn("Player {} sent a TransactionPayload but is not a ServerPlayer", player.getName().getString());
+            return;
         }
     }
 
