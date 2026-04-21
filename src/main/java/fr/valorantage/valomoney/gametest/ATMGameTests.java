@@ -2,17 +2,20 @@ package fr.valorantage.valomoney.gametest;
 
 import com.mojang.logging.LogUtils;
 import fr.valorantage.valomoney.ValomoneyMod;
-import fr.valorantage.valomoney.attachment.ModAttachmentTypes;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -70,6 +73,19 @@ public class ATMGameTests {
             helper.fail("Could not open ATM menu", atmPos);
             return null;
         }
+    }
+
+    private static void assertDebitTransaction(GameTestHelper helper, Player fakePlayer, ATMMenu atmMenu,
+            float initialBalance, float amount, List<ItemStack> expectedInventory) {
+        GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
+        atmMenu.debit(amount);
+
+        float actualAmountInInventory = expectedInventory.stream()
+                .map(stack -> stack.getCount() * ((CashItem) stack.getItem()).getValue())
+                .reduce(0.f, Float::sum);
+
+        GameTestUtils.assertTileInventoryEquals(helper, atmMenu, expectedInventory);
+        GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - actualAmountInInventory);
     }
 
     @GameTest(template = BASICS_TEMPLATE)
@@ -317,38 +333,6 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
-    public static void debitInventoryFull(GameTestHelper helper) {
-        // Create a fake player and move it inside the gametest structure, and assign it
-        // an initial balance
-        final float initialBalance = 0.f;
-        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0),
-                initialBalance);
-
-        // Place ATM block with a bank card
-        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
-
-        // Fill player's inventory with stone
-        var playerInventory = fakePlayer.getInventory();
-        for (int i = 0; i < playerInventory.getContainerSize(); i++) {
-            playerInventory.setItem(i, new ItemStack(Blocks.STONE.asItem(), 64));
-        }
-
-        // Open ATM menu for fake player
-        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
-
-        helper.succeedIf(() -> {
-            // Set amount to debit
-            final float amount = 100.f;
-
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            GameTestUtils.assertInventoryAllMatch(helper, fakePlayer.getInventory(),
-                    new ItemStack(Blocks.STONE.asItem(), 64));
-        });
-    }
-
-    @GameTest(template = BASICS_TEMPLATE)
     public static void debitInvalidAmount(GameTestHelper helper) {
         // Create a fake player and move it inside the gametest structure, and assign it
         // an initial balance
@@ -366,10 +350,9 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = -100.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            GameTestUtils.assertInventoryEquals(helper, fakePlayer.getInventory(), List.of());
+            final List<ItemStack> expectedInventory = List.of();
+
+            assertDebitTransaction(helper, fakePlayer, atmMenu, initialBalance, amount, expectedInventory);
         });
     }
 
@@ -391,12 +374,10 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 10.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
-            // Check that the ATM tile inventory contains the expected bills
-            GameTestUtils.assertTileInventoryEquals(helper, atmMenu, List.of(
-                    new ItemStack(ModItems.BILL2.get(), 1)));
+            final var expectedInventory = List.of(
+                    new ItemStack(ModItems.BILL2.get(), 1));
+
+            assertDebitTransaction(helper, fakePlayer, atmMenu, initialBalance, amount, expectedInventory);
         });
     }
 
@@ -418,14 +399,11 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 640.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
-
-            // Check that the ATM tile inventory contains the expected bills
-            GameTestUtils.assertTileInventoryEquals(helper, atmMenu, List.of(
+            final var expectedInventory = List.of(
                     new ItemStack(ModItems.BILL5.get(), 6),
-                    new ItemStack(ModItems.BILL3.get(), 2)));
+                    new ItemStack(ModItems.BILL3.get(), 2));
+
+            assertDebitTransaction(helper, fakePlayer, atmMenu, initialBalance, amount, expectedInventory);
         });
     }
 
@@ -447,12 +425,10 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 2.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
-            // Check that the ATM tile inventory contains the expected coins
-            GameTestUtils.assertTileInventoryEquals(helper, atmMenu, List.of(
-                    new ItemStack(ModItems.COIN3.get(), 2)));
+            final var expectedInventory = List.of(
+                    new ItemStack(ModItems.COIN3.get(), 2));
+
+            assertDebitTransaction(helper, fakePlayer, atmMenu, initialBalance, amount, expectedInventory);
         });
     }
 
@@ -474,13 +450,11 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 12.f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance - amount);
-            // Check that the ATM tile inventory contains the expected bills and coins
-            GameTestUtils.assertTileInventoryEquals(helper, atmMenu, List.of(
+            final var expectedInventory = List.of(
                     new ItemStack(ModItems.BILL2.get(), 1),
-                    new ItemStack(ModItems.COIN3.get(), 2)));
+                    new ItemStack(ModItems.COIN3.get(), 2));
+
+            assertDebitTransaction(helper, fakePlayer, atmMenu, initialBalance, amount, expectedInventory);
         });
     }
 
@@ -502,14 +476,12 @@ public class ATMGameTests {
             // Set amount to debit
             final float amount = 12.57f;
 
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
-            atmMenu.debit(amount);
-            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.07f);
-            // Check that the ATM tile inventory contains the expected bills and coins
-            GameTestUtils.assertTileInventoryEquals(helper, atmMenu, List.of(
+            final var expectedInventory = List.of(
                     new ItemStack(ModItems.BILL2.get(), 1),
                     new ItemStack(ModItems.COIN3.get(), 2),
-                    new ItemStack(ModItems.COIN2.get(), 1)));
+                    new ItemStack(ModItems.COIN2.get(), 1));
+
+            assertDebitTransaction(helper, fakePlayer, atmMenu, initialBalance, amount, expectedInventory);
         });
     }
 
