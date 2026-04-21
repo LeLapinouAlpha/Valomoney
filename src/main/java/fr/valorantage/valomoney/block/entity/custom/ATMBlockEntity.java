@@ -51,22 +51,6 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
         super(ModBlockEntities.ATM_BE.get(), pos, blockState);
     }
 
-    public void drops() {
-        SimpleContainer container = new SimpleContainer(this.inventory.getSlots());
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            container.setItem(i, this.inventory.getStackInSlot(i));
-        }
-        Containers.dropContents(this.level, this.worldPosition, container);
-    }
-
-    public float getLastAmount() {
-        return this.lastAmount;
-    }
-
-    public void setLastAmount(float lastAmount) {
-        this.lastAmount = lastAmount;
-    }
-
     @Override
     public Component getDisplayName() {
         return Component.literal("ATM");
@@ -99,5 +83,24 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
         super.loadAdditional(tag, registries);
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
         this.lastAmount = tag.getFloat("lastAmount");
+    }
+
+    public float getLastAmount() {
+        return this.lastAmount;
+    }
+
+    public void setLastAmount(float lastAmount) {
+        if (lastAmount < 0f)
+            return;
+
+        this.lastAmount = lastAmount;
+    }
+
+    public void drops() {
+        SimpleContainer container = new SimpleContainer(this.inventory.getSlots());
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            container.setItem(i, this.inventory.getStackInSlot(i));
+        }
+        Containers.dropContents(this.level, this.worldPosition, container);
     }
 }

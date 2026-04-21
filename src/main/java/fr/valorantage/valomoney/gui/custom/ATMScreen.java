@@ -68,11 +68,23 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
         this.addRenderableWidget(this.debitButton);
     }
 
+    public Float tryGetAmount() {
+        try {
+            float amount = Float.parseFloat(this.amountEditBox.getValue());
+
+            return amount;
+        } catch (NumberFormatException numberFormatException) {
+            LOGGER.debug("Could not parse amount: '{}'", this.amountEditBox.getValue());
+            return null;
+        }
+    }
+
     @Override
     public void removed() {
-        // Save current value back to the block entity so reopen preserves it
-        // FIXME: catch number format exception and don't save if the value is not a valid float
-        this.menu.getBlockEntity().setLastAmount(Float.parseFloat(this.amountEditBox.getValue()));
+        var amount = this.tryGetAmount();
+        if (amount != null) {
+            this.menu.getBlockEntity().setLastAmount(amount);
+        }
         super.removed();
     }
 
@@ -95,28 +107,24 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     }
 
     private void onCreditButtonClicked(Button button) {
-        try {
-            float amount = Float.parseFloat(this.amountEditBox.getValue());
-
-            var payload = new TransactionPayload(TransactionKind.CREDIT, amount);
-            LOGGER.debug("Sending payload to server: {}", payload);
-            PacketDistributor.sendToServer(payload);
-
-        } catch (NumberFormatException numberFormatException) {
-            LOGGER.error("Could not parse amount: '{}'", this.amountEditBox.getValue());
+        var amount = this.tryGetAmount();
+        if (amount == null) {
+            return;
         }
+
+        var payload = new TransactionPayload(TransactionKind.CREDIT, amount);
+        LOGGER.debug("Sending payload to server: {}", payload);
+        PacketDistributor.sendToServer(payload);
     }
 
     private void onDebitButtonClicked(Button button) {
-        try {
-            float amount = Float.parseFloat(this.amountEditBox.getValue());
-
-            var payload = new TransactionPayload(TransactionKind.DEBIT, amount);
-            LOGGER.debug("Sending payload to server: {}", payload);
-            PacketDistributor.sendToServer(payload);
-
-        } catch (NumberFormatException numberFormatException) {
-            LOGGER.error("Could not parse amount: '{}'", this.amountEditBox.getValue());
+        var amount = this.tryGetAmount();
+        if (amount == null) {
+            return;
         }
+
+        var payload = new TransactionPayload(TransactionKind.DEBIT, amount);
+        LOGGER.debug("Sending payload to server: {}", payload);
+        PacketDistributor.sendToServer(payload);
     }
 }

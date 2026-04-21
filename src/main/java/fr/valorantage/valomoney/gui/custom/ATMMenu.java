@@ -57,14 +57,14 @@ public class ATMMenu extends AbstractContainerMenu {
     private final Level level;
 
     private List<CashItem> authorizedCashItems = new ArrayList<>(List.of(
-                    (CashItem) ModItems.COIN1.get(),
-                    (CashItem) ModItems.COIN2.get(),
-                    (CashItem) ModItems.COIN3.get(),
-                    (CashItem) ModItems.BILL1.get(),
-                    (CashItem) ModItems.BILL2.get(),
-                    (CashItem) ModItems.BILL3.get(),
-                    (CashItem) ModItems.BILL4.get(),
-                    (CashItem) ModItems.BILL5.get()));
+            (CashItem) ModItems.COIN1.get(),
+            (CashItem) ModItems.COIN2.get(),
+            (CashItem) ModItems.COIN3.get(),
+            (CashItem) ModItems.BILL1.get(),
+            (CashItem) ModItems.BILL2.get(),
+            (CashItem) ModItems.BILL3.get(),
+            (CashItem) ModItems.BILL4.get(),
+            (CashItem) ModItems.BILL5.get()));
 
     public ATMMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
