@@ -45,8 +45,15 @@ public class GameTestUtils {
         helper.assertValueEqual(actualData, expectedData, attachmentName);
     }
 
+    public static void assertPlayerDataAttachment(GameTestHelper helper, Player player,
+            AttachmentType<Float> attachmentType, String attachmentName, Float expectedValue, float epsilon) {
+        Float actualValue = player.getData(attachmentType);
+        helper.assertTrue(Math.abs(actualValue - expectedValue) < epsilon,
+                String.format("%s expected: %f, actual: %f", attachmentName, expectedValue, actualValue));
+    }
+
     public static void assertPlayersMoney(GameTestHelper helper, Player player, float money) {
-        assertPlayerDataAttachment(helper, player, ModAttachmentTypes.MONEY.get(), "playersMoney", money);
+        assertPlayerDataAttachment(helper, player, ModAttachmentTypes.MONEY.get(), "playersMoney", money, 1e-3f);
     }
 
     public static Player makeMockPlayer(GameTestHelper helper, GameType gameMode, BlockPos relativePos,

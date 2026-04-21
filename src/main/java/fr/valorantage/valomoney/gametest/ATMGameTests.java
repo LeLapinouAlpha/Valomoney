@@ -485,6 +485,35 @@ public class ATMGameTests {
     }
 
     @GameTest(template = BASICS_TEMPLATE)
+    public static void debitPrecision(GameTestHelper helper) {
+        // Create a fake player and move it inside the gametest structure, and assign it
+        // an initial balance
+        final float initialBalance = 12.57f;
+        Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0),
+                initialBalance);
+
+        // Place ATM block with a bank card
+        BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
+
+        // Open ATM menu for fake player
+        ATMMenu atmMenu = openATMMenu(helper, atmPos, fakePlayer);
+
+        helper.succeedIf(() -> {
+            // Set amount to debit
+            final float amount = 12.57f;
+
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, initialBalance);
+            atmMenu.debit(amount);
+            GameTestUtils.assertPlayersMoney(helper, fakePlayer, 0.07f);
+            // Check that the ATM tile inventory contains the expected bills and coins
+            GameTestUtils.assertTileInventoryEquals(helper, atmMenu, List.of(
+                    new ItemStack(ModItems.BILL2.get(), 1),
+                    new ItemStack(ModItems.COIN3.get(), 2),
+                    new ItemStack(ModItems.COIN2.get(), 1)));
+        });
+    }
+
+    @GameTest(template = BASICS_TEMPLATE)
     public static void creditNoCash(GameTestHelper helper) {
         // Create a fake player and move it inside the gametest structure, and assign it
         // an initial balance
