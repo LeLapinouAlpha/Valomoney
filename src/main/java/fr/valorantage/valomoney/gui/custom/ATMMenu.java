@@ -283,19 +283,34 @@ public class ATMMenu extends AbstractContainerMenu {
         if (this.isPlayerBoundToBankCard(player)) {
             final float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
-            // Get cash items list to give to player
+            // Get cash items list to add in tile inventory
             var cashItems = distributeCash(this.authorizedCashItems, Math.min(amount, currentPlayerBalance));
 
-            // Distribute cash items in player's inventory and updating dynamically player's
+            // Distribute cash items in tile inventory and updating dynamically tile's
             // balance
             float moneyToDebit = 0.f;
             for (var cashItemStack : cashItems) {
-                if (this.playerInventory.add(cashItemStack.copy())) {
-                    // Withdraw cashItemStack's value from player's balance
-                    var item = cashItemStack.getItem();
-                    var cashItem = (CashItem) item;
-                    final float cashItemValue = cashItem.getValue() * cashItemStack.getCount();
-                    moneyToDebit += cashItemValue;
+                for (int i = 0; i < 4; ++i) {
+                    var slot = this.getTileInventorySlot(i + 1);
+
+                    if (slot.getItem().isEmpty()) {
+                        slot.set(cashItemStack);
+                        moneyToDebit += cashItemStack.getCount() * ((CashItem) cashItemStack.getItem()).getValue();
+                        break;
+                    }
+
+                    if (slot.getItem().getItem() == cashItemStack.getItem()) {
+                        int canAdd = Math.min(cashItemStack.getCount(), 64 - slot.getItem().getCount());
+                        if (canAdd > 0) {
+                            moneyToDebit += canAdd * ((CashItem) cashItemStack.getItem()).getValue();
+                            slot.getItem().grow(canAdd);
+                            cashItemStack.shrink(canAdd);
+                        }
+                    }
+
+                    if (cashItemStack.isEmpty()) {
+                        break;
+                    }
                 }
             }
 
