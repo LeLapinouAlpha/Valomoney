@@ -40,7 +40,7 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
         if (this.amountEditBox != null) {
             lastAmountStr = this.amountEditBox.getValue();
         } else {
-            lastAmountStr = String.valueOf(this.menu.getBlockEntity().getLastAmount());
+            lastAmountStr = String.format(java.util.Locale.US, "%.2f", this.menu.getBlockEntity().getLastAmount());
         }
 
         super.init();
