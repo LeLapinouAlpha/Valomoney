@@ -30,7 +30,6 @@ public class GameTestUtils {
         return placeBlock(helper, relativePos, block, 3);
     }
 
-    // FIXME: check for block entity to be non-null
     public static <T extends BlockEntity> void assertBlockEntity(GameTestHelper helper, BlockPos pos,
             Class<T> expectedClass) {
         BlockEntity blockEntity = helper.getLevel().getBlockEntity(pos);
