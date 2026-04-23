@@ -68,6 +68,9 @@ public class ATMMenu extends AbstractContainerMenu {
             (CashItem) ModItems.BILL4.get(),
             (CashItem) ModItems.BILL5.get()));
 
+    private long lastATMSoundTime = 0;
+    private static final long ATM_SOUND_COOLDOWN = 1000; // 1 second
+
     public ATMMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
@@ -279,8 +282,13 @@ public class ATMMenu extends AbstractContainerMenu {
         return total.get();
     }
 
-    private void playCashSound(Level level) {
-        level.playSound(null, blockEntity.getBlockPos(), ModSounds.ATM_CASH.get(), SoundSource.PLAYERS, 1.f, 1.f);
+    private void playCashSound(Player player) {
+        long now = System.currentTimeMillis();
+        if (now - this.lastATMSoundTime > ATM_SOUND_COOLDOWN) {
+            player.level().playSound(null, player.blockPosition(), ModSounds.ATM_CASH.get(), SoundSource.PLAYERS, 0.2f,
+                    1.f);
+            this.lastATMSoundTime = now;
+        }
     }
 
     public void debit(float amount) {
@@ -322,7 +330,7 @@ public class ATMMenu extends AbstractContainerMenu {
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance - moneyToDebit);
             player.sendSystemMessage(Component.literal(String.format("You have been debited of: %.2f$", moneyToDebit)));
-            this.playCashSound(player.level());
+            this.playCashSound(player);
         }
     }
 
@@ -341,7 +349,7 @@ public class ATMMenu extends AbstractContainerMenu {
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
             player.sendSystemMessage(
                     Component.literal(String.format("You have been credited of: %.2f$", moneyToCredit)));
-            this.playCashSound(player.level());
+            this.playCashSound(player);
         }
     }
 }
