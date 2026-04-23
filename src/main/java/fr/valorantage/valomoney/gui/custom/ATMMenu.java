@@ -8,8 +8,10 @@ import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.item.ModItems;
 import fr.valorantage.valomoney.item.custom.CashItem;
+import fr.valorantage.valomoney.sound.ModSounds;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -277,6 +279,10 @@ public class ATMMenu extends AbstractContainerMenu {
         return total.get();
     }
 
+    private void playCashSound(Level level) {
+        level.playSound(null, blockEntity.getBlockPos(), ModSounds.ATM_CASH.get(), SoundSource.PLAYERS, 1.f, 1.f);
+    }
+
     public void debit(float amount) {
         var player = this.playerInventory.player;
 
@@ -316,6 +322,7 @@ public class ATMMenu extends AbstractContainerMenu {
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance - moneyToDebit);
             player.sendSystemMessage(Component.literal(String.format("You have been debited of: %.2f$", moneyToDebit)));
+            this.playCashSound(player.level());
         }
     }
 
@@ -334,6 +341,7 @@ public class ATMMenu extends AbstractContainerMenu {
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
             player.sendSystemMessage(
                     Component.literal(String.format("You have been credited of: %.2f$", moneyToCredit)));
+            this.playCashSound(player.level());
         }
     }
 }

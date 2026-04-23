@@ -6,6 +6,7 @@ import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.item.ModCreativeModeTabs;
 import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.sound.ModSounds;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.gui.custom.ATMScreen;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -54,6 +55,8 @@ public class ValomoneyMod {
         ModAttachmentTypes.register(modEventBus);
         // Register the Deferred Register to the mod event bus so data components get registered
         ModDataComponentTypes.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so sounds get registered
+        ModSounds.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ValomoneyMod) to respond directly to events.

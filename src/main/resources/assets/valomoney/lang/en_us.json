@@ -9,5 +9,6 @@
   "item.valomoney.bill4": "Bill",
   "item.valomoney.bill5": "Bill",
   "item.valomoney.bank_card": "Bank Card",
-  "block.valomoney.atm": "ATM"
+  "block.valomoney.atm": "ATM",
+  "sounds.valomoney.atm_cash": "ATM Cash"
 }
