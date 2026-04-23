@@ -35,7 +35,7 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
 
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return stack.getMaxStackSize();
+            return slot == 0 ? 1 : stack.getMaxStackSize();
         }
 
         @Override
@@ -45,6 +45,12 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return slot == 0 ? ItemStack.EMPTY : super.extractItem(slot, amount, simulate);
+        }
+
     };
 
     private float lastAmount = 0f;
