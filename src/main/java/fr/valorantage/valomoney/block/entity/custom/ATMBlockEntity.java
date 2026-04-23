@@ -35,7 +35,7 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
 
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 1;
+            return stack.getMaxStackSize();
         }
 
         @Override
