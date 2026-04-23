@@ -5,6 +5,7 @@ import fr.valorantage.valomoney.gui.custom.ATMMenu;
 import fr.valorantage.valomoney.item.ModItems;
 import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,6 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,5 +104,9 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
             container.setItem(i, this.inventory.getStackInSlot(i));
         }
         Containers.dropContents(this.level, this.worldPosition, container);
+    }
+
+    public IItemHandler getItemHandler(Direction direction) {
+        return this.inventory;
     }
 }
