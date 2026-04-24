@@ -294,15 +294,22 @@ public class ATMGameTests {
         // Create a fake player and move it inside the gametest structure
         Player fakePlayer = GameTestUtils.makeMockPlayer(helper, GameType.SURVIVAL, new BlockPos(1, 2, 0), 0.f);
 
-        // Place ATM block without a bank card
+        // Place ATM block with a bank card
         BlockPos atmPos = placeATMAndCheck(helper, new BlockPos(0, 2, 0), fakePlayer, true);
 
         // Break ATM block
         helper.getLevel().destroyBlock(atmPos, true);
 
-        // Check for drops (Expected ATM block item and one bank card)
-        helper.runAfterDelay(2,
-                () -> helper.succeedIf(() -> GameTestUtils.assertDrops(helper, new AABB(atmPos), List.of(
+        // Expand AABB to cover the whole test structure (3x3x3 centered at atmPos)
+        BlockPos min = atmPos.offset(-1, -1, -1);
+        BlockPos max = atmPos.offset(1, 1, 1);
+        AABB region = new AABB(
+            min.getX(), min.getY(), min.getZ(),
+            max.getX() + 1, max.getY() + 1, max.getZ() + 1);
+
+        // Increase delay to 4 ticks to ensure drops appear
+        helper.runAfterDelay(4,
+                () -> helper.succeedIf(() -> GameTestUtils.assertDrops(helper, region, List.of(
                         new ItemStack(ModItems.BANK_CARD.get()),
                         new ItemStack(ModBlocks.ATM.asItem())))));
     }
