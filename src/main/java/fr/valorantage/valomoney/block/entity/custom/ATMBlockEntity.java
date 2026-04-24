@@ -24,8 +24,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 
 public class ATMBlockEntity extends BlockEntity implements MenuProvider {
+    private final static Logger LOGGER = LogUtils.getLogger();
+
     public final ItemStackHandler inventory = new ItemStackHandler(5) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -45,12 +50,41 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
+    };
+
+    private final IItemHandler automationHandler = new IItemHandler() {
+        @Override
+        public int getSlots() {
+            return inventory.getSlots();
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return inventory.getStackInSlot(slot);
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return inventory.insertItem(slot, stack, simulate);
+        }
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return slot == 0 ? ItemStack.EMPTY : super.extractItem(slot, amount, simulate);
+            // Prevent extraction from slot 0 (bank card) by automation
+            if (slot == 0)
+                return ItemStack.EMPTY;
+            return inventory.extractItem(slot, amount, simulate);
         }
 
+        @Override
+        public int getSlotLimit(int slot) {
+            return inventory.getSlotLimit(slot);
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return inventory.isItemValid(slot, stack);
+        }
     };
 
     private float lastAmount = 0f;
@@ -113,6 +147,6 @@ public class ATMBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public IItemHandler getItemHandler(Direction direction) {
-        return this.inventory;
+        return this.automationHandler;
     }
 }
