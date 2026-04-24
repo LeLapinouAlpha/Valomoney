@@ -1,0 +1,10 @@
+{
+    "atm_cash": {
+        "subtitle": "sounds.valomoney.atm_cash",
+        "sounds": [
+            {
+                "name": "valomoney:atm_cash"
+            }
+        ]
+    }
+}

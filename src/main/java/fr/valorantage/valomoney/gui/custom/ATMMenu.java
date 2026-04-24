@@ -8,8 +8,10 @@ import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.item.ModItems;
 import fr.valorantage.valomoney.item.custom.CashItem;
+import fr.valorantage.valomoney.sound.ModSounds;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,11 +35,16 @@ public class ATMMenu extends AbstractContainerMenu {
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
-    // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
-    // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
-    //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
-    //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
-    //  36 - 36 = TileInventory slots, which map to our TileEntity slot numbers 0 - 0)
+    // For this container, we can see both the tile inventory's slots as well as the
+    // player inventory slots and the hotbar.
+    // Each time we add a Slot to the container, it automatically increases the
+    // slotIndex, which means
+    // 0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 -
+    // 8)
+    // 9 - 35 = player inventory slots (which map to the InventoryPlayer slot
+    // numbers 9 - 35)
+    // 36 - 40 = TileInventory slots, which map to our TileEntity slot numbers 0 -
+    // 4)
     private static final int HOTBAR_SLOT_COUNT = 9;
     private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
     private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
@@ -45,11 +52,24 @@ public class ATMMenu extends AbstractContainerMenu {
     private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
-    private static final int TE_INVENTORY_SLOT_COUNT = 1;
+    private static final int TE_INVENTORY_SLOT_COUNT = 5;
 
     private final Inventory playerInventory;
     private final ATMBlockEntity blockEntity;
     private final Level level;
+
+    private List<CashItem> authorizedCashItems = new ArrayList<>(List.of(
+            (CashItem) ModItems.COIN1.get(),
+            (CashItem) ModItems.COIN2.get(),
+            (CashItem) ModItems.COIN3.get(),
+            (CashItem) ModItems.BILL1.get(),
+            (CashItem) ModItems.BILL2.get(),
+            (CashItem) ModItems.BILL3.get(),
+            (CashItem) ModItems.BILL4.get(),
+            (CashItem) ModItems.BILL5.get()));
+
+    private long lastATMSoundTime = 0;
+    private static final long ATM_SOUND_COOLDOWN = 1000; // 1 second
 
     public ATMMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
@@ -100,7 +120,12 @@ public class ATMMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player, ModBlocks.ATM.get());
+        return stillValid(ContainerLevelAccess.create(this.level, blockEntity.getBlockPos()), player,
+                ModBlocks.ATM.get());
+    }
+
+    public ATMBlockEntity getBlockEntity() {
+        return this.blockEntity;
     }
 
     public int getVanillaInventoryFirstSlotIndex() {
@@ -131,14 +156,30 @@ public class ATMMenu extends AbstractContainerMenu {
         return slots.get(index);
     }
 
-    private void addTileInventory() {
+    private void addBankCardSlot() {
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 29, 24));
+    }
+
+    private void addCashSlots() {
+        final int xTopLeftCorner = 141;
+        final int yTopLeftCorner = 46;
+
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, xTopLeftCorner, yTopLeftCorner));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, xTopLeftCorner + 18, yTopLeftCorner));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, xTopLeftCorner, yTopLeftCorner + 18));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, xTopLeftCorner + 18, yTopLeftCorner + 18));
+    }
+
+    private void addTileInventory() {
+        this.addBankCardSlot();
+        this.addCashSlots();
     }
 
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, getVanillaInventoryFirstSlotIndex() + l + i * 9 + 9, 15 + l * 18, 86 + i * 18));
+                this.addSlot(new Slot(playerInventory, getVanillaInventoryFirstSlotIndex() + l + i * 9 + 9, 15 + l * 18,
+                        86 + i * 18));
             }
         }
     }
@@ -190,7 +231,8 @@ public class ATMMenu extends AbstractContainerMenu {
         return false;
     }
 
-    private static <T extends CashItem> List<ItemStack> distributeCash(List<T> authorizedCashItems, final float maxValue) {
+    private static <T extends CashItem> List<ItemStack> distributeCash(List<T> authorizedCashItems,
+            final float maxValue) {
         authorizedCashItems.sort((a, b) -> Float.compare(b.getValue(), a.getValue()));
 
         List<ItemStack> cashItems = new ArrayList<>();
@@ -218,7 +260,7 @@ public class ATMMenu extends AbstractContainerMenu {
         AtomicReference<Float> remaining = new AtomicReference<>(maxValue);
 
         cashItems.forEach(stack -> {
-            if (remaining.get() <= 0.f) {
+            if (remaining.get() <= 0.f || stack.isEmpty()) {
                 return;
             }
 
@@ -240,32 +282,55 @@ public class ATMMenu extends AbstractContainerMenu {
         return total.get();
     }
 
+    private void playCashSound(Player player) {
+        long now = System.currentTimeMillis();
+        if (now - this.lastATMSoundTime > ATM_SOUND_COOLDOWN) {
+            player.level().playSound(null, player.blockPosition(), ModSounds.ATM_CASH.get(), SoundSource.PLAYERS, 0.2f,
+                    1.f);
+            this.lastATMSoundTime = now;
+        }
+    }
+
     public void debit(float amount) {
         var player = this.playerInventory.player;
 
         if (this.isPlayerBoundToBankCard(player)) {
             final float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
-            // Get cash items list to give to player
-            var cashItems = distributeCash(new ArrayList<>(List.of(
-                    (CashItem) ModItems.BILL1.get(),
-                    (CashItem) ModItems.COIN3.get()
-            )), Math.min(amount, currentPlayerBalance));
+            // Get cash items list to add in tile inventory
+            var cashItems = distributeCash(this.authorizedCashItems, Math.min(amount, currentPlayerBalance));
 
-            // Distribute cash items in player's inventory and updating dynamically player's balance
+            // Distribute cash items in tile inventory and updating dynamically tile's
+            // balance
             float moneyToDebit = 0.f;
             for (var cashItemStack : cashItems) {
-                if (this.playerInventory.add(cashItemStack.copy())) {
-                    // Withdraw cashItemStack's value from player's balance
-                    var item = cashItemStack.getItem();
-                    var cashItem = (CashItem) item;
-                    final float cashItemValue = cashItem.getValue() * cashItemStack.getCount();
-                    moneyToDebit += cashItemValue;
+                for (int i = 0; i < 4; ++i) {
+                    var slot = this.getTileInventorySlot(i + 1);
+
+                    if (slot.getItem().isEmpty()) {
+                        slot.set(cashItemStack);
+                        moneyToDebit += cashItemStack.getCount() * ((CashItem) cashItemStack.getItem()).getValue();
+                        break;
+                    }
+
+                    if (slot.getItem().getItem() == cashItemStack.getItem()) {
+                        int canAdd = Math.min(cashItemStack.getCount(), 64 - slot.getItem().getCount());
+                        if (canAdd > 0) {
+                            moneyToDebit += canAdd * ((CashItem) cashItemStack.getItem()).getValue();
+                            slot.getItem().grow(canAdd);
+                            cashItemStack.shrink(canAdd);
+                        }
+                    }
+
+                    if (cashItemStack.isEmpty()) {
+                        break;
+                    }
                 }
             }
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance - moneyToDebit);
             player.sendSystemMessage(Component.literal(String.format("You have been debited of: %.2f$", moneyToDebit)));
+            this.playCashSound(player);
         }
     }
 
@@ -275,13 +340,16 @@ public class ATMMenu extends AbstractContainerMenu {
         if (this.isPlayerBoundToBankCard(player)) {
             float currentPlayerBalance = player.getData(ModAttachmentTypes.MONEY);
 
-            // Filter cash items of player's inventory
-            final float moneyToCredit = depositCash(amount, this.playerInventory.items.stream()
-                    .filter(stack -> stack.getItem() instanceof CashItem)
-            );
+            final float moneyToCredit = depositCash(amount > 1e-3f ? amount : Float.MAX_VALUE, Stream.of(
+                    this.getTileInventorySlot(1).getItem(),
+                    this.getTileInventorySlot(2).getItem(),
+                    this.getTileInventorySlot(3).getItem(),
+                    this.getTileInventorySlot(4).getItem()));
 
             player.setData(ModAttachmentTypes.MONEY.get(), currentPlayerBalance + moneyToCredit);
-            player.sendSystemMessage(Component.literal(String.format("You have been credited of: %.2f$", moneyToCredit)));
+            player.sendSystemMessage(
+                    Component.literal(String.format("You have been credited of: %.2f$", moneyToCredit)));
+            this.playCashSound(player);
         }
     }
 }

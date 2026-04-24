@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     private final static Logger LOGGER = LogUtils.getLogger();
 
-    private static final ResourceLocation GUI_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(ValomoneyMod.MODID, "textures/gui/atm/atm_gui.png");
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(ValomoneyMod.MODID,
+            "textures/gui/atm/atm_gui.png");
 
     private EditBox amountEditBox;
     private Button creditButton;
@@ -36,28 +36,56 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
 
     @Override
     protected void init() {
+        String lastAmountStr = "0.00";
+        if (this.amountEditBox != null) {
+            lastAmountStr = this.amountEditBox.getValue();
+        } else {
+            lastAmountStr = String.format(java.util.Locale.US, "%.2f", this.menu.getBlockEntity().getLastAmount());
+        }
+
         super.init();
 
         // Create the money amount edit box
-        this.amountEditBox = new EditBox(this.font, this.leftPos + 50, this.topPos + 22, 120, 20, Component.literal("Amount"));
+        this.amountEditBox = new EditBox(this.font, this.leftPos + 50, this.topPos + 22, 120, 20,
+                Component.literal("Amount"));
         this.amountEditBox.setMaxLength(10);
         this.amountEditBox.setVisible(true);
-        this.amountEditBox.insertText("0.00");
+        this.amountEditBox.setValue(lastAmountStr);
         this.addRenderableWidget(this.amountEditBox);
 
         // Create the credit button
         this.creditButton = Button.builder(Component.literal("Credit"), this::onCreditButtonClicked)
-                .pos(this.leftPos + 50, this.topPos + 50)
+                .pos(this.leftPos + 25, this.topPos + 50)
                 .size(40, 20)
                 .build();
         this.addRenderableWidget(this.creditButton);
 
         // Create the debit button
         this.debitButton = Button.builder(Component.literal("Debit"), this::onDebitButtonClicked)
-                .pos(this.leftPos + 105, this.topPos + 50)
+                .pos(this.leftPos + 80, this.topPos + 50)
                 .size(40, 20)
                 .build();
         this.addRenderableWidget(this.debitButton);
+    }
+
+    public Float tryGetAmount() {
+        try {
+            float amount = Float.parseFloat(this.amountEditBox.getValue());
+
+            return amount;
+        } catch (NumberFormatException numberFormatException) {
+            LOGGER.debug("Could not parse amount: '{}'", this.amountEditBox.getValue());
+            return null;
+        }
+    }
+
+    @Override
+    public void removed() {
+        var amount = this.tryGetAmount();
+        if (amount != null) {
+            this.menu.getBlockEntity().setLastAmount(amount);
+        }
+        super.removed();
     }
 
     @Override
@@ -79,28 +107,24 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     }
 
     private void onCreditButtonClicked(Button button) {
-        try {
-            float amount = Float.parseFloat(this.amountEditBox.getValue());
-
-            var payload = new TransactionPayload(TransactionKind.CREDIT, amount);
-            LOGGER.debug("Sending payload to server: {}", payload);
-            PacketDistributor.sendToServer(payload);
-
-        } catch (NumberFormatException numberFormatException) {
-            LOGGER.error("Could not parse amount: '{}'", this.amountEditBox.getValue());
+        var amount = this.tryGetAmount();
+        if (amount == null) {
+            return;
         }
+
+        var payload = new TransactionPayload(TransactionKind.CREDIT, amount);
+        LOGGER.debug("Sending payload to server: {}", payload);
+        PacketDistributor.sendToServer(payload);
     }
 
     private void onDebitButtonClicked(Button button) {
-        try {
-            float amount = Float.parseFloat(this.amountEditBox.getValue());
-
-            var payload = new TransactionPayload(TransactionKind.DEBIT, amount);
-            LOGGER.debug("Sending payload to server: {}", payload);
-            PacketDistributor.sendToServer(payload);
-
-        } catch (NumberFormatException numberFormatException) {
-            LOGGER.error("Could not parse amount: '{}'", this.amountEditBox.getValue());
+        var amount = this.tryGetAmount();
+        if (amount == null) {
+            return;
         }
+
+        var payload = new TransactionPayload(TransactionKind.DEBIT, amount);
+        LOGGER.debug("Sending payload to server: {}", payload);
+        PacketDistributor.sendToServer(payload);
     }
 }

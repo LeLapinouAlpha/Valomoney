@@ -6,6 +6,7 @@ import fr.valorantage.valomoney.block.entity.ModBlockEntities;
 import fr.valorantage.valomoney.component.ModDataComponentTypes;
 import fr.valorantage.valomoney.item.ModCreativeModeTabs;
 import fr.valorantage.valomoney.item.ModItems;
+import fr.valorantage.valomoney.sound.ModSounds;
 import fr.valorantage.valomoney.gui.ModMenuTypes;
 import fr.valorantage.valomoney.gui.custom.ATMScreen;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -54,14 +55,13 @@ public class ValomoneyMod {
         ModAttachmentTypes.register(modEventBus);
         // Register the Deferred Register to the mod event bus so data components get registered
         ModDataComponentTypes.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so sounds get registered
+        ModSounds.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ValomoneyMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
-
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -69,11 +69,6 @@ public class ValomoneyMod {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Some common setup code
-    }
-
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
