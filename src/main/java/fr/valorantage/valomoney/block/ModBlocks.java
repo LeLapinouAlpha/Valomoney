@@ -23,7 +23,9 @@ public class ModBlocks {
 
     // Create Piggy Bank block
     public static final DeferredBlock<Block> PIGGY_BANK = BLOCKS.register("piggy_bank",
-            () -> new PiggyBankBlock(BlockBehaviour.Properties.of().strength(4.f)));
+            () -> new PiggyBankBlock(BlockBehaviour.Properties.of()
+                    .strength(4.f)
+                    .noOcclusion()));
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
