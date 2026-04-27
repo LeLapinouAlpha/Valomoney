@@ -75,4 +75,14 @@ public class PiggyBankBlock extends BaseEntityBlock {
         }
         return ItemInteractionResult.FAIL;
     }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (state.getBlock() != newState.getBlock()) {
+            if (level.getBlockEntity(pos) instanceof PiggyBankBlockEntity piggyBank) {
+                piggyBank.drops();
+            }
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
 }
