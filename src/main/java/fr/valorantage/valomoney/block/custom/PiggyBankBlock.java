@@ -24,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+// TODO: Display money value on screen when looking at the piggy bank
 public class PiggyBankBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
     public static final MapCodec<PiggyBankBlock> CODEC = simpleCodec(PiggyBankBlock::new);
@@ -68,8 +69,9 @@ public class PiggyBankBlock extends BaseEntityBlock {
             Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof PiggyBankBlockEntity piggyBank) {
             if (stack.getItem() instanceof CashItem) {
-                ItemStack remaining = piggyBank.inventory.insertItem(0, stack.copy(), false);
-                player.setItemInHand(hand, remaining);
+                // TODO: Implement possibility to insert full stack when sneaking, and insert
+                // only one item when not sneaking, to prevent accidentally inserting an entire
+                // stack
                 return ItemInteractionResult.SUCCESS;
             }
         }
