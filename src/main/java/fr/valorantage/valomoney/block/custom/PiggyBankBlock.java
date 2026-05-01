@@ -7,8 +7,6 @@ import com.mojang.serialization.MapCodec;
 import fr.valorantage.valomoney.block.entity.custom.PiggyBankBlockEntity;
 import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -77,9 +75,16 @@ public class PiggyBankBlock extends FallingBlock implements EntityBlock {
             Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof PiggyBankBlockEntity piggyBank) {
             if (stack.getItem() instanceof CashItem) {
-                // TODO: Implement possibility to insert full stack when sneaking, and insert
-                // only one item when not sneaking, to prevent accidentally inserting an entire
-                // stack
+                int toInsert = 1;
+                if (player.isShiftKeyDown()) {
+                    toInsert = stack.getCount();
+                }
+                ItemStack insertStack = stack.copy();
+                insertStack.setCount(toInsert);
+                // Insert the items into the piggy bank entity
+                int remainder = piggyBank.insertCash(insertStack);
+                // Remove the inserted amount from the player's stack
+                stack.shrink(toInsert - remainder);
                 return ItemInteractionResult.SUCCESS;
             }
         }

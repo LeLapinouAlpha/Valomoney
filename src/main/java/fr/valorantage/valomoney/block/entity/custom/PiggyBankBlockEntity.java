@@ -65,4 +65,14 @@ public class PiggyBankBlockEntity extends BlockEntity {
         }
         Containers.dropContents(this.level, this.worldPosition, container);
     }
+
+    public int insertCash(ItemStack insertStack) {
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            insertStack = inventory.insertItem(i, insertStack, false);
+            if (insertStack.isEmpty()) {
+                break;
+            }
+        }
+        return insertStack.getCount();
+    }
 }
