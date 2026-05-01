@@ -1,19 +1,25 @@
 package fr.valorantage.valomoney.block.custom;
 
+import org.slf4j.Logger;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 
 import fr.valorantage.valomoney.block.entity.custom.PiggyBankBlockEntity;
 import fr.valorantage.valomoney.item.custom.CashItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +31,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // TODO: Display money value on screen when looking at the piggy bank
-public class PiggyBankBlock extends BaseEntityBlock {
+public class PiggyBankBlock extends FallingBlock implements EntityBlock {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     public static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
     public static final MapCodec<PiggyBankBlock> CODEC = simpleCodec(PiggyBankBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -35,7 +43,7 @@ public class PiggyBankBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected MapCodec<? extends FallingBlock> codec() {
         return CODEC;
     }
 
@@ -88,5 +96,13 @@ public class PiggyBankBlock extends BaseEntityBlock {
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
-    
+    @Override
+    public void onLand(Level level, BlockPos pos, BlockState state, BlockState replaceableState,
+            FallingBlockEntity fallingBlock) {
+        super.onLand(level, pos, state, replaceableState, fallingBlock);
+
+        // Break block
+        level.destroyBlock(pos, false);
+    }
+
 }
