@@ -58,8 +58,6 @@ public class PiggyBankBlockEntity extends BlockEntity {
         tag.put("inventory", inventory.serializeNBT(registries));
     }
 
-    
-
     public void drops() {
         SimpleContainer container = new SimpleContainer(this.inventory.getSlots());
         for (int i = 0; i < container.getContainerSize(); i++) {

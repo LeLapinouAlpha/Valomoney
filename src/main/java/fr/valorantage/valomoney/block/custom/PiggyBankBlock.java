@@ -87,4 +87,6 @@ public class PiggyBankBlock extends BaseEntityBlock {
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
+
+    
 }
