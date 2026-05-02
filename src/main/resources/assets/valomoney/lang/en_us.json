@@ -11,5 +11,6 @@
   "item.valomoney.bank_card": "Bank Card",
   "block.valomoney.atm": "ATM",
   "block.valomoney.piggy_bank": "Piggy Bank",
-  "sounds.valomoney.atm_cash": "ATM Cash"
+  "sounds.valomoney.atm_cash": "ATM Cash",
+  "sounds.valomoney.piggy_bank_coin": "Piggy Bank Coin"
 }

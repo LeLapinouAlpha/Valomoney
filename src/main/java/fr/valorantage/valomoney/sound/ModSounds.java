@@ -15,6 +15,8 @@ public class ModSounds {
 
     public static Supplier<SoundEvent> ATM_CASH = registerSoundEvent("atm_cash");
 
+    public static Supplier<SoundEvent> PIGGY_BANK_COIN = registerSoundEvent("piggy_bank_coin");
+
     private static Supplier<SoundEvent> registerSoundEvent(String name) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(ValomoneyMod.MODID, name);
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(id));

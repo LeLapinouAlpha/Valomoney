@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 
 import fr.valorantage.valomoney.block.entity.custom.PiggyBankBlockEntity;
 import fr.valorantage.valomoney.item.custom.CashItem;
+import fr.valorantage.valomoney.sound.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -28,7 +29,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-// TODO: Display money value on screen when looking at the piggy bank
 public class PiggyBankBlock extends FallingBlock implements EntityBlock {
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -85,6 +85,10 @@ public class PiggyBankBlock extends FallingBlock implements EntityBlock {
                 int remainder = piggyBank.insertCash(insertStack);
                 // Remove the inserted amount from the player's stack
                 stack.shrink(toInsert - remainder);
+
+                // Play coin insertion sound
+                level.playSound(null, pos, ModSounds.PIGGY_BANK_COIN.get(), player.getSoundSource(), 1.f, 1.f);
+
                 return ItemInteractionResult.SUCCESS;
             }
         }
