@@ -6,5 +6,13 @@
                 "name": "valomoney:atm_cash"
             }
         ]
+    },
+    "piggy_bank_coin": {
+        "subtitle": "sounds.valomoney.piggy_bank_coin",
+        "sounds": [
+            {
+                "name": "valomoney:piggy_bank_coin"
+            }
+        ]
     }
 }

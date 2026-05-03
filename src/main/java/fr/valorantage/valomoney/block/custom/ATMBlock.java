@@ -75,7 +75,8 @@ public class ATMBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ATMBlockEntity atmBlockEntity) {
             player.openMenu(new SimpleMenuProvider(atmBlockEntity, atmBlockEntity.getDisplayName()), pos);
             return ItemInteractionResult.SUCCESS;

@@ -39,6 +39,10 @@ public class ModItems {
     public static final DeferredItem<BlockItem> ATM_ITEM = ITEMS.register("atm",
             () -> new BlockItem(ModBlocks.ATM.get(), new Item.Properties()));
 
+    // Creates Piggy Bank block item
+    public static final DeferredItem<BlockItem> PIGGY_BANK_ITEM = ITEMS.register("piggy_bank",
+            () -> new BlockItem(ModBlocks.PIGGY_BANK.get(), new Item.Properties()));
+
     // Creates bank card item
     public static final DeferredItem<Item> BANK_CARD = ITEMS.register("bank_card", BankCardItem::new);
 

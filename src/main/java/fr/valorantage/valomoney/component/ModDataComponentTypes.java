@@ -12,11 +12,14 @@ import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 public class ModDataComponentTypes {
-    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, ValomoneyMod.MODID);
+    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister
+            .createDataComponents(Registries.DATA_COMPONENT_TYPE, ValomoneyMod.MODID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> PLAYER_UUID = registerDataComponent("player_uuid", builder -> builder.persistent(Codec.STRING));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> PLAYER_UUID = registerDataComponent(
+            "player_uuid", builder -> builder.persistent(Codec.STRING));
 
-    private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> registerDataComponent(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
+    private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> registerDataComponent(String name,
+            UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 
