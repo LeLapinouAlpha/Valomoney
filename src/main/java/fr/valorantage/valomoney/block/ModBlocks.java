@@ -31,6 +31,15 @@ public class ModBlocks {
                     .sound(SoundType.COPPER)
                     .noOcclusion()));
 
+    // Create shop block
+    public static final DeferredBlock<Block> SHOP = BLOCKS.register("shop",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F)
+                    .requiresCorrectToolForDrops()
+                    .ignitedByLava()
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()));
+
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }

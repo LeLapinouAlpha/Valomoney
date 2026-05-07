@@ -36,6 +36,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BANK_CARD.get());
                         output.accept(ModBlocks.ATM.get());
                         output.accept(ModBlocks.PIGGY_BANK.get());
+                        output.accept(ModBlocks.SHOP.get());
                     }).build());
 
     public static void register(IEventBus eventBus) {
