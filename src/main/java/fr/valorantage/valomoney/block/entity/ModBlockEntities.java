@@ -24,7 +24,7 @@ public class ModBlockEntities {
             .register("piggy_bank_be", () -> BlockEntityType.Builder.of(
                     PiggyBankBlockEntity::new, ModBlocks.PIGGY_BANK.get()).build(null));
 
-    public static final Supplier<BlockEntityType<ShopBlockEntity>> SHOP_BLOCK_ENTITY = BLOCK_ENTITIES
+    public static final Supplier<BlockEntityType<ShopBlockEntity>> SHOP_BE = BLOCK_ENTITIES
             .register("shop_be", () -> BlockEntityType.Builder.of(
                     ShopBlockEntity::new, ModBlocks.SHOP.get()).build(null));
 
