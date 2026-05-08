@@ -41,14 +41,9 @@ public class ShopBlockMenu extends AbstractContainerMenu {
     private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLS * PLAYER_INVENTORY_ROWS;
     private static final int PLAYER_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT;
 
-    private static final Vector2i TE_INVENTORY_START = new Vector2i(120, 35);
-    private static final int TE_INVENTORY_ROWS = 2;
-    private static final int TE_INVENTORY_COLS = 2;
-    private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT
-            + PLAYER_INVENTORY_SLOT_COUNT;
-    private static final int TE_INVENTORY_SLOT_COUNT = TE_INVENTORY_COLS * TE_INVENTORY_ROWS;
+    private static final int TE_INVENTORY_SLOT_COUNT = 4;
 
-    private static final Vector2i SLOT_SIZE = new Vector2i(18, 18);
+    private static final Vector2i SLOTS_SIZE = new Vector2i(18, 18);
 
     private final Inventory playerInventory;
     private final ShopBlockEntity blockEntity;
@@ -85,7 +80,7 @@ public class ShopBlockMenu extends AbstractContainerMenu {
     }
 
     public Vector2i getHotbarSlotPos(int col) {
-        return new Vector2i(HOTBAR_START).add(new Vector2i(SLOT_SIZE).mul(col, 0));
+        return new Vector2i(HOTBAR_START).add(new Vector2i(SLOTS_SIZE).mul(col, 0));
     }
 
     public int getPlayerInventorySlotIndex(int row, int col) {
@@ -93,15 +88,22 @@ public class ShopBlockMenu extends AbstractContainerMenu {
     }
 
     public Vector2i getPlayerInventorySlotPos(int row, int col) {
-        return new Vector2i(PLAYER_INVENTORY_START).add(new Vector2i(SLOT_SIZE).mul(col, row));
-    }
-
-    public int getTEInventorySlotIndex(int row, int col) {
-        return row * TE_INVENTORY_COLS + TE_INVENTORY_FIRST_SLOT_INDEX + col;
+        return new Vector2i(PLAYER_INVENTORY_START).add(new Vector2i(SLOTS_SIZE).mul(col, row));
     }
 
     public Vector2i getTEInventorySlotPos(int index) {
-        return new Vector2i(TE_INVENTORY_START).add(new Vector2i(SLOT_SIZE).mul(index, 0));
+        switch (index) {
+            case 0:
+                return new Vector2i(51, 13);
+            case 1:
+                return new Vector2i(124, 13);
+            case 2:
+                return new Vector2i(51, 73);
+            case 3:
+                return new Vector2i(124, 73);
+            default:
+                throw new IllegalArgumentException("Invalid TE Inventory slot index: " + index);
+        }
     }
 
     private void addHotbar() {
@@ -123,12 +125,9 @@ public class ShopBlockMenu extends AbstractContainerMenu {
     }
 
     private void addTEInventory() {
-        for (int r = 0; r < TE_INVENTORY_ROWS; ++r) {
-            for (int c = 0; c < TE_INVENTORY_COLS; ++c) {
-                final int slotIndex = this.getTEInventorySlotIndex(r, c);
-                final Vector2i slotPos = this.getTEInventorySlotPos(slotIndex);
-                this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, slotIndex, slotPos.x, slotPos.y));
-            }
+        for (int i = 0; i < TE_INVENTORY_SLOT_COUNT; ++i) {
+            final Vector2i slotPos = this.getTEInventorySlotPos(i);
+            this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, i, slotPos.x, slotPos.y));
         }
     }
 }
