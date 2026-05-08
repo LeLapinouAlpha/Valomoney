@@ -3,6 +3,7 @@ package fr.valorantage.valomoney.block;
 import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.custom.ATMBlock;
 import fr.valorantage.valomoney.block.custom.PiggyBankBlock;
+import fr.valorantage.valomoney.block.custom.ShopBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -33,7 +34,7 @@ public class ModBlocks {
 
     // Create shop block
     public static final DeferredBlock<Block> SHOP = BLOCKS.register("shop",
-            () -> new Block(BlockBehaviour.Properties.of()
+            () -> new ShopBlock(BlockBehaviour.Properties.of()
                     .strength(2.0F, 3.0F)
                     .requiresCorrectToolForDrops()
                     .ignitedByLava()
