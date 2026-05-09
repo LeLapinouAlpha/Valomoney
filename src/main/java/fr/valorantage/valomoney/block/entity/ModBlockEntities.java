@@ -4,6 +4,7 @@ import fr.valorantage.valomoney.ValomoneyMod;
 import fr.valorantage.valomoney.block.ModBlocks;
 import fr.valorantage.valomoney.block.entity.custom.ATMBlockEntity;
 import fr.valorantage.valomoney.block.entity.custom.PiggyBankBlockEntity;
+import fr.valorantage.valomoney.block.entity.custom.ShopBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -22,6 +23,10 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<PiggyBankBlockEntity>> PIGGY_BANK = BLOCK_ENTITIES
             .register("piggy_bank_be", () -> BlockEntityType.Builder.of(
                     PiggyBankBlockEntity::new, ModBlocks.PIGGY_BANK.get()).build(null));
+
+    public static final Supplier<BlockEntityType<ShopBlockEntity>> SHOP_BE = BLOCK_ENTITIES
+            .register("shop_be", () -> BlockEntityType.Builder.of(
+                    ShopBlockEntity::new, ModBlocks.SHOP.get()).build(null));
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
