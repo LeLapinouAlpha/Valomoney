@@ -25,6 +25,8 @@ public class ShopScreen extends AbstractContainerScreen<ShopBlockMenu> {
         // Set real size of GUI inside the texture (the non-transparent part)
         this.imageWidth = 190;
         this.imageHeight = 208;
+        this.inventoryLabelX = 15;
+        this.inventoryLabelY = 110;
     }
 
     @Override
